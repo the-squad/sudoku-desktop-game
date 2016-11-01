@@ -1,3 +1,5 @@
+
+
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.event.ActionEvent;
@@ -14,8 +16,8 @@ public class main extends Application {
     
     Stage mainStage;
     
-    int[][] userSudoku; //Reads the Sudoku from the user
-    int[][] computerSolution; //Where computer returns the wrong cells
+    Integer[][] userSudoku; //Reads the Sudoku from the user
+    Integer[][] computerSolution; //Where computer returns the wrong cells
     
     Scene mainMenuScene; //Where the user will start the app
     Scene gameScene; //Where the user will enter or play Sudoku

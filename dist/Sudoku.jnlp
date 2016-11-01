@@ -7,15 +7,12 @@
     <offline-allowed/>
   </information>
   <resources>
-    <jfx:javafx-runtime version="8.0+" href="http://javadl.sun.com/webapps/download/GetFile/javafx-latest/windows-i586/javafx2.jnlp"/>
-  </resources>
-  <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="Sudoku.jar" size="3414" download="eager" />
+    <jar href="Sudoku.jar" size="3552" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="Sudoku" >
     <param name="requiredFXVersion" value="8.0+"/>
   </applet-desc>
-  <jfx:javafx-desc  width="800" height="600" main-class="main"  name="Sudoku" />
+  <jfx:javafx-desc  width="800" height="600" main-class="sudoku.main"  name="Sudoku" />
   <update check="always"/>
 </jnlp>
