@@ -17,6 +17,8 @@ public class main extends Application {
 
     Integer[][] userSudoku; //Reads the Sudoku from the user
     Integer[][] computerSolution; //Where computer returns the wrong cells
+    
+    TextField sudokuCells[][]; //FIXME
 
     Scene mainMenuScene; //Where the user will start the app
     Scene gameScene; //Where the user will enter or play Sudoku
@@ -41,6 +43,8 @@ public class main extends Application {
     }
 
     private void initGameScene() {
+        //TODO
+        
         //Creating layouts
         BorderPane gameSceneLayout = new BorderPane();
         BorderPane toolbarLayout = new BorderPane();
@@ -80,11 +84,15 @@ public class main extends Application {
     }
 
     private void initSudokuBlock() {
-        //TODO
-
-        /*
-         Generate Sudodku 9x9 cells and add them into gameScene
-         */
+        sudokuCells = new TextFields();
+        int rowCounter, columnCounter;
+        
+        //Creating Sudoku cells
+        for (rowCounter = 0; rowCounter < 9; rowCounter++) {
+            for (columnCounter = 0; columnCounter < 9; columnCounter++) {
+                //TODO
+            }
+        }
     }
 
     private void backToHome() {
