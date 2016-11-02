@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package sudoku;
 
 import java.util.ArrayList;
@@ -12,10 +7,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-/**
- *
- * @author mohamedkamal
- */
 public class columnChecker extends sudoku implements Runnable {
 
     @Override
@@ -47,5 +38,4 @@ public class columnChecker extends sudoku implements Runnable {
         }
         return colArray;
     }
-
 }
