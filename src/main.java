@@ -1,4 +1,3 @@
-
 import java.util.Scanner;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -34,14 +33,14 @@ public class main extends Application {
     public void start(Stage primaryStage) {
         mainStage = primaryStage;
 
-        intializeGameScene();
+        initGameScene();
 
         primaryStage.setTitle("Hello World!");
         primaryStage.setScene(gameScene);
         primaryStage.show();
     }
 
-    private void intializeGameScene() {
+    private void initGameScene() {
         //Creating layouts
         BorderPane gameSceneLayout = new BorderPane();
         BorderPane toolbarLayout = new BorderPane();
@@ -80,16 +79,12 @@ public class main extends Application {
         gameScene.getStylesheets().add("/stylesheets/gameSceneStyle.css");
     }
 
-    private void intializeSudokuBlock() {
+    private void initSudokuBlock() {
         //TODO
 
         /*
          Generate Sudodku 9x9 cells and add them into gameScene
          */
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-        launch(args);
     }
 
     private void backToHome() {
@@ -145,4 +140,7 @@ public class main extends Application {
          */
     }
 
+    public static void main(String[] args) throws InterruptedException {
+        launch(args);
+    }
 }
