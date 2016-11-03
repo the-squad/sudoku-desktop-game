@@ -13,6 +13,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.layout.GridPane;
 
 public class main extends Application {
 
@@ -26,7 +27,7 @@ public class main extends Application {
     Scene mainMenuScene; //Where the user will start the app
     Scene gameScene; //Where the user will enter or play Sudoku
     
-    Label cardBg;
+    BorderPane gameSceneLayout;
 
     /*
      Playing mode controls what happens and shows on the gameScene
@@ -50,42 +51,54 @@ public class main extends Application {
     private void initGameScene() {
         //TODO
         
-        //Creating layouts
-        BorderPane gameSceneLayout = new BorderPane();
+        //Main layout
+        gameSceneLayout = new BorderPane();
+        
+        
+        //Toolbar layout
         BorderPane toolbarLayout = new BorderPane();
         toolbarLayout.getStyleClass().add("toolbar"); //Creating class name for the layout
 
-        //Setting toolbar heigt and width
-        toolbarLayout.setPrefHeight(150);
+        toolbarLayout.setPrefHeight(100);
         toolbarLayout.setPrefWidth(1000);
+        
 
-        //Creating page headline
+        //Toolbar objects
         Label headline = new Label("Check your Sudoku");
         headline.setId("headline");
         
-        headline.setMaxWidth(Double.MAX_VALUE);
-        headline.setAlignment(Pos.CENTER);
+        //headline.setMaxWidth(Double.MAX_VALUE);
+        //headline.setAlignment(Pos.CENTER);
 
-        //Creating control buttons
         Button back = new Button("");
-        back.getStyleClass().add("iconButton"); //Setting class
-        back.setId("backButton"); //Setting ID
+        back.getStyleClass().add("iconButton"); 
+        back.setId("backButton"); 
 
         Button save = new Button("");
-        save.getStyleClass().add("iconButton"); //Setting class
-        save.setId("saveButton"); //Setting ID
-
-        //Setting position
-        toolbarLayout.setTop(headline);
-        toolbarLayout.setLeft(back);
-        toolbarLayout.setRight(save);
+        save.getStyleClass().add("iconButton"); 
+        save.setId("saveButton");
         
-        initSudokuBlock();
+        Button sumbit = new Button("Sumbit");
+        sumbit.getStyleClass().add("iconButton"); 
+        sumbit.setId("sumbitButton"); 
+
+        
+        //Setting position
+        toolbarLayout.setCenter(headline);
+        BorderPane.setAlignment(headline, Pos.CENTER);
+        
+        toolbarLayout.setLeft(back);
+        
+        toolbarLayout.setCenter(save);
+        BorderPane.setAlignment(save, Pos.TOP_RIGHT);
+        BorderPane.setMargin(save, new Insets(0,20,0,0));
+        
+        toolbarLayout.setRight(sumbit);     
 
         //Adding everything into the layout
         toolbarLayout.getChildren().addAll();
         
-        
+        initSudokuBlock();
         
 
         //Adding the toolbar in the top of the window
@@ -98,8 +111,14 @@ public class main extends Application {
 
     private void initSudokuBlock() {
         
-        cardBg = new Label();
+        GridPane cardBg = new GridPane();
         cardBg.getStyleClass().add("card");
+        
+        cardBg.setPrefHeight(400);
+        cardBg.setPrefWidth(400);
+        
+        gameSceneLayout.setCenter(cardBg);
+        BorderPane.setAlignment(cardBg, Pos.CENTER);
 
         int rowCounter, columnCounter;
         
