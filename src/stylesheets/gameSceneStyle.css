@@ -8,6 +8,7 @@
 .toolbar {
     -fx-background-color: #0070cd;
     -fx-padding: 25px;
+    -fx-width: 100%;
 }
 
 /*
@@ -38,15 +39,20 @@
     -fx-background-image: url("../icons/ic_save_white_48dp_1x.png");
 }
 
+#sumbitButton {
+    -fx-font-family: "Product Sans";
+    -fx-text-fill: #fff;
+    -fx-font-size: 12pt;
+}
+
 #headline {
      -fx-font-size: 16pt;
     -fx-font-family: "Product Sans";
     -fx-text-fill: #fff;
-    -fx-font: 600;
+    -fx-label-font-weight: 600;
 }
 
 .card {
     -fx-background-color: #fff;
-    -fx-min-height: 300;
-    -fx-min-width: 300;
+    -fx-border-radius: 9;
 }
