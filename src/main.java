@@ -6,10 +6,13 @@ import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 
 public class main extends Application {
 
@@ -17,9 +20,13 @@ public class main extends Application {
 
     Integer[][] userSudoku; //Reads the Sudoku from the user
     Integer[][] computerSolution; //Where computer returns the wrong cells
+    
+    TextField[][] sudokuCells; //FIXME
 
     Scene mainMenuScene; //Where the user will start the app
     Scene gameScene; //Where the user will enter or play Sudoku
+    
+    Label cardBg;
 
     /*
      Playing mode controls what happens and shows on the gameScene
@@ -41,6 +48,8 @@ public class main extends Application {
     }
 
     private void initGameScene() {
+        //TODO
+        
         //Creating layouts
         BorderPane gameSceneLayout = new BorderPane();
         BorderPane toolbarLayout = new BorderPane();
@@ -53,6 +62,9 @@ public class main extends Application {
         //Creating page headline
         Label headline = new Label("Check your Sudoku");
         headline.setId("headline");
+        
+        headline.setMaxWidth(Double.MAX_VALUE);
+        headline.setAlignment(Pos.CENTER);
 
         //Creating control buttons
         Button back = new Button("");
@@ -64,12 +76,17 @@ public class main extends Application {
         save.setId("saveButton"); //Setting ID
 
         //Setting position
-        toolbarLayout.setCenter(headline);
+        toolbarLayout.setTop(headline);
         toolbarLayout.setLeft(back);
         toolbarLayout.setRight(save);
+        
+        initSudokuBlock();
 
         //Adding everything into the layout
         toolbarLayout.getChildren().addAll();
+        
+        
+        
 
         //Adding the toolbar in the top of the window
         gameSceneLayout.setTop(toolbarLayout);
@@ -80,11 +97,18 @@ public class main extends Application {
     }
 
     private void initSudokuBlock() {
-        //TODO
+        
+        cardBg = new Label();
+        cardBg.getStyleClass().add("card");
 
-        /*
-         Generate Sudodku 9x9 cells and add them into gameScene
-         */
+        int rowCounter, columnCounter;
+        
+        //Creating Sudoku cells
+        for (rowCounter = 0; rowCounter < 9; rowCounter++) {
+            for (columnCounter = 0; columnCounter < 9; columnCounter++) {
+                //TODO
+            }
+        }
     }
 
     private void backToHome() {
