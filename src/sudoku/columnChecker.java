@@ -25,7 +25,7 @@ public class columnChecker extends sudoku implements Runnable {
                 }
             }
             for (Iterator<Integer> setValues = errorSet.iterator(); setValues.hasNext();) {
-                this.sudokuError[setValues.next()][column] = Boolean.TRUE;
+                this.sudokuWrongCells[setValues.next()][column] = Boolean.TRUE;
             }
             myset.clear();
         }
