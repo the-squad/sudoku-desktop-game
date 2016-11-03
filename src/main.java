@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.util.Scanner;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -13,6 +14,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.GridPane;
 
 public class main extends Application {
@@ -59,9 +61,11 @@ public class main extends Application {
         BorderPane toolbarLayout = new BorderPane();
         toolbarLayout.getStyleClass().add("toolbar"); //Creating class name for the layout
 
-        toolbarLayout.setPrefHeight(100);
+        toolbarLayout.setPrefHeight(75);
         toolbarLayout.setPrefWidth(1000);
         
+        //Headline + save button layout
+        BorderPane headlineAndSaveLayout = new BorderPane();
 
         //Toolbar objects
         Label headline = new Label("Check your Sudoku");
@@ -84,22 +88,25 @@ public class main extends Application {
 
         
         //Setting position
-        toolbarLayout.setCenter(headline);
-        BorderPane.setAlignment(headline, Pos.CENTER);
-        
         toolbarLayout.setLeft(back);
         
-        toolbarLayout.setCenter(save);
-        BorderPane.setAlignment(save, Pos.TOP_RIGHT);
-        BorderPane.setMargin(save, new Insets(0,20,0,0));
+        headlineAndSaveLayout.setRight(save);
+        headlineAndSaveLayout.setMargin(save, new Insets(0, 15, 0, 0));
         
-        toolbarLayout.setRight(sumbit);     
+        headlineAndSaveLayout.setCenter(headline);
+        headlineAndSaveLayout.setAlignment(headline, Pos.TOP_CENTER);
+        toolbarLayout.setCenter(headlineAndSaveLayout);
+        
+        toolbarLayout.setRight(sumbit);  
+        
 
         //Adding everything into the layout
         toolbarLayout.getChildren().addAll();
         
+       
         initSudokuBlock();
         
+  
 
         //Adding the toolbar in the top of the window
         gameSceneLayout.setTop(toolbarLayout);
@@ -110,16 +117,17 @@ public class main extends Application {
     }
 
     private void initSudokuBlock() {
+        //Sudoku card layout
+        BorderPane cardBg = new BorderPane();
+        cardBg.getStyleClass().add("card"); //Creating class name for the layout
         
-        GridPane cardBg = new GridPane();
-        cardBg.getStyleClass().add("card");
-        
-        cardBg.setPrefHeight(400);
-        cardBg.setPrefWidth(400);
+        cardBg.setMaxHeight(450);
+        cardBg.setMaxWidth(450);
         
         gameSceneLayout.setCenter(cardBg);
-        BorderPane.setAlignment(cardBg, Pos.CENTER);
-
+        gameSceneLayout.setAlignment(cardBg, Pos.CENTER);
+        gameSceneLayout.getChildren().addAll();
+        
         int rowCounter, columnCounter;
         
         //Creating Sudoku cells
