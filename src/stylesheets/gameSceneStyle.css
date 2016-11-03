@@ -37,3 +37,16 @@
 #saveButton {
     -fx-background-image: url("../icons/ic_save_white_48dp_1x.png");
 }
+
+#headline {
+     -fx-font-size: 16pt;
+    -fx-font-family: "Product Sans";
+    -fx-text-fill: #fff;
+    -fx-font: 600;
+}
+
+.card {
+    -fx-background-color: #fff;
+    -fx-min-height: 300;
+    -fx-min-width: 300;
+}
