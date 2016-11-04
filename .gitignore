@@ -48,3 +48,4 @@ Temporary Items
 *.swp
 *.TXT
 nbproject/jfx-impl_backup_2.xml
+*.properties
