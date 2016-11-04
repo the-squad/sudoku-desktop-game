@@ -52,14 +52,17 @@
     -fx-label-font-weight: 600;
 }
 
+/*
+    Sudoku card
+*/
 .card {
     -fx-background-color: #fff;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.05, 0.0, 2.0);
-    -fx-border-radius: 10;
+    -fx-background-radius: 6;
 }
 
 .cells-container {
-    -fx-border-color: rgba(0,0,0, 0.4);
+    -fx-border-color: rgba(0,0,0, 0.3);
 }
 
 .cell {
@@ -74,14 +77,17 @@
     -fx-fill-color: #212121;
 }
 
+/*
+    Custom borders to highlight 3x3 blocks
+*/
 .border-right {
-     -fx-border-color: rgba(0,0,0, 0.1) rgba(0,0,0, 0.4) rgba(0,0,0, 0.1) rgba(0,0,0, 0.1);
+     -fx-border-color: rgba(0,0,0, 0.1) rgba(0,0,0, 0.3) rgba(0,0,0, 0.1) rgba(0,0,0, 0.1);
 }
 
 .border-top {
-     -fx-border-color: rgba(0,0,0, 0.4) rgba(0,0,0, 0.1) rgba(0,0,0, 0.1) rgba(0,0,0, 0.1);
+     -fx-border-color: rgba(0,0,0, 0.3) rgba(0,0,0, 0.1) rgba(0,0,0, 0.1) rgba(0,0,0, 0.1);
 }
 
 .border-top-right {
-     -fx-border-color: rgba(0,0,0, 0.4) rgba(0,0,0, 0.4) rgba(0,0,0, 0.1) rgba(0,0,0, 0.1);
+     -fx-border-color: rgba(0,0,0, 0.3) rgba(0,0,0, 0.3) rgba(0,0,0, 0.1) rgba(0,0,0, 0.1);
 }

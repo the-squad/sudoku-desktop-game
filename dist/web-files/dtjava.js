@@ -41,7 +41,7 @@ var dtjava = function() {
         // the currently running script will also be the last element in the array
         var scripts = document.getElementsByTagName("script");
         var src = scripts[scripts.length - 1].getAttribute("src");
-        return src ? src.substring(0, src.lastIndexOf('/') + 1) : "";
+        return src.substring(0, src.lastIndexOf('/') + 1);
     })();
 
     //set to true to disable FX auto install (before release)
@@ -58,23 +58,10 @@ var dtjava = function() {
     var w = window;
 
     var cbDone = false;  //done with onload callbacks
-    var domInternalCb = []; //list of internal callbacks
     var domCb = [];      //list of callbacks
     var ua = null;
 
-    // Add internal function to be called on DOM ready event.
-    // These functions will be called before functions added by addOnDomReady().
-    // Used to do internal initialization (installing native plug-in) to avoid
-    // race condition with user requests.
-    function addOnDomReadyInternal(fn) {
-        if (cbDone) {
-            fn();
-        } else {
-            domInternalCb[domInternalCb.length] = fn;
-        }
-    }
-
-    // add function to be called on DOM ready event
+    //add function to be called on DOM ready event
     function addOnDomReady(fn) {
         if (cbDone) {
             fn();
@@ -96,9 +83,6 @@ var dtjava = function() {
                 return;
             }
             cbDone = true;
-            for (var i = 0; i < domInternalCb.length; i++) {
-                domInternalCb[i]();
-            }
             for (var i = 0; i < domCb.length; i++) {
                 domCb[i]();
             }
@@ -177,10 +161,10 @@ var dtjava = function() {
             if ((p && /intel/.test(p)) || /intel/.test(u)) {
                 cputype = "intel";
             }
-            //looking for things like 10_7, 10_6_8, 10.4 in the user agent
-            var t = u.match(/mac os x (10[0-9_\.]+)/);
+            //looking for things like 10_7, 10_6_8, 10.4, 11_2_2 in the user agent
+            var t = u.match(/(1[0-9_\.]+)[^0-9_\.]/);
             //normalize to "." separators
-            osVersion = notNull(t) ? t[0].replace("mac os x ","").replace(/_/g, ".") : null;
+            osVersion = notNull(t) ? t[0].replace(/_/g, ".") : null;
         }
 
         // Check mime types. Works with netscape family browsers and checks latest installed plugin only
@@ -764,8 +748,7 @@ var dtjava = function() {
     }
 
     function haveDTLite() {
-        // IE does not support DTLite
-        if (ua.deploy != null && !ua.ie) {
+        if (ua.deploy != null) {
             return versionCheck("10.6+", ua.deploy);
         }
         return false;
@@ -993,7 +976,7 @@ var dtjava = function() {
     //    10.1.2.3 => {10, 1, 2, 3}
     //    10.1     => {10, 1, 0, 0}
     //    10.1+    => {10, 1, 0, 0}
-    function convertVersionToNumberArray(versionString) {
+    function convertVersionToArray(versionString) {
         if (versionString != null) {
             var c = versionString.charAt(versionString.length - 1);
             //if it is not digit we want to strip last char
@@ -1007,18 +990,9 @@ var dtjava = function() {
             return [0, 0, 0, 0];
         }
 
-        var versionParts = versionString.split(".");
-        var arr = new Array();
-        // Manually convert each element into a Number, we can't use Array.map since that
-        // is not supported in IE
-        for (var ii = 0; ii < 4; ii++) {
-            if (ii < versionParts.length) {
-                // convert to int, otherwise we'll mix Numbers and Strings which will
-                // break the numeric comparison in versionCheck
-                arr[ii] = parseInt(versionParts[ii]);
-            } else {
-                arr.push(0);
-            }
+        var arr = versionString.split(".");
+        while (arr.length < 4) {
+            arr.push(0);
         }
         return arr;
     }
@@ -1058,8 +1032,8 @@ var dtjava = function() {
             //Keep comparing until tokens are the same or we reached end.
             //If tokens differ then we have a match if query is smaller and
             // non-match if it is greater
-            var qArr = convertVersionToNumberArray(query);
-            var vArr = convertVersionToNumberArray(version);
+            var qArr = convertVersionToArray(query);
+            var vArr = convertVersionToArray(version);
 
             //qArr and vArr are expected to be arrays of same length
             for (var idx=0; idx < qArr.length; idx++) {
@@ -1324,9 +1298,9 @@ var dtjava = function() {
                     // If not found then try for the latest family (e.g. if the requested FX version is "2.2" and "8.0.5" is installed
                     // we should not report that FX is old or does not exist. Instead we should continue with "8.0.5" and than either relaunch
                     // with the requested JRE or offer the user to launch the app using the latest JRE installed).
-                    if (v == "" || v == null) {
-                        v = p.getInstalledFXVersion(platform.javafx + '+');
-                    }
+		    if (v == "" || v == null) {
+			v = p.getInstalledFXVersion(platform.javafx + '+');
+		    }
                     //if found we should get version string, otherwise empty string or null. If found then fx=false!
                     if (v == "" || v == null) {
                         v = p.getInstalledFXVersion("2.0+"); //check for any FX version
@@ -2004,7 +1978,7 @@ var dtjava = function() {
         //can not install plugin now as page has no body yet, postpone
         //NB: use cbDone here to avoid infinite recursion (corner case)
         if (!notNull(d.body) && !cbDone) {
-            addOnDomReadyInternal(function() {
+            addOnDomReady(function() {
                 installNativePlugin();
             });
             postponeNativePluginInstallation = true;
@@ -2041,11 +2015,6 @@ var dtjava = function() {
         if (p != null) {
             p.setAttribute('id', 'dtjavaPlugin');
             d.body.appendChild(p);
-            
-            // Update internal versions from plug-in if needed
-            if (ua.deploy == null && isDef(p.version)) {
-                ua.deploy = p.version;
-            }
         }
     }
 
