@@ -13,19 +13,37 @@ public class checker {
      this.row = new rowChecker();
      this.column = new columnChecker();
      }*/
-    void check() {
+    void check() throws InterruptedException {
         this.row = new rowChecker();
         this.column = new columnChecker();
-        Thread thread;
-        thread = new Thread(this.row);
-        thread = new Thread(this.column);
+        Thread thread1=new Thread(this.row);
+        Thread thread2=new Thread(this.row);
+        
+        
+        thread1.start();
+        thread2.start();
+        
+        
         int threadId = 0;
+        
+         Thread multiThreads[] = new Thread[9];
         for (int row = 0; row < 9; row += 3) {
             for (int col = 0; col < 9; col += 3) {
                 this.box = new boxChecker(row, col, threadId);
-                thread = new Thread(this.box);
+                multiThreads[threadId] = new Thread(this.box);
+                multiThreads[threadId].start();
                 threadId++;
+                
             }
         }
+        
+        System.out.println(threadId);
+        thread1.join();
+        thread2.join();
+        
+        for (int i = 0; i < 9; i++) {
+            multiThreads[i].join();
+        }
+        
     }
 }
