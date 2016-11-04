@@ -1,30 +1,18 @@
-import java.awt.Color;
-import java.util.Scanner;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.GridPane;
 
 public class main extends Application {
-
-    Stage mainStage;
-
     Integer[][] userSudoku; //Reads the Sudoku from the user
     Integer[][] computerSolution; //Where computer returns the wrong cells
-    
-    TextField[][] sudokuCells; //FIXME
 
     Scene mainMenuScene; //Where the user will start the app
     Scene gameScene; //Where the user will enter or play Sudoku
@@ -41,11 +29,12 @@ public class main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        mainStage = primaryStage;
-
         initGameScene();
 
-        primaryStage.setTitle("Hello World!");
+        //Main stage property
+        primaryStage.setTitle("Sudoku Game!");
+        primaryStage.setMinWidth(1000);
+        primaryStage.setMinHeight(650);
         primaryStage.setScene(gameScene);
         primaryStage.show();
     }
@@ -71,8 +60,8 @@ public class main extends Application {
         Label headline = new Label("Check your Sudoku");
         headline.setId("headline");
         
-        //headline.setMaxWidth(Double.MAX_VALUE);
-        //headline.setAlignment(Pos.CENTER);
+        headline.setMaxWidth(Double.MAX_VALUE);
+        headline.setAlignment(Pos.CENTER);
 
         Button back = new Button("");
         back.getStyleClass().add("iconButton"); 
@@ -110,7 +99,7 @@ public class main extends Application {
 
         //Adding the toolbar in the top of the window
         gameSceneLayout.setTop(toolbarLayout);
-        gameScene = new Scene(gameSceneLayout, 1000, 600);
+        gameScene = new Scene(gameSceneLayout, 1000, 650);
 
         //Connecting the stylesheet
         gameScene.getStylesheets().add("/stylesheets/gameSceneStyle.css");
@@ -119,23 +108,46 @@ public class main extends Application {
     private void initSudokuBlock() {
         //Sudoku card layout
         BorderPane cardBg = new BorderPane();
-        cardBg.getStyleClass().add("card"); //Creating class name for the layout
+        cardBg.getStyleClass().add("card");
+        cardBg.setPadding(new Insets(10));
         
-        cardBg.setMaxHeight(450);
-        cardBg.setMaxWidth(450);
+        cardBg.setMaxHeight(475);
+        cardBg.setMaxWidth(475);
+        
+        GridPane cellsLayout = new GridPane();
+        cellsLayout.getStyleClass().add("cells-container");
+        cardBg.setCenter(cellsLayout);
+        
+        TextField[][] sudokuCells = new TextField[9][9];
+        
+        int rowCounter, columnCounter;
+        
+        
+        //Creating Sudoku cells
+        for (rowCounter = 0; rowCounter < 9; rowCounter++) {
+            for (columnCounter = 0; columnCounter < 9; columnCounter++) {
+               sudokuCells[rowCounter][columnCounter] = new TextField(" ");
+               cellsLayout.setConstraints(sudokuCells[rowCounter][columnCounter], rowCounter, columnCounter);
+               cellsLayout.getChildren().add(sudokuCells[rowCounter][columnCounter]);
+               
+               sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell");
+               
+               if (rowCounter == 2 || rowCounter == 5) 
+                    sudokuCells[rowCounter][columnCounter].getStyleClass().add("border-right");
+               if (columnCounter == 3 || columnCounter == 6) {
+                   sudokuCells[rowCounter][columnCounter].getStyleClass().add("border-top");
+                   if (rowCounter == 2 || rowCounter == 5) 
+                    sudokuCells[rowCounter][columnCounter].getStyleClass().add("border-top-right"); 
+               }
+                    
+            }
+        }
         
         gameSceneLayout.setCenter(cardBg);
         gameSceneLayout.setAlignment(cardBg, Pos.CENTER);
         gameSceneLayout.getChildren().addAll();
         
-        int rowCounter, columnCounter;
         
-        //Creating Sudoku cells
-        for (rowCounter = 0; rowCounter < 9; rowCounter++) {
-            for (columnCounter = 0; columnCounter < 9; columnCounter++) {
-                //TODO
-            }
-        }
     }
 
     private void backToHome() {

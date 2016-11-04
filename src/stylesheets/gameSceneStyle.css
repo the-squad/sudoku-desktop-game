@@ -54,6 +54,34 @@
 
 .card {
     -fx-background-color: #fff;
-    -fx-background-radius: 5;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.05, 0.0, 2.0);
+    -fx-border-radius: 10;
+}
+
+.cells-container {
+    -fx-border-color: rgba(0,0,0, 0.4);
+}
+
+.cell {
+    -fx-border-color: rgba(0,0,0, 0.1);
+    -fx-min-width: 52.77777777777;
+    -fx-min-height: 52.77777777777;
+    -fx-background-radius: 0;
+    -fx-background-color: #fff;
+    -fx-font-family: "Product Sans";
+    -fx-font-size: 17;
+    -fx-alignment: center;
+    -fx-fill-color: #212121;
+}
+
+.border-right {
+     -fx-border-color: rgba(0,0,0, 0.1) rgba(0,0,0, 0.4) rgba(0,0,0, 0.1) rgba(0,0,0, 0.1);
+}
+
+.border-top {
+     -fx-border-color: rgba(0,0,0, 0.4) rgba(0,0,0, 0.1) rgba(0,0,0, 0.1) rgba(0,0,0, 0.1);
+}
+
+.border-top-right {
+     -fx-border-color: rgba(0,0,0, 0.4) rgba(0,0,0, 0.4) rgba(0,0,0, 0.1) rgba(0,0,0, 0.1);
 }
