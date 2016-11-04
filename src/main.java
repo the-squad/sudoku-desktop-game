@@ -18,7 +18,7 @@ public class main extends Application {
 
     Stage mainStage;
 
-    Integer[][] userSudoku; //Reads the Sudoku from the user
+    Integer[][] userSudoku =new Integer[9][9]; //Reads the Sudoku from the user
     Integer[][] computerSolution; //Where computer returns the wrong cells
     
     TextField[][] sudokuCells; //FIXME
