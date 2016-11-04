@@ -1,3 +1,4 @@
+
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.scene.Scene;
@@ -11,12 +12,13 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
 
 public class main extends Application {
+
     Integer[][] userSudoku; //Reads the Sudoku from the user
     Integer[][] computerSolution; //Where computer returns the wrong cells
 
     Scene mainMenuScene; //Where the user will start the app
     Scene gameScene; //Where the user will enter or play Sudoku
-    
+
     BorderPane gameSceneLayout;
 
     /*
@@ -41,61 +43,56 @@ public class main extends Application {
 
     private void initGameScene() {
         //TODO
-        
+
         //Main layout
         gameSceneLayout = new BorderPane();
-        
-        
+
         //Toolbar layout
         BorderPane toolbarLayout = new BorderPane();
-        toolbarLayout.getStyleClass().add("toolbar"); //Creating class name for the layout
+        toolbarLayout.getStyleClass().add("toolbar");
 
         toolbarLayout.setPrefHeight(75);
         toolbarLayout.setPrefWidth(1000);
-        
+
         //Headline + save button layout
         BorderPane headlineAndSaveLayout = new BorderPane();
 
         //Toolbar objects
         Label headline = new Label("Check your Sudoku");
         headline.setId("headline");
-        
+
         headline.setMaxWidth(Double.MAX_VALUE);
         headline.setAlignment(Pos.CENTER);
 
         Button back = new Button("");
-        back.getStyleClass().add("iconButton"); 
-        back.setId("backButton"); 
+        back.getStyleClass().add("iconButton");
+        back.setId("backButton");
 
         Button save = new Button("");
-        save.getStyleClass().add("iconButton"); 
+        save.getStyleClass().add("iconButton");
         save.setId("saveButton");
-        
-        Button sumbit = new Button("Sumbit");
-        sumbit.getStyleClass().add("iconButton"); 
-        sumbit.setId("sumbitButton"); 
 
-        
+        Button sumbit = new Button("Sumbit");
+        sumbit.getStyleClass().add("iconButton");
+        sumbit.setId("sumbitButton");
+
         //Setting position
         toolbarLayout.setLeft(back);
-        
+
         headlineAndSaveLayout.setRight(save);
         headlineAndSaveLayout.setMargin(save, new Insets(0, 15, 0, 0));
-        
+
         headlineAndSaveLayout.setCenter(headline);
         headlineAndSaveLayout.setAlignment(headline, Pos.TOP_CENTER);
         toolbarLayout.setCenter(headlineAndSaveLayout);
-        
-        toolbarLayout.setRight(sumbit);  
-        
+        headlineAndSaveLayout.setMargin(headline, new Insets(0, 0, 0, 80));
+
+        toolbarLayout.setRight(sumbit);
 
         //Adding everything into the layout
         toolbarLayout.getChildren().addAll();
-        
-       
+
         initSudokuBlock();
-        
-  
 
         //Adding the toolbar in the top of the window
         gameSceneLayout.setTop(toolbarLayout);
@@ -109,45 +106,49 @@ public class main extends Application {
         //Sudoku card layout
         BorderPane cardBg = new BorderPane();
         cardBg.getStyleClass().add("card");
-        cardBg.setPadding(new Insets(10));
-        
+        cardBg.setPadding(new Insets(7));
+
         cardBg.setMaxHeight(475);
         cardBg.setMaxWidth(475);
-        
+
+        //Cells container layout
         GridPane cellsLayout = new GridPane();
         cellsLayout.getStyleClass().add("cells-container");
         cardBg.setCenter(cellsLayout);
-        
+
+        //Cells textfields
         TextField[][] sudokuCells = new TextField[9][9];
-        
+
         int rowCounter, columnCounter;
-        
-        
+
         //Creating Sudoku cells
         for (rowCounter = 0; rowCounter < 9; rowCounter++) {
             for (columnCounter = 0; columnCounter < 9; columnCounter++) {
-               sudokuCells[rowCounter][columnCounter] = new TextField(" ");
-               cellsLayout.setConstraints(sudokuCells[rowCounter][columnCounter], rowCounter, columnCounter);
-               cellsLayout.getChildren().add(sudokuCells[rowCounter][columnCounter]);
-               
-               sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell");
-               
-               if (rowCounter == 2 || rowCounter == 5) 
+                //Create cells and positioning hem
+                sudokuCells[rowCounter][columnCounter] = new TextField();
+                cellsLayout.setConstraints(sudokuCells[rowCounter][columnCounter], columnCounter, rowCounter);
+                cellsLayout.getChildren().add(sudokuCells[rowCounter][columnCounter]);
+
+                sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell");
+
+                //If the cell is No.2 or No.5 on any column it will have right border
+                if (columnCounter == 2 || columnCounter == 5) 
                     sudokuCells[rowCounter][columnCounter].getStyleClass().add("border-right");
-               if (columnCounter == 3 || columnCounter == 6) {
-                   sudokuCells[rowCounter][columnCounter].getStyleClass().add("border-top");
-                   if (rowCounter == 2 || rowCounter == 5) 
-                    sudokuCells[rowCounter][columnCounter].getStyleClass().add("border-top-right"); 
-               }
-                    
+                
+                //If the cell is No.3 or No.6 on any row it will have top border
+                if (rowCounter == 3 || rowCounter == 6) {
+                    sudokuCells[rowCounter][columnCounter].getStyleClass().add("border-top");
+                    //Because the previus line of code override the right border
+                    if (columnCounter == 2 || columnCounter == 5)
+                        sudokuCells[rowCounter][columnCounter].getStyleClass().add("border-top-right");
+                }
             }
         }
-        
+
         gameSceneLayout.setCenter(cardBg);
         gameSceneLayout.setAlignment(cardBg, Pos.CENTER);
         gameSceneLayout.getChildren().addAll();
-        
-        
+
     }
 
     private void backToHome() {
