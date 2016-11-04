@@ -14,7 +14,7 @@ public class checker {
         this.column = new columnChecker();
     }
     
-    void check(sudoku su {
+    void check(sudoku su) {
         
     }
 }

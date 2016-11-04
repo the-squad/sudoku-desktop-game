@@ -23,7 +23,8 @@ public class rowChecker extends sudoku implements Runnable {
                 }
             }
             for (Iterator<Integer> setValues = errorSet.iterator(); setValues.hasNext();) {
-                this.sudokuError[row][setValues.next()] = Boolean.TRUE;
+                
+                this.sudokuWrongCells[row][setValues.next()] = Boolean.TRUE;
             }
             myset.clear();
         }
