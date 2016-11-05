@@ -78,7 +78,7 @@
     -fx-font-family: "Lato";
     -fx-font-size: 18;
     -fx-alignment: center;
-    -fx-text-fill: #292f33;
+    -fx-text-fill: rgba(41,47,51, 0.9);
     -fx-cursor: hand;
     -fx-font-weight: bold;
 }
@@ -91,13 +91,29 @@
     -fx-background-color: rgba(65, 131, 215, 0.15);
 }
 
-.cell-success {
-    -fx-text-fill: #00C853;
+.cell:disabled {
+    -fx-text-fill: rgba(41,47,51, 0.8);
+    -fx-opacity: 1.0;
+}
+
+.cell-success:disabled {
+    -fx-text-fill: rgb(0, 200 , 83);
+    -fx-background-color: rgba(0 , 200, 83, 0.075);
     -fx-cursor: default;
+    -fx-opacity: 1.0;
 }
 
 .cell-danger {
-    -fx-text-fill: #E53935;
+    -fx-text-fill: rgb(229,57,53);
+    -fx-background-color: rgba(229,57,53, 0.075);
+}
+
+.cell-danger:hover {
+    -fx-background-color: rgba(229,57,53, 0.15);
+}
+
+.cell-danger:focused {
+    -fx-background-color: rgba(229,57,53, 0.15);
 }
 
 /*
@@ -113,4 +129,38 @@
 
 .border-top-right {
      -fx-border-color: rgba(0,0,0, 0.3) rgba(0,0,0, 0.3) rgba(0,0,0, 0.1) rgba(0,0,0, 0.1);
+}
+
+/*
+    Alert message
+*/
+.alert-message {
+    -fx-font-family: "Lato";
+    -fx-font-size: 15;
+    -fx-font-weight: bold;
+    -fx-padding: 10 0 20 0;
+}
+
+.alert-message-success {
+    -fx-text-fill: rgb(0, 200 , 83);
+}
+
+.alert-message-danger {
+    -fx-text-fill: rgb(229,57,53);
+}
+
+.alert-icon {
+    -fx-background-size: 17px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-min-height: 17;
+    -fx-min-width: 17;
+}
+
+.alert-icon-success {
+    -fx-background-image: url("../icons/circle-with-check-symbol.png");
+}
+
+.alert-icon-danger {
+    -fx-background-image: url("../icons/cancel.png");
 }
