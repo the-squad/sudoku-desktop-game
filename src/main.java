@@ -1,4 +1,9 @@
 
+import java.awt.event.ActionEvent;
+import java.beans.EventHandler;
+import javafx.animation.FadeTransition;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.scene.Scene;
@@ -10,11 +15,14 @@ import javafx.stage.Stage;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.util.Duration;
 
 public class main extends Application {
 
-    Integer[][] userSudoku; //Reads the Sudoku from the user
-    Integer[][] computerSolution; //Where computer returns the wrong cells
+    Integer[][] userSudoku = new Integer[9][9]; //Reads the Sudoku from the user
+    Integer[][] computerSolution = new Integer[9][9]; //Where computer returns the wrong cells
 
     Scene mainMenuScene; //Where the user will start the app
     Scene gameScene; //Where the user will enter or play Sudoku
@@ -36,7 +44,7 @@ public class main extends Application {
         //Main stage property
         primaryStage.setTitle("Sudoku Game!");
         primaryStage.setMinWidth(1000);
-        primaryStage.setMinHeight(650);
+        primaryStage.setMinHeight(700);
         primaryStage.setScene(gameScene);
         primaryStage.show();
     }
@@ -93,6 +101,9 @@ public class main extends Application {
         toolbarLayout.getChildren().addAll();
 
         initSudokuBlock();
+        save.setOnAction(e -> {
+            showPopup("Game is saved successfuly", 1);
+        });
 
         //Adding the toolbar in the top of the window
         gameSceneLayout.setTop(toolbarLayout);
@@ -132,15 +143,17 @@ public class main extends Application {
                 sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell");
 
                 //If the cell is No.2 or No.5 on any column it will have right border
-                if (columnCounter == 2 || columnCounter == 5) 
+                if (columnCounter == 2 || columnCounter == 5) {
                     sudokuCells[rowCounter][columnCounter].getStyleClass().add("border-right");
-                
+                }
+
                 //If the cell is No.3 or No.6 on any row it will have top border
                 if (rowCounter == 3 || rowCounter == 6) {
                     sudokuCells[rowCounter][columnCounter].getStyleClass().add("border-top");
                     //Because the previus line of code override the right border
-                    if (columnCounter == 2 || columnCounter == 5)
+                    if (columnCounter == 2 || columnCounter == 5) {
                         sudokuCells[rowCounter][columnCounter].getStyleClass().add("border-top-right");
+                    }
                 }
             }
         }
@@ -173,13 +186,61 @@ public class main extends Application {
     }
 
     private void showPopup(String message, int alertType) {
-        //TODO
+        //Alert message layout
+        GridPane alertLayout = new GridPane();
+        alertLayout.setHgap(10);
 
-        /*
-         Alert types:
-         1. Danger: In the solving mode, if the user entered wrong Sudoku
-         2. Success: When a game is saved
-         */
+        gameSceneLayout.setBottom(alertLayout);
+        gameSceneLayout.setAlignment(alertLayout, Pos.CENTER);
+
+        //Alert message
+        Label alertMessage = new Label(message);
+        alertMessage.getStyleClass().add("alert-message");
+
+        if (alertType == 1) {
+            alertMessage.getStyleClass().add("alert-message-success");
+        } else {
+            alertMessage.getStyleClass().add("alert-message-danger");
+        }
+
+        alertLayout.setConstraints(alertMessage, 1, 0);
+        alertLayout.setMargin(alertMessage, new Insets(10, 0, 0, 0));
+
+        //Alert icon
+        Label alertIcon = new Label();
+        alertIcon.getStyleClass().add("alert-icon");
+
+        if (alertType == 1) {
+            alertIcon.getStyleClass().add("alert-icon-success");
+        } else {
+            alertIcon.getStyleClass().add("alert-icon-danger");
+        }
+
+        alertLayout.setConstraints(alertIcon, 0, 0);
+
+        //Adding the alert in gameScene
+        alertLayout.getChildren().addAll(alertIcon, alertMessage);
+        alertLayout.setAlignment(Pos.CENTER);
+
+        //Fading animation
+        FadeTransition showAlertAnimation = new FadeTransition(Duration.millis(1000), alertLayout);
+        showAlertAnimation.setFromValue(0);
+        showAlertAnimation.setToValue(1);
+        showAlertAnimation.play();
+        
+        FadeTransition hideAlertAnimation = new FadeTransition(Duration.millis(1000), alertLayout);
+        hideAlertAnimation.setFromValue(1);
+        hideAlertAnimation.setToValue(0);
+
+        //Auto hide the alert
+        Timeline countDown = new Timeline(new KeyFrame(
+                Duration.millis(3000),
+                ae -> {
+                    hideAlertAnimation.play();
+                    gameSceneLayout.setBottom(null);
+                }
+        ));
+        countDown.play();
     }
 
     private void readSudoku() {
