@@ -47,5 +47,6 @@ Temporary Items
 .apdisk
 *.swp
 *.TXT
-nbproject/jfx-impl_backup_2.xml
+*.xml
 *.properties
+dir_to_ignore/dist
