@@ -50,3 +50,4 @@ Temporary Items
 *.xml
 *.properties
 dir_to_ignore/dist
+dir_to_ignore/nbproject
