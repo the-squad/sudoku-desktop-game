@@ -51,3 +51,7 @@ Temporary Items
 *.properties
 dist/
 nbproject/
+build/
+*.jar
+*.war
+*.ear

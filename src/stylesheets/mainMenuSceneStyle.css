@@ -1,0 +1,58 @@
+.root {
+    -fx-background-color: #eee;
+}
+
+/*
+    Left part
+*/
+.left-part {
+    -fx-background-color: rgb(65, 131, 215);
+}
+
+.logo {
+    -fx-background-image: url("../icons/logo.png");
+    -fx-background-size: 128;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-min-height: 128;
+    -fx-min-width: 128;
+}
+
+.logo-text {
+    -fx-font-family: "Lato";
+    -fx-text-fill: #fff;
+    -fx-font-size: 22pt;
+    -fx-font-weight: 600;
+}
+
+.version {
+    -fx-font-family: "Lato";
+    -fx-text-fill: #fff;
+    -fx-font-size: 10pt;
+    -fx-font-weight: 300;
+}
+
+/*
+    Right part
+*/
+.welcome-text {
+    -fx-font-family: "Lato";
+    -fx-font-size: 30;
+    -fx-alignment: center;
+    -fx-text-fill: rgba(41,47,51, 0.8);
+}
+
+.icon-text-button {
+    -fx-background-color: #fff;
+    -fx-min-width: 300;
+    -fx-min-height: 55;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.03, 0.0, 1.0);
+    -fx-background-radius: 4;
+    -fx-alignment: left;
+     -fx-font-family: "Lato";
+    -fx-font-size: 16;
+    -fx-font-weight: 700;
+    -fx-text-fill: rgba(41,47,51, 0.9);
+    -fx-padding: 0 0 0 20;
+    -fx-cursor: hand;
+}
