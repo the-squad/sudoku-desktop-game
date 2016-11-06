@@ -5,6 +5,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.geometry.HPos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -79,15 +80,19 @@ public class main extends Application {
         Label logo = new Label();
         logo.getStyleClass().add("logo");
         leftPartLayout.setTop(logo);
-        leftPartLayout.setAlignment(logo, Pos.CENTER);
+        leftPartLayout.setAlignment(logo, Pos.BOTTOM_CENTER);
+        leftPartLayout.setMargin(logo, new Insets(175, 0, 30, 0));
         
         Label logoText = new Label("Sudodu Game");
         logoText.getStyleClass().add("logo-text");
         leftPartLayout.setCenter(logoText);
+        leftPartLayout.setAlignment(logoText, Pos.TOP_CENTER);
         
         Label version = new Label("Version 0.0.1");
         version.getStyleClass().add("version");
         leftPartLayout.setBottom(version);
+        leftPartLayout.setAlignment(version, Pos.TOP_CENTER);
+        leftPartLayout.setMargin(version, new Insets(0, 0, 30, 0));
         
         leftPartLayout.getChildren().addAll();
         
@@ -111,10 +116,11 @@ public class main extends Application {
         }
         
         //Creating right part elemens
-        Label welcomeText = new Label("Welcome, Muhammad");
+        Label welcomeText = new Label("Welcome, Muhammad Tarek");
         welcomeText.getStyleClass().add("welcome-text");
         rightPartLayout.setConstraints(welcomeText, 0, 0);
         rightPartLayout.getChildren().add(welcomeText);
+        rightPartLayout.setHalignment(welcomeText, HPos.CENTER);
         
         Image newGameIcon = new Image(getClass().getResourceAsStream("/icons/new-game.png"));
         ImageView newGameIconView = new ImageView(newGameIcon);
@@ -123,22 +129,22 @@ public class main extends Application {
         
         Image loadGameIcon = new Image(getClass().getResourceAsStream("/icons/load-game.png"));
         ImageView laodGameIconView = new ImageView(loadGameIcon);
-        Button loadGame = new Button("       New Game", laodGameIconView);
+        Button loadGame = new Button("       Load last game", laodGameIconView);
         initButtonStyle(loadGame, rightPartLayout, 2, laodGameIconView);
         
         Image checkSudokuIcon = new Image(getClass().getResourceAsStream("/icons/check-sudoku.png"));
         ImageView checkSudokuIconView = new ImageView(checkSudokuIcon);
-        Button checkSudokuGame = new Button("       New Game", checkSudokuIconView);
+        Button checkSudokuGame = new Button("       Check your Sudoku", checkSudokuIconView);
         initButtonStyle(checkSudokuGame, rightPartLayout, 3, checkSudokuIconView);
         
         Image challengeComputerIcon = new Image(getClass().getResourceAsStream("/icons/challenge-computer.png"));
         ImageView challengeComputerIconView = new ImageView(challengeComputerIcon);
-        Button challengeComputerGame = new Button("       New Game", challengeComputerIconView);
+        Button challengeComputerGame = new Button("       Challenge computer", challengeComputerIconView);
         initButtonStyle(challengeComputerGame, rightPartLayout, 4, challengeComputerIconView);
         
         Image exitIcon = new Image(getClass().getResourceAsStream("/icons/exit.png"));
         ImageView exitIconView = new ImageView(exitIcon);
-        Button exit = new Button("       New Game", exitIconView);
+        Button exit = new Button("       Exit", exitIconView);
         initButtonStyle(exit, rightPartLayout, 5, exitIconView);
         
         mainMenuScene = new Scene(mainMenuLayout, 1000, 650);
@@ -377,6 +383,7 @@ public class main extends Application {
         icon.setFitHeight(24);
         icon.setFitWidth(24);
         layout.setConstraints(button, 0, position);
+        layout.setHalignment(button, HPos.CENTER);
         layout.getChildren().add(button);
     }
 
