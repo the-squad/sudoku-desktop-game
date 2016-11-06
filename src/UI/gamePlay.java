@@ -1,32 +1,22 @@
+package UI;
 
-import java.awt.event.ActionEvent;
-import java.beans.EventHandler;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Application;
-import static javafx.application.Application.launch;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class main extends Application {
+public class gamePlay {
 
-    Integer[][] userSudoku = new Integer[9][9]; //Reads the Sudoku from the user
-    Integer[][] computerSolution = new Integer[9][9]; //Where computer returns the wrong cells
-
-    Scene mainMenuScene; //Where the user will start the app
-    Scene gameScene; //Where the user will enter or play Sudoku
-
+    Scene gameScene;
     BorderPane gameSceneLayout;
 
     /*
@@ -37,21 +27,16 @@ public class main extends Application {
      */
     int playingMode;
 
-    @Override
-    public void start(Stage primaryStage) {
-        initGameScene();
-
-        //Main stage property
-        primaryStage.setTitle("Sudoku Game!");
-        primaryStage.setMinWidth(1000);
-        primaryStage.setMinHeight(700);
-        primaryStage.setScene(gameScene);
-        primaryStage.show();
-    }
-
-    private void initGameScene() {
-        //TODO
-
+    /**
+     * Initialize game play elements
+     *
+     * @param primaryStage
+     * @param playingMode
+     * @return gameScene
+     */
+    public Scene initialize(Stage primaryStage, int playingMode) {
+        this.playingMode = playingMode;
+        
         //Main layout
         gameSceneLayout = new BorderPane();
 
@@ -111,6 +96,8 @@ public class main extends Application {
 
         //Connecting the stylesheet
         gameScene.getStylesheets().add("/stylesheets/gameSceneStyle.css");
+
+        return gameScene;
     }
 
     private void initSudokuBlock() {
@@ -161,28 +148,6 @@ public class main extends Application {
         gameSceneLayout.setCenter(cardBg);
         gameSceneLayout.setAlignment(cardBg, Pos.CENTER);
         gameSceneLayout.getChildren().addAll();
-
-    }
-
-    private void backToHome() {
-        //TODO
-
-        /*
-         1. Save the current game only in playing mode
-         2. Show pop-up telling the user that the game is saved
-         3. Hide gameScene
-         4. Show mainMenuScene
-         5. Show loadSavedGame button in the mainMenuScene
-         */
-    }
-
-    private void saveCurrentGame() {
-        //TODO
-
-        /*
-         1. Read the Sudoku from the screen
-         2. Show pop-up telling the user that the game is saved
-         */
     }
 
     private void showPopup(String message, int alertType) {
@@ -227,7 +192,7 @@ public class main extends Application {
         showAlertAnimation.setFromValue(0);
         showAlertAnimation.setToValue(1);
         showAlertAnimation.play();
-        
+
         FadeTransition hideAlertAnimation = new FadeTransition(Duration.millis(1000), alertLayout);
         hideAlertAnimation.setFromValue(1);
         hideAlertAnimation.setToValue(0);
@@ -241,6 +206,15 @@ public class main extends Application {
                 }
         ));
         countDown.play();
+    }
+
+    private void saveCurrentGame() {
+        //TODO
+
+        /*
+         1. Read the Sudoku from the screen
+         2. Show pop-up telling the user that the game is saved
+         */
     }
 
     private void readSudoku() {
@@ -264,8 +238,16 @@ public class main extends Application {
          etidable and colored in red
          */
     }
+    
+    private void backToHome() {
+        //TODO
 
-    public static void main(String[] args) throws InterruptedException {
-        launch(args);
+        /*
+         1. Save the current game only in playing mode
+         2. Show pop-up telling the user that the game is saved
+         3. Hide gameScene
+         4. Show mainMenuScene
+         5. Show loadSavedGame button in the mainMenuScene
+         */
     }
 }
