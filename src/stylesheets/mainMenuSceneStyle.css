@@ -1,0 +1,10 @@
+.root {
+    -fx-background-color: #eee;
+}
+
+/*
+    Left part
+*/
+.left-part {
+    -fx-background-color: rgb(65, 131, 215);
+}

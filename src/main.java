@@ -1,9 +1,3 @@
-
-/*
- @Muhammad Tarek
- @Last Edit: 5-Nov, 10:37
- */
-
 import java.awt.event.ActionEvent;
 import java.beans.EventHandler;
 import javafx.animation.FadeTransition;
@@ -22,6 +16,8 @@ import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.RowConstraints;
 import javafx.util.Duration;
 
 public class main extends Application {
@@ -44,14 +40,111 @@ public class main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        initGameScene();
+        initMainMenuScene();
 
         //Main stage property
         primaryStage.setTitle("Sudoku Game!");
         primaryStage.setMinWidth(1000);
         primaryStage.setMinHeight(700);
-        primaryStage.setScene(gameScene);
+        primaryStage.setScene(mainMenuScene);
         primaryStage.show();
+    }
+    
+    private void initMainMenuScene() {
+        //Main menu layout
+        GridPane mainMenuLayout = new GridPane();
+        
+        //Creating two columns
+        ColumnConstraints leftPart = new ColumnConstraints();
+        leftPart.setPercentWidth(35);
+        
+        ColumnConstraints rightPart = new ColumnConstraints();
+        rightPart.setPercentWidth(65);
+        
+        mainMenuLayout.getColumnConstraints().addAll(leftPart, rightPart);
+        
+        //Creating 100% height row
+        RowConstraints fullHeight = new RowConstraints();
+        fullHeight.setPercentHeight(100);
+        
+        mainMenuLayout.getRowConstraints().add(fullHeight);
+        
+        //Creating left part layout
+        BorderPane leftPartLayout = new BorderPane();
+        leftPartLayout.getStyleClass().add("left-part");
+        mainMenuLayout.setConstraints(leftPartLayout, 0, 0);
+        mainMenuLayout.getChildren().add(leftPartLayout);
+        
+        //Left part elements
+        Label logo = new Label();
+        logo.getStyleClass().add("logo");
+        leftPartLayout.setTop(logo);
+        leftPartLayout.setAlignment(logo, Pos.CENTER);
+        
+        Label logoText = new Label("Sudodu Game");
+        logoText.getStyleClass().add("logo-text");
+        leftPartLayout.setCenter(logoText);
+        
+        Label version = new Label("Version 0.0.1");
+        version.getStyleClass().add("version");
+        leftPartLayout.setBottom(version);
+        
+        leftPartLayout.getChildren().addAll();
+        
+        //Right part layout
+        GridPane rightPartLayout = new GridPane();
+        rightPartLayout.setAlignment(Pos.CENTER);
+        rightPartLayout.setPadding(new Insets(25));
+        mainMenuLayout.setConstraints(rightPartLayout, 1, 0);
+        mainMenuLayout.getChildren().add(rightPartLayout);
+        
+        //Creating custom rows
+        RowConstraints rowNo[] = new RowConstraints[6];
+        for (int counter = 0; counter < 6; counter++) {
+            rowNo[counter] = new RowConstraints();
+            
+            if (counter == 0)
+                rowNo[counter].setPercentHeight(20);
+            
+            rowNo[counter].setPercentHeight(13);
+            rightPartLayout.getRowConstraints().add(rowNo[counter]);
+        }
+        
+        //Creating right part elemens
+        Label welcomeText = new Label("Welcome, Muhammad");
+        welcomeText.getStyleClass().add("welcome-text");
+        rightPartLayout.setConstraints(welcomeText, 0, 0);
+        rightPartLayout.getChildren().add(welcomeText);
+        
+        Image newGameIcon = new Image(getClass().getResourceAsStream("/icons/new-game.png"));
+        ImageView newGameIconView = new ImageView(newGameIcon);
+        Button newGame = new Button("       New Game", newGameIconView);
+        initButtonStyle(newGame, rightPartLayout, 1, newGameIconView);
+        
+        Image loadGameIcon = new Image(getClass().getResourceAsStream("/icons/load-game.png"));
+        ImageView laodGameIconView = new ImageView(loadGameIcon);
+        Button loadGame = new Button("       New Game", laodGameIconView);
+        initButtonStyle(loadGame, rightPartLayout, 2, laodGameIconView);
+        
+        Image checkSudokuIcon = new Image(getClass().getResourceAsStream("/icons/check-sudoku.png"));
+        ImageView checkSudokuIconView = new ImageView(checkSudokuIcon);
+        Button checkSudokuGame = new Button("       New Game", checkSudokuIconView);
+        initButtonStyle(checkSudokuGame, rightPartLayout, 3, checkSudokuIconView);
+        
+        Image challengeComputerIcon = new Image(getClass().getResourceAsStream("/icons/challenge-computer.png"));
+        ImageView challengeComputerIconView = new ImageView(challengeComputerIcon);
+        Button challengeComputerGame = new Button("       New Game", challengeComputerIconView);
+        initButtonStyle(challengeComputerGame, rightPartLayout, 4, challengeComputerIconView);
+        
+        Image exitIcon = new Image(getClass().getResourceAsStream("/icons/exit.png"));
+        ImageView exitIconView = new ImageView(exitIcon);
+        Button exit = new Button("       New Game", exitIconView);
+        initButtonStyle(exit, rightPartLayout, 5, exitIconView);
+        
+        mainMenuScene = new Scene(mainMenuLayout, 1000, 650);
+
+        //Connecting the stylesheet
+        mainMenuScene.getStylesheets().add("/stylesheets/mainMenuSceneStyle.css");
     }
 
     private void initGameScene() {
@@ -268,6 +361,23 @@ public class main extends Application {
          2. When the Sudoku is checked, only the false values will be 
          etidable and colored in red
          */
+    }
+    
+    /**
+     * Initialize button styles, icons sizes
+     * Muhammad Tarek
+     * @since 6, November
+     * @param button
+     * @param layout
+     * @param position
+     * @param icon 
+     */
+    private void initButtonStyle(Button button, GridPane layout, int position, ImageView icon) {
+        button.getStyleClass().add("icon-text-button");
+        icon.setFitHeight(24);
+        icon.setFitWidth(24);
+        layout.setConstraints(button, 0, position);
+        layout.getChildren().add(button);
     }
 
     public static void main(String[] args) throws InterruptedException {
