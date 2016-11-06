@@ -51,7 +51,9 @@ Temporary Items
 *.properties
 dist/
 nbproject/
-build/
-*.jar
-*.war
-*.ear
+nbproject/UPDATED.TXT
+nbproject/build-impl.xml
+nbproject/jfx-impl.xml
+nbproject/UPDATED.TXT
+nbproject/private/private.properties
+nbproject/build-impl.xml
