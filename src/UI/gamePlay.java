@@ -1,34 +1,22 @@
-import java.awt.event.ActionEvent;
-import java.beans.EventHandler;
+package UI;
+
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Application;
-import static javafx.application.Application.launch;
-import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.stage.Stage;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.layout.GridPane;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.RowConstraints;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
-public class main extends Application {
+public class gamePlay {
 
-    Integer[][] userSudoku = new Integer[9][9]; //Reads the Sudoku from the user
-    Integer[][] computerSolution = new Integer[9][9]; //Where computer returns the wrong cells
-
-    Scene mainMenuScene; //Where the user will start the app
-    Scene gameScene; //Where the user will enter or play Sudoku
-
+    Scene gameScene;
     BorderPane gameSceneLayout;
 
     /*
@@ -39,123 +27,16 @@ public class main extends Application {
      */
     int playingMode;
 
-    @Override
-    public void start(Stage primaryStage) {
-        initMainMenuScene();
-
-        //Main stage property
-        primaryStage.setTitle("Sudoku Game!");
-        primaryStage.setMinWidth(1000);
-        primaryStage.setMinHeight(700);
-        primaryStage.setScene(mainMenuScene);
-        primaryStage.show();
-    }
-    
-    private void initMainMenuScene() {
-        //Main menu layout
-        GridPane mainMenuLayout = new GridPane();
+    /**
+     * Initialize game play elements
+     *
+     * @param primaryStage
+     * @param playingMode
+     * @return gameScene
+     */
+    public Scene initialize(Stage primaryStage, int playingMode) {
+        this.playingMode = playingMode;
         
-        //Creating two columns
-        ColumnConstraints leftPart = new ColumnConstraints();
-        leftPart.setPercentWidth(35);
-        
-        ColumnConstraints rightPart = new ColumnConstraints();
-        rightPart.setPercentWidth(65);
-        
-        mainMenuLayout.getColumnConstraints().addAll(leftPart, rightPart);
-        
-        //Creating 100% height row
-        RowConstraints fullHeight = new RowConstraints();
-        fullHeight.setPercentHeight(100);
-        
-        mainMenuLayout.getRowConstraints().add(fullHeight);
-        
-        //Creating left part layout
-        BorderPane leftPartLayout = new BorderPane();
-        leftPartLayout.getStyleClass().add("left-part");
-        mainMenuLayout.setConstraints(leftPartLayout, 0, 0);
-        mainMenuLayout.getChildren().add(leftPartLayout);
-        
-        //Left part elements
-        Label logo = new Label();
-        logo.getStyleClass().add("logo");
-        leftPartLayout.setTop(logo);
-        leftPartLayout.setAlignment(logo, Pos.BOTTOM_CENTER);
-        leftPartLayout.setMargin(logo, new Insets(175, 0, 30, 0));
-        
-        Label logoText = new Label("Sudodu Game");
-        logoText.getStyleClass().add("logo-text");
-        leftPartLayout.setCenter(logoText);
-        leftPartLayout.setAlignment(logoText, Pos.TOP_CENTER);
-        
-        Label version = new Label("Version 0.0.1");
-        version.getStyleClass().add("version");
-        leftPartLayout.setBottom(version);
-        leftPartLayout.setAlignment(version, Pos.TOP_CENTER);
-        leftPartLayout.setMargin(version, new Insets(0, 0, 30, 0));
-        
-        leftPartLayout.getChildren().addAll();
-        
-        //Right part layout
-        GridPane rightPartLayout = new GridPane();
-        rightPartLayout.setAlignment(Pos.CENTER);
-        rightPartLayout.setPadding(new Insets(25));
-        mainMenuLayout.setConstraints(rightPartLayout, 1, 0);
-        mainMenuLayout.getChildren().add(rightPartLayout);
-        
-        //Creating custom rows
-        RowConstraints rowNo[] = new RowConstraints[6];
-        for (int counter = 0; counter < 6; counter++) {
-            rowNo[counter] = new RowConstraints();
-            
-            if (counter == 0)
-                rowNo[counter].setPercentHeight(20);
-            
-            rowNo[counter].setPercentHeight(13);
-            rightPartLayout.getRowConstraints().add(rowNo[counter]);
-        }
-        
-        //Creating right part elemens
-        Label welcomeText = new Label("Welcome, Muhammad Tarek");
-        welcomeText.getStyleClass().add("welcome-text");
-        rightPartLayout.setConstraints(welcomeText, 0, 0);
-        rightPartLayout.getChildren().add(welcomeText);
-        rightPartLayout.setHalignment(welcomeText, HPos.CENTER);
-        
-        Image newGameIcon = new Image(getClass().getResourceAsStream("/icons/new-game.png"));
-        ImageView newGameIconView = new ImageView(newGameIcon);
-        Button newGame = new Button("       New Game", newGameIconView);
-        initButtonStyle(newGame, rightPartLayout, 1, newGameIconView);
-        
-        Image loadGameIcon = new Image(getClass().getResourceAsStream("/icons/load-game.png"));
-        ImageView laodGameIconView = new ImageView(loadGameIcon);
-        Button loadGame = new Button("       Load last game", laodGameIconView);
-        initButtonStyle(loadGame, rightPartLayout, 2, laodGameIconView);
-        
-        Image checkSudokuIcon = new Image(getClass().getResourceAsStream("/icons/check-sudoku.png"));
-        ImageView checkSudokuIconView = new ImageView(checkSudokuIcon);
-        Button checkSudokuGame = new Button("       Check your Sudoku", checkSudokuIconView);
-        initButtonStyle(checkSudokuGame, rightPartLayout, 3, checkSudokuIconView);
-        
-        Image challengeComputerIcon = new Image(getClass().getResourceAsStream("/icons/challenge-computer.png"));
-        ImageView challengeComputerIconView = new ImageView(challengeComputerIcon);
-        Button challengeComputerGame = new Button("       Challenge computer", challengeComputerIconView);
-        initButtonStyle(challengeComputerGame, rightPartLayout, 4, challengeComputerIconView);
-        
-        Image exitIcon = new Image(getClass().getResourceAsStream("/icons/exit.png"));
-        ImageView exitIconView = new ImageView(exitIcon);
-        Button exit = new Button("       Exit", exitIconView);
-        initButtonStyle(exit, rightPartLayout, 5, exitIconView);
-        
-        mainMenuScene = new Scene(mainMenuLayout, 1000, 650);
-
-        //Connecting the stylesheet
-        mainMenuScene.getStylesheets().add("/stylesheets/mainMenuSceneStyle.css");
-    }
-
-    private void initGameScene() {
-        //TODO
-
         //Main layout
         gameSceneLayout = new BorderPane();
 
@@ -215,6 +96,8 @@ public class main extends Application {
 
         //Connecting the stylesheet
         gameScene.getStylesheets().add("/stylesheets/gameSceneStyle.css");
+
+        return gameScene;
     }
 
     private void initSudokuBlock() {
@@ -265,28 +148,6 @@ public class main extends Application {
         gameSceneLayout.setCenter(cardBg);
         gameSceneLayout.setAlignment(cardBg, Pos.CENTER);
         gameSceneLayout.getChildren().addAll();
-
-    }
-
-    private void backToHome() {
-        //TODO
-
-        /*
-         1. Save the current game only in playing mode
-         2. Show pop-up telling the user that the game is saved
-         3. Hide gameScene
-         4. Show mainMenuScene
-         5. Show loadSavedGame button in the mainMenuScene
-         */
-    }
-
-    private void saveCurrentGame() {
-        //TODO
-
-        /*
-         1. Read the Sudoku from the screen
-         2. Show pop-up telling the user that the game is saved
-         */
     }
 
     private void showPopup(String message, int alertType) {
@@ -331,7 +192,7 @@ public class main extends Application {
         showAlertAnimation.setFromValue(0);
         showAlertAnimation.setToValue(1);
         showAlertAnimation.play();
-        
+
         FadeTransition hideAlertAnimation = new FadeTransition(Duration.millis(1000), alertLayout);
         hideAlertAnimation.setFromValue(1);
         hideAlertAnimation.setToValue(0);
@@ -345,6 +206,15 @@ public class main extends Application {
                 }
         ));
         countDown.play();
+    }
+
+    private void saveCurrentGame() {
+        //TODO
+
+        /*
+         1. Read the Sudoku from the screen
+         2. Show pop-up telling the user that the game is saved
+         */
     }
 
     private void readSudoku() {
@@ -369,25 +239,15 @@ public class main extends Application {
          */
     }
     
-    /**
-     * Initialize button styles, icons sizes
-     * Muhammad Tarek
-     * @since 6, November
-     * @param button
-     * @param layout
-     * @param position
-     * @param icon 
-     */
-    private void initButtonStyle(Button button, GridPane layout, int position, ImageView icon) {
-        button.getStyleClass().add("icon-text-button");
-        icon.setFitHeight(24);
-        icon.setFitWidth(24);
-        layout.setConstraints(button, 0, position);
-        layout.setHalignment(button, HPos.CENTER);
-        layout.getChildren().add(button);
-    }
+    private void backToHome() {
+        //TODO
 
-    public static void main(String[] args) throws InterruptedException {
-        launch(args);
+        /*
+         1. Save the current game only in playing mode
+         2. Show pop-up telling the user that the game is saved
+         3. Hide gameScene
+         4. Show mainMenuScene
+         5. Show loadSavedGame button in the mainMenuScene
+         */
     }
 }
