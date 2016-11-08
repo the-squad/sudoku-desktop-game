@@ -1,42 +1,26 @@
 package UI;
 
-import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class gamePlay {
-
-    Scene gameScene;
     BorderPane gameSceneLayout;
+    private static TextField[][] sudokuCells = new TextField[9][9];;
 
-    /*
-     Playing mode controls what happens and shows on the gameScene
-     1. Checking Sudoku solution
-     2. Makes the computer solve the Sudoku
-     3. Solving a Sudoku from the computer
-     */
-    int playingMode;
 
     /**
      * Initialize game play elements
-     *
-     * @param primaryStage
-     * @param playingMode
-     * @return gameScene
+     * @return gamePlayLayout
      */
-    public Scene initialize(Stage primaryStage, int playingMode) {
-        this.playingMode = playingMode;
-        
+    public BorderPane initialize() {       
         //Main layout
         gameSceneLayout = new BorderPane();
 
@@ -60,14 +44,19 @@ public class gamePlay {
         Button back = new Button("");
         back.getStyleClass().add("iconButton");
         back.setId("backButton");
+        
+        back.setOnAction(e -> {
+            animation.switchPanes(main.windowLayout, gameSceneLayout, main.mainMenu, animation.toMenu);
+            clearSudoku();
+        });
 
         Button save = new Button("");
         save.getStyleClass().add("iconButton");
         save.setId("saveButton");
 
-        Button sumbit = new Button("Sumbit");
-        sumbit.getStyleClass().add("iconButton");
-        sumbit.setId("sumbitButton");
+        Button submit = new Button("Submit");
+        submit.getStyleClass().add("iconButton");
+        submit.setId("submitButton");
 
         //Setting position
         toolbarLayout.setLeft(back);
@@ -80,7 +69,7 @@ public class gamePlay {
         toolbarLayout.setCenter(headlineAndSaveLayout);
         headlineAndSaveLayout.setMargin(headline, new Insets(0, 0, 0, 80));
 
-        toolbarLayout.setRight(sumbit);
+        toolbarLayout.setRight(submit);
 
         //Adding everything into the layout
         toolbarLayout.getChildren().addAll();
@@ -92,14 +81,13 @@ public class gamePlay {
 
         //Adding the toolbar in the top of the window
         gameSceneLayout.setTop(toolbarLayout);
-        gameScene = new Scene(gameSceneLayout, 1000, 650);
-
-        //Connecting the stylesheet
-        gameScene.getStylesheets().add("/stylesheets/gameSceneStyle.css");
-
-        return gameScene;
+        
+        return gameSceneLayout;
     }
 
+    /**
+     * Create Sudoku cells
+     */
     private void initSudokuBlock() {
         //Sudoku card layout
         BorderPane cardBg = new BorderPane();
@@ -113,9 +101,6 @@ public class gamePlay {
         GridPane cellsLayout = new GridPane();
         cellsLayout.getStyleClass().add("cells-container");
         cardBg.setCenter(cellsLayout);
-
-        //Cells textfields
-        TextField[][] sudokuCells = new TextField[9][9];
 
         int rowCounter, columnCounter;
 
@@ -162,11 +147,7 @@ public class gamePlay {
         Label alertMessage = new Label(message);
         alertMessage.getStyleClass().add("alert-message");
 
-        if (alertType == 1) {
-            alertMessage.getStyleClass().add("alert-message-success");
-        } else {
-            alertMessage.getStyleClass().add("alert-message-danger");
-        }
+        alertMessage.getStyleClass().add(alertType == 1 ? "alert-message-success" : "alert-message-danger");
 
         alertLayout.setConstraints(alertMessage, 1, 0);
         alertLayout.setMargin(alertMessage, new Insets(10, 0, 0, 0));
@@ -174,13 +155,9 @@ public class gamePlay {
         //Alert icon
         Label alertIcon = new Label();
         alertIcon.getStyleClass().add("alert-icon");
-
-        if (alertType == 1) {
-            alertIcon.getStyleClass().add("alert-icon-success");
-        } else {
-            alertIcon.getStyleClass().add("alert-icon-danger");
-        }
-
+        
+        alertIcon.getStyleClass().add(alertType == 1 ? "alert-icon-success" : "alert-icon-danger");
+        
         alertLayout.setConstraints(alertIcon, 0, 0);
 
         //Adding the alert in gameScene
@@ -188,20 +165,14 @@ public class gamePlay {
         alertLayout.setAlignment(Pos.CENTER);
 
         //Fading animation
-        FadeTransition showAlertAnimation = new FadeTransition(Duration.millis(1000), alertLayout);
-        showAlertAnimation.setFromValue(0);
-        showAlertAnimation.setToValue(1);
-        showAlertAnimation.play();
+        animation.fade(alertLayout, 1000, 0, animation.fadeIn);
 
-        FadeTransition hideAlertAnimation = new FadeTransition(Duration.millis(1000), alertLayout);
-        hideAlertAnimation.setFromValue(1);
-        hideAlertAnimation.setToValue(0);
 
         //Auto hide the alert
         Timeline countDown = new Timeline(new KeyFrame(
                 Duration.millis(3000),
                 ae -> {
-                    hideAlertAnimation.play();
+                    animation.fade(alertLayout, 1000, 0, 1);
                     gameSceneLayout.setBottom(null);
                 }
         ));
@@ -218,25 +189,31 @@ public class gamePlay {
     }
 
     private void readSudoku() {
-        //TODO
-
-        /*
-         Will scan all the 9x9 cells and save them into userSudoku;
-         */
+        for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
+            for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
+                sudokuCells[rowCounter][columnCounter].getText();
+            }
+        }
     }
 
-    private void printSudoku(int type) {
-        //TODO
-
-        /*
-         Will print all the new/solved/checked Sudok puzzle
+    public static void printSudoku() {
+        for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
+            for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
+                sudokuCells[rowCounter][columnCounter].setText(main.computerSolution[rowCounter][columnCounter]+"");
+            }
+        }
+    }
+    
+    private void clearSudoku() {
+        for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
+            for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
+                sudokuCells[rowCounter][columnCounter].setText("");
+            }
+        }
+    }
+    
+    private void markSudoku() {
         
-         Type:
-         1. When the Sudoku is solved by the computer, all cells will be
-         locked, and the new numbers will be colored in green
-         2. When the Sudoku is checked, only the false values will be 
-         etidable and colored in red
-         */
     }
     
     private void backToHome() {

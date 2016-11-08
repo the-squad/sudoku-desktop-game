@@ -49,7 +49,7 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.03, 0.0, 1.0);
     -fx-background-radius: 4;
     -fx-alignment: left;
-     -fx-font-family: "Lato";
+    -fx-font-family: "Lato";
     -fx-font-size: 16;
     -fx-font-weight: 700;
     -fx-text-fill: rgba(41,47,51, 0.9);
