@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 public class sudoku {
     protected static Integer[][] sudoku;
+    protected static Integer[][] solvedSudoku;
     protected static Boolean[][] sudokuWrongCells;
     /**
      * Time when solveSudoku() is called.
@@ -27,14 +28,23 @@ public class sudoku {
     public Integer[][] getSudoku() {
         return sudoku;
     }
+    
+    /**
+     * Get Sudoku solved by solveSudoku()
+     * @return Sudoku solution.
+     */
+    public Integer[][] getSudokuSolution() {
+        return solvedSudoku;
+    }
 
     public void setSudoku(Integer[][] sudoku) {
+        solvedSudoku = sudoku.clone();
         this.sudoku = sudoku;
     }
     
     /**
      * This method will solve the Sudoku user have entered.
-     *
+     * To retreve solution, call getSudokuSolution()
      * @since 3/11/2016
      * @return ture if solution exist, otherwise false.
      */
@@ -61,12 +71,12 @@ public class sudoku {
         // Next cell number
         int nextCellNum = x*9 + y + 1;
         // If cell is empty.
-        if (sudoku[x][y] == 0) {
+        if (solvedSudoku[x][y] == 0) {
             // Try numbers from 1 to 9.
             for (int PossibleNumber = 1; PossibleNumber < 10; PossibleNumber++) {
                 if (uniqueNumber(PossibleNumber, x, y, sudokuList)) {
                     // If the number is unique.
-                    sudoku[x][y] = PossibleNumber;
+                    solvedSudoku[x][y] = PossibleNumber;
                     sudokuList.get(x).set(y, PossibleNumber);
                     if ((x == 8 && y == 8) || solveSudoku(nextCellNum/9, nextCellNum % 9, sudokuList)) {
                         // If this is the last cell or the next cell returned true.
@@ -75,7 +85,7 @@ public class sudoku {
                 }
             }
             // if there is no avilable number, sets current cell to zero and return to the previous cell.
-            sudoku[x][y] = 0;
+            solvedSudoku[x][y] = 0;
             sudokuList.get(x).set(y, 0);
             return false;
         } else {
@@ -111,5 +121,22 @@ public class sudoku {
             }
         }
         return true;
+    }
+    
+    /**
+     * Fill empty cell with it's correct number.
+     * @return Integer array with the following format {x, y, value}
+     */
+    public int [] hint(){
+        solveSudoku();
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if(sudoku[i][j] == 0){
+                    sudoku[i][j] = solvedSudoku[i][j];
+                    return new int[]{i, j, solvedSudoku[i][j]};
+                }
+            }
+        }
+        return null;
     }
 }
