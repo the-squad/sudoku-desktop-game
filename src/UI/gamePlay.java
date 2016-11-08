@@ -255,7 +255,7 @@ public class gamePlay {
         if (isSudoku) {
             for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
                 for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
-                    sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-danger");
+                    sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
                 }
             }
         }
