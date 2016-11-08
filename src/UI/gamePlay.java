@@ -10,17 +10,25 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
+import static UI.main.userSudoku;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import sudoku.checker;
+import sudoku.sudoku;
 
 public class gamePlay {
+
     BorderPane gameSceneLayout;
-    private static TextField[][] sudokuCells = new TextField[9][9];;
+    private static TextField[][] sudokuCells = new TextField[9][9];
+
+    ;
 
 
     /**
      * Initialize game play elements
      * @return gamePlayLayout
      */
-    public BorderPane initialize() {       
+    public BorderPane initialize() {
         //Main layout
         gameSceneLayout = new BorderPane();
 
@@ -40,39 +48,33 @@ public class gamePlay {
 
         headline.setMaxWidth(Double.MAX_VALUE);
         headline.setAlignment(Pos.CENTER);
-
-        Button back = new Button("");
-        back.getStyleClass().add("iconButton");
-        back.setId("backButton");
-        
-        back.setOnAction(e -> {
-            animation.switchPanes(main.windowLayout, gameSceneLayout, main.mainMenu);
-            clearSudoku();
-        });
-
-        Button saveButton = new Button("");
-        saveButton.getStyleClass().add("iconButton");
-        saveButton.setId("saveButtonButton");
-
-        Button submitButton = new Button("Submit");
-        submitButton.getStyleClass().add("iconButton");
-        submitButton.setId("submitButtonButton");
-
-        //Setting position
-        toolbarLayout.setLeft(back);
-
-        headlineAndSaveLayout.setRight(saveButton);
-        headlineAndSaveLayout.setMargin(saveButton, new Insets(0, 15, 0, 0));
-
         headlineAndSaveLayout.setCenter(headline);
         headlineAndSaveLayout.setAlignment(headline, Pos.TOP_CENTER);
         toolbarLayout.setCenter(headlineAndSaveLayout);
         headlineAndSaveLayout.setMargin(headline, new Insets(0, 0, 0, 80));
 
-        toolbarLayout.setRight(submitButton);
+        //Back Button
+        Button backButton = new Button("");
+        backButton.getStyleClass().add("iconButton");
+        backButton.setId("backButton");
+        toolbarLayout.setLeft(backButton);
 
-        //Adding everything into the layout
-        toolbarLayout.getChildren().addAll();
+        backButton.setOnAction(e -> {
+            animation.switchPanes(main.windowLayout, gameSceneLayout, main.mainMenu);
+            clearSudoku();
+        });
+
+        //Save Button
+        Button saveButton = new Button("");
+        saveButton.getStyleClass().add("iconButton");
+        saveButton.setId("saveButton");
+        headlineAndSaveLayout.setRight(saveButton);
+        headlineAndSaveLayout.setMargin(saveButton, new Insets(0, 15, 0, 0));
+
+        Button submitButton = new Button("Submit");
+        submitButton.getStyleClass().add("iconButton");
+        submitButton.setId("submitButton");
+        toolbarLayout.setRight(submitButton);
 
         initSudokuBlock();
         saveButton.setOnAction(e -> {
@@ -81,7 +83,16 @@ public class gamePlay {
 
         //Adding the toolbar in the top of the window
         gameSceneLayout.setTop(toolbarLayout);
-        
+
+        submitButton.setOnAction((event) -> {
+            try {
+                readSudoku();
+                checkSudoku();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(gamePlay.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        });
+
         return gameSceneLayout;
     }
 
@@ -155,9 +166,9 @@ public class gamePlay {
         //Alert icon
         Label alertIcon = new Label();
         alertIcon.getStyleClass().add("alert-icon");
-        
+
         alertIcon.getStyleClass().add(alertType == 1 ? "alert-icon-success" : "alert-icon-danger");
-        
+
         alertLayout.setConstraints(alertIcon, 0, 0);
 
         //Adding the alert in gameScene
@@ -166,7 +177,6 @@ public class gamePlay {
 
         //Fading animation
         animation.fade(alertLayout, 1000, 0, animation.FADE_IN);
-
 
         //Auto hide the alert
         Timeline countDown = new Timeline(new KeyFrame(
@@ -199,32 +209,49 @@ public class gamePlay {
     public static void printSudoku() {
         for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
             for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
-                sudokuCells[rowCounter][columnCounter].setText(main.computerSolution[rowCounter][columnCounter]+"");
+                if (main.computerSolution[rowCounter][columnCounter] != 0) {
+                    sudokuCells[rowCounter][columnCounter].setText(main.computerSolution[rowCounter][columnCounter] + "");
+                    sudokuCells[rowCounter][columnCounter].setDisable(true);
+                }
             }
         }
     }
-    
+
     private void clearSudoku() {
         for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
             for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
                 sudokuCells[rowCounter][columnCounter].setText("");
+                sudokuCells[rowCounter][columnCounter].setDisable(false);
+                sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-danger");
+                sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-success");
             }
         }
     }
-    
-    private void markSudoku() {
-        
-    }
-    
-    private void backToHome() {
-        //TODO
 
-        /*
-         1. Save the current game only in playing mode
-         2. Show pop-up telling the user that the game is saveButtond
-         3. Hide gameScene
-         4. Show mainMenuScene
-         5. Show loadSavedGame button in the mainMenuScene
-         */
+    private void checkSudoku() throws InterruptedException {
+        sudoku Sudoku = new sudoku();
+        Sudoku.setSudoku(userSudoku);
+
+        Sudoku.initSudokuWrongCells();
+
+        if (main.playingMode != 4) {
+            checker Checker = new checker();
+
+            Checker.check();
+            main.markSolution = Sudoku.getsudokuWrongCells();
+        }
+
+        Boolean flag = false;
+        
+        for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
+            for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
+                if (main.markSolution[rowCounter][columnCounter]) {
+                    sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-danger");
+                    flag = true;
+                }
+                if (flag == false)
+                    sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
+            }
+        }
     }
 }
