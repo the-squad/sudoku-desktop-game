@@ -10,24 +10,20 @@ import javafx.util.Duration;
 
 public class animation {
 
-    public static final int fadeIn = 1;
-    public static final int fadeOut = 2;
-
-    public static final int toGamePlay = 1;
-    public static final int toMenu = 2;
+    public static final int FADE_IN = 1;
+    public static final int FADE_OUT = 2;
 
     /**
      *
      * @param parent
-     * @param borderChild
-     * @param gridChild
-     * @param toScreen
+     * @param fromChild
+     * @param toChild
      */
-    public static void switchPanes(BorderPane parent, BorderPane borderChild, GridPane gridChild, int toScreen) {
-        fade((toScreen == 1 ? gridChild : borderChild), 350, 0, fadeOut);
+    public static void switchPanes(BorderPane parent, Object fromChild, Object toChild) {
+        fade(fromChild, 350, 0, FADE_OUT);
         parent.setCenter(null);
-        parent.setCenter((toScreen == 1 ? borderChild : gridChild));
-        fade((toScreen == 1 ? borderChild : gridChild), 350, 0, fadeIn);
+        parent.setCenter((Node)toChild);
+        fade(toChild, 350, 0, FADE_IN);
 
     }
 

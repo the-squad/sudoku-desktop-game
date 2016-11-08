@@ -46,7 +46,7 @@ public class gamePlay {
         back.setId("backButton");
         
         back.setOnAction(e -> {
-            animation.switchPanes(main.windowLayout, gameSceneLayout, main.mainMenu, animation.toMenu);
+            animation.switchPanes(main.windowLayout, gameSceneLayout, main.mainMenu);
             clearSudoku();
         });
 
@@ -165,7 +165,7 @@ public class gamePlay {
         alertLayout.setAlignment(Pos.CENTER);
 
         //Fading animation
-        animation.fade(alertLayout, 1000, 0, animation.fadeIn);
+        animation.fade(alertLayout, 1000, 0, animation.FADE_IN);
 
 
         //Auto hide the alert

@@ -56,3 +56,14 @@
     -fx-padding: 0 0 0 20;
     -fx-cursor: hand;
 }
+
+#backButtonDark {
+    -fx-background-image: url("../icons/go-back-left-arrow.png");
+    -fx-max-height: 25;
+    -fx-max-width: 25;
+    -fx-background-size: 20px;
+}
+
+#backButtonDark:hover {
+    -fx-background-color: rgba(41,47,51, 0.1);
+}
