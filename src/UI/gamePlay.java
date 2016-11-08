@@ -241,16 +241,22 @@ public class gamePlay {
             main.markSolution = Sudoku.getsudokuWrongCells();
         }
 
-        Boolean flag = false;
-        
+        Boolean isSudoku = true;
+
         for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
             for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
                 if (main.markSolution[rowCounter][columnCounter]) {
                     sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-danger");
-                    flag = true;
+                    isSudoku = false;
                 }
-                if (flag == false)
-                    sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
+            }
+        }
+
+        if (isSudoku) {
+            for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
+                for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
+                    sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-danger");
+                }
             }
         }
     }
