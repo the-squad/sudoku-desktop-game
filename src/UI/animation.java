@@ -1,11 +1,8 @@
 package UI;
 
-import java.util.Timer;
 import javafx.animation.FadeTransition;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 
 public class animation {
