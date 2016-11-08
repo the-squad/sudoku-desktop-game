@@ -31,7 +31,7 @@ public class gamePlay {
         toolbarLayout.setPrefHeight(75);
         toolbarLayout.setPrefWidth(1000);
 
-        //Headline + save button layout
+        //Headline + saveButton button layout
         BorderPane headlineAndSaveLayout = new BorderPane();
 
         //Toolbar objects
@@ -46,37 +46,37 @@ public class gamePlay {
         back.setId("backButton");
         
         back.setOnAction(e -> {
-            animation.switchPanes(main.windowLayout, gameSceneLayout, main.mainMenu, animation.toMenu);
+            animation.switchPanes(main.windowLayout, gameSceneLayout, main.mainMenu);
             clearSudoku();
         });
 
-        Button save = new Button("");
-        save.getStyleClass().add("iconButton");
-        save.setId("saveButton");
+        Button saveButton = new Button("");
+        saveButton.getStyleClass().add("iconButton");
+        saveButton.setId("saveButtonButton");
 
-        Button submit = new Button("Submit");
-        submit.getStyleClass().add("iconButton");
-        submit.setId("submitButton");
+        Button submitButton = new Button("Submit");
+        submitButton.getStyleClass().add("iconButton");
+        submitButton.setId("submitButtonButton");
 
         //Setting position
         toolbarLayout.setLeft(back);
 
-        headlineAndSaveLayout.setRight(save);
-        headlineAndSaveLayout.setMargin(save, new Insets(0, 15, 0, 0));
+        headlineAndSaveLayout.setRight(saveButton);
+        headlineAndSaveLayout.setMargin(saveButton, new Insets(0, 15, 0, 0));
 
         headlineAndSaveLayout.setCenter(headline);
         headlineAndSaveLayout.setAlignment(headline, Pos.TOP_CENTER);
         toolbarLayout.setCenter(headlineAndSaveLayout);
         headlineAndSaveLayout.setMargin(headline, new Insets(0, 0, 0, 80));
 
-        toolbarLayout.setRight(submit);
+        toolbarLayout.setRight(submitButton);
 
         //Adding everything into the layout
         toolbarLayout.getChildren().addAll();
 
         initSudokuBlock();
-        save.setOnAction(e -> {
-            showPopup("Game is saved successfuly", 1);
+        saveButton.setOnAction(e -> {
+            showPopup("Game is saveButtond successfuly", 1);
         });
 
         //Adding the toolbar in the top of the window
@@ -165,7 +165,7 @@ public class gamePlay {
         alertLayout.setAlignment(Pos.CENTER);
 
         //Fading animation
-        animation.fade(alertLayout, 1000, 0, animation.fadeIn);
+        animation.fade(alertLayout, 1000, 0, animation.FADE_IN);
 
 
         //Auto hide the alert
@@ -179,12 +179,12 @@ public class gamePlay {
         countDown.play();
     }
 
-    private void saveCurrentGame() {
+    private void saveButtonCurrentGame() {
         //TODO
 
         /*
          1. Read the Sudoku from the screen
-         2. Show pop-up telling the user that the game is saved
+         2. Show pop-up telling the user that the game is saveButtond
          */
     }
 
@@ -221,7 +221,7 @@ public class gamePlay {
 
         /*
          1. Save the current game only in playing mode
-         2. Show pop-up telling the user that the game is saved
+         2. Show pop-up telling the user that the game is saveButtond
          3. Hide gameScene
          4. Show mainMenuScene
          5. Show loadSavedGame button in the mainMenuScene

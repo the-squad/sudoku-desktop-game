@@ -35,11 +35,12 @@
 /*
     Right part
 */
-.welcome-text {
+.headline-text {
     -fx-font-family: "Lato";
-    -fx-font-size: 30;
+    -fx-font-size: 24;
     -fx-alignment: center;
     -fx-text-fill: rgba(41,47,51, 0.8);
+    -fx-font-wieght: 500;
 }
 
 .icon-text-button {
@@ -55,4 +56,105 @@
     -fx-text-fill: rgba(41,47,51, 0.9);
     -fx-padding: 0 0 0 20;
     -fx-cursor: hand;
+}
+
+#backButtonDark {
+    -fx-background-image: url("../icons/go-back-left-arrow.png");
+    -fx-max-height: 25;
+    -fx-max-width: 25;
+    -fx-background-size: 20px;
+}
+
+#backButtonDark:hover {
+    -fx-background-color: rgba(41,47,51, 0.1);
+}
+/*
+    Scrollbar
+*/
+.scroll-pane,
+.scroll-pane:focused,
+.scroll-pane > .viewport {
+    -fx-background-insets: #eee;
+    -fx-background-color: #eee;
+}
+
+.scroll-pane .corner {
+    visibility: false;
+}
+
+.scroll-bar:vertical .track-background {
+    -fx-background-color: #eee;
+    -fx-background-insets: 0;
+    -fx-background-radius: 2em;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(41,47,51, 0.5);
+    -fx-background-insets: 0 4 0 4;
+    -fx-background-radius: 2em;
+    -fx-min-width: 8;
+    -fx-cursor: hand;
+}
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: rgba(41,47,51, 0.7);
+}
+
+.scroll-bar:vertical .thumb:pressed {
+    -fx-background-color: rgba(41,47,51, 0.7);
+}
+.scroll-bar:vertical .increment-button, .scroll-bar:vertical .decrement-button {
+    visibility: false;
+}
+
+.scroll-bar:vertical .increment-arrow {
+    visibility: false;
+}
+
+.scroll-bar:vertical .decrement-arrow {
+    visibility: false;
+}
+
+
+/*
+    Games block
+*/
+.game-block {
+    -fx-background-color: #fff;
+    -fx-min-width: 300;
+    -fx-min-height: 70;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.03, 0.0, 1.0);
+    -fx-background-radius: 4;
+    -fx-alignment: left;
+    -fx-font-family: "Lato";
+    
+    -fx-padding: 15;
+}
+
+.game-title {
+    -fx-font-size: 18;
+    -fx-font-weight: 700;
+    -fx-text-fill: rgba(41,47,51, 0.9);
+}
+
+.game-level,
+.game-timer {
+    -fx-font-size: 16;
+    -fx-font-weight: 600;
+    -fx-text-fill: rgba(41,47,51, 0.6);
+}
+
+.delete-button {
+    -fx-background-image: url("../icons/delete.png");
+    -fx-min-height: 35;
+    -fx-min-width: 35;
+    -fx-background-size: 25px;
+    -fx-background-color: transparent;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-border-radius: 4;
+    -fx-cursor: hand;
+}
+
+.delete-button:hover {
+    -fx-background-color: rgba(41,47,51, 0.1);
 }

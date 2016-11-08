@@ -5,14 +5,13 @@ import static javafx.application.Application.launch;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-
 import javafx.stage.Stage;
 
 public class main extends Application {
     static BorderPane windowLayout;
     static BorderPane gamePlay;
     static GridPane mainMenu;
- 
+    
     static Integer[][] userSudoku = new Integer[9][9]; //Reads the Sudoku from the user
     static Integer[][] computerSolution = new Integer[9][9]; //Where computer returns the wrong cells
     static Boolean[][] markSolution = new Boolean[9][9]; //Where computer returns the wrong cells
@@ -21,7 +20,7 @@ public class main extends Application {
     
     @Override
     public void start(Stage primaryStage) {
-         for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 computerSolution[i][j] = i;
             }
