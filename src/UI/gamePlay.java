@@ -165,14 +165,14 @@ public class gamePlay {
         alertLayout.setAlignment(Pos.CENTER);
 
         //Fading animation
-        animation.fade(alertLayout, 1000, 200, animation.fadeIn);
+        animation.fade(alertLayout, 1000, 0, animation.fadeIn);
 
 
         //Auto hide the alert
         Timeline countDown = new Timeline(new KeyFrame(
                 Duration.millis(3000),
                 ae -> {
-                    animation.fade(alertLayout, 1000, 200, 1);
+                    animation.fade(alertLayout, 1000, 0, 1);
                     gameSceneLayout.setBottom(null);
                 }
         ));

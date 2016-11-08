@@ -34,7 +34,9 @@ public class animation {
     public static void fade(Object node, int duration, int delay, int fadeType) {
         FadeTransition fadeAnimation = new FadeTransition(Duration.millis(1000), (Node) node);
 
-        fadeAnimation.setDelay(Duration.millis(delay));
+        if (delay != 0)
+            fadeAnimation.setDelay(Duration.millis(delay));
+        
         fadeAnimation.setFromValue(fadeType == 1 ? 0 : 1);
         fadeAnimation.setToValue(fadeType == 1 ? 1 : 0);
      
