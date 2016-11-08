@@ -39,7 +39,7 @@
     -fx-background-image: url("../icons/ic_save_white_48dp_1x.png");
 }
 
-#sumbitButton {
+#submitButton {
     -fx-font-family: "Lato";
     -fx-text-fill: #fff;
     -fx-font-size: 12pt;
