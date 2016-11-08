@@ -126,7 +126,7 @@
     -fx-background-radius: 4;
     -fx-alignment: left;
     -fx-font-family: "Lato";
-    
+
     -fx-padding: 15;
 }
 
@@ -134,13 +134,21 @@
     -fx-font-size: 18;
     -fx-font-weight: 700;
     -fx-text-fill: rgba(41,47,51, 0.9);
+    -fx-cursor: hand;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
 }
 
 .game-level,
-.game-timer {
+.game-time {
     -fx-font-size: 16;
     -fx-font-weight: 600;
     -fx-text-fill: rgba(41,47,51, 0.6);
+    
+}
+
+.game-title:hover {
+    -fx-underline: true;
 }
 
 .delete-button {

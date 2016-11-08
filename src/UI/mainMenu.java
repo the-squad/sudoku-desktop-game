@@ -1,5 +1,12 @@
 package UI;
 
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -81,7 +88,6 @@ public class mainMenu {
         //Initalize modes
         initializeGameModes();
         initializeLevelsMenu();
-        initializeSavedGames();
         rightPartLayout.setCenter(gameModesLayout);
 
         return mainMenuLayout;
@@ -117,6 +123,7 @@ public class mainMenu {
         initButtonStyle(loadGameButton, gameModesLayout, 1, laodGameIconView);
 
         loadGameButton.setOnAction(e -> {
+            initializeSavedGames();
             animation.switchPanes(rightPartLayout, gameModesLayout, savedGamesLayout);
             main.playingMode = 2;
         });
@@ -199,6 +206,16 @@ public class mainMenu {
 
         easyButton.setOnAction(e -> {
             animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
+
+            ArrayList<String> sudokuGame = null;
+            try {
+                sudokuGame = main.database.Select("Easy", 0);
+            } catch (SQLException ex) {
+                Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            splitSudoku(sudokuGame.get(0));
+            gamePlay.printSudoku();
         });
 
         Button mediumButton = new Button("Medium");
@@ -206,6 +223,16 @@ public class mainMenu {
 
         mediumButton.setOnAction(e -> {
             animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
+            
+            ArrayList<String> sudokuGame = null;
+            try {
+                sudokuGame = main.database.Select("Medium", 0);
+            } catch (SQLException ex) {
+                Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            splitSudoku(sudokuGame.get(0));
+            gamePlay.printSudoku();
         });
 
         Button hardButton = new Button("Hard");
@@ -213,11 +240,29 @@ public class mainMenu {
 
         hardButton.setOnAction(e -> {
             animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
+            
+            ArrayList<String> sudokuGame = null;
+            try {
+                sudokuGame = main.database.Select("Hard", 0);
+            } catch (SQLException ex) {
+                Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            splitSudoku(sudokuGame.get(0));
+            gamePlay.printSudoku();
         });
     }
 
-    private void initializeSavedGames() {
-        int gamesNumber = 20;
+    public void initializeSavedGames() {
+        ArrayList<String> savedGames = null;
+
+        try {
+            savedGames = main.database.Select(null, 1);
+        } catch (SQLException ex) {
+            Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        int gamesNumber = savedGames.size();
 
         savedGamesLayout = new GridPane();
         savedGamesLayout.setAlignment(Pos.CENTER);
@@ -245,7 +290,10 @@ public class mainMenu {
         backArrowAndText.setAlignment(back, Pos.CENTER);
         backArrowAndText.setMargin(back, new Insets(0, -170, 0, -10));
 
-        back.setOnAction(e -> animation.switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout));
+        back.setOnAction(e -> {
+            animation.switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);
+            savedGamesLayout.getChildren().clear();
+        });
 
         //Headline
         Label headlineText = new Label("Choose a game");
@@ -271,9 +319,11 @@ public class mainMenu {
         GridPane gameBlock[] = new GridPane[gamesNumber];
 
         for (int counter = 0; counter < gamesNumber; counter++) {
+            String[] data = savedGames.get(counter).split(",");
+
             gameBlock[counter] = new GridPane();
             gameBlock[counter].getStyleClass().add("game-block");
-            gameBlock[counter].setId("#" + counter); //Change to game ID
+            gameBlock[counter].setId("#" + data[0]); //Change to game ID
 
             //Container
             BorderPane gameBlockLayout = new BorderPane();
@@ -295,34 +345,60 @@ public class mainMenu {
             detailsLayout.getRowConstraints().add(secondRow);
 
             //Game title
-            Label gameTitle = new Label("25-5-2016"); //Change to game titles
+            Button gameTitle = new Button(data[4]);
             gameTitle.getStyleClass().add("game-title");
             detailsLayout.setConstraints(gameTitle, 0, 0);
             detailsLayout.getChildren().add(gameTitle);
 
             //Game level
-            Label gameLevel = new Label("Easy"); //Change to game level
+            Label gameLevel = new Label(data[3]);
             gameLevel.getStyleClass().add("game-level");
             detailsLayout.setConstraints(gameLevel, 0, 1);
             detailsLayout.getChildren().add(gameLevel);
             detailsLayout.setValignment(gameLevel, VPos.BOTTOM);
 
+            //Formating the time
+            String time = data[2];
+            SimpleDateFormat sdf = new SimpleDateFormat("ss");
+            Date dateObj = null;
+            try {
+                dateObj = sdf.parse(time);
+            } catch (ParseException ex) {
+                Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
             //Game timer
-            Label gameTimer = new Label("3:25"); //Change to game time
+            Label gameTimer = new Label(dateObj.getMinutes() + ":" + dateObj.getSeconds());
             gameTimer.getStyleClass().add("game-time");
-            detailsLayout.setConstraints(gameTimer, 1, 1);
+            detailsLayout.setConstraints(gameTimer, 0, 1);
             detailsLayout.getChildren().add(gameTimer);
             detailsLayout.setValignment(gameTimer, VPos.BOTTOM);
+            detailsLayout.setMargin(gameTimer, new Insets(0, 0, 0, 70));
 
             //Delete game button
-            Button deleteGame = new Button();
-            deleteGame.getStyleClass().add("delete-button");
-            gameBlockLayout.setRight(deleteGame);
-            gameBlockLayout.setMargin(deleteGame, new Insets(3, 0, 0, 0));
+            Button deleteButton = new Button();
+            deleteButton.getStyleClass().add("delete-button");
+            gameBlockLayout.setRight(deleteButton);
+            gameBlockLayout.setMargin(deleteButton, new Insets(3, 0, 0, 0));
 
             //Adding blocks to the container
             gamesContainer.setConstraints(gameBlock[counter], 0, counter);
             gamesContainer.getChildren().add(gameBlock[counter]);
+
+            //Switching scenes and printing the Sudoku
+            gameTitle.setOnAction(e -> {
+                main.sudokuId = data[0];
+                splitSudoku(data[1]);
+                gamePlay.printSudoku();
+                animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
+                savedGamesLayout.getChildren().clear();
+                animation.switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);
+            });
+
+            //Deleting the game
+            deleteButton.setOnAction(e -> {
+                //TODO
+            });
         }
     }
 
@@ -349,5 +425,20 @@ public class mainMenu {
         layout.setHalignment(button, HPos.CENTER);
         layout.setValignment(button, VPos.CENTER);
         layout.getChildren().add(button);
+    }
+
+    /**
+     *
+     * @param Sudoku
+     */
+    private void splitSudoku(String Sudoku) {
+        int charptr = 0;
+
+        for (int row = 0; row < 9; row++) {
+            for (int column = 0; column < 9; column++) {
+                main.computerSolution[row][column] = Integer.parseInt(Sudoku.charAt(charptr) + "");
+                charptr++;
+            }
+        }
     }
 }
