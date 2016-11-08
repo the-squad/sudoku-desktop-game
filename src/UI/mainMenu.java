@@ -13,7 +13,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import javafx.stage.Stage;
 
 public class mainMenu {
 
@@ -65,7 +64,7 @@ public class mainMenu {
         leftPartLayout.setCenter(logoText);
         leftPartLayout.setAlignment(logoText, Pos.TOP_CENTER);
 
-        Label version = new Label("Version 0.0.1");
+        Label version = new Label("Version 0.1");
         version.getStyleClass().add("version");
         leftPartLayout.setBottom(version);
         leftPartLayout.setAlignment(version, Pos.TOP_CENTER);
@@ -100,14 +99,7 @@ public class mainMenu {
             gameModesLayout.getRowConstraints().add(rowNo[counter]);
         }
 
-        //Creating right part elemens
-        /*
-        Label headlineText = new Label("Welcome, Muhammad Tarek");
-        headlineText.getStyleClass().add("welcome-text");
-        gameModesLayout.setConstraints(headlineText, 0, 0);
-        gameModesLayout.getChildren().add(headlineText);
-        gameModesLayout.setHalignment(headlineText, HPos.CENTER);
-         */
+        //New Game Button
         Image newGameButtonIcon = new Image(getClass().getResourceAsStream("/icons/new-game.png"));
         ImageView newGameButtonIconView = new ImageView(newGameButtonIcon);
         Button newGameButton = new Button("       New Game", newGameButtonIconView);
@@ -118,6 +110,7 @@ public class mainMenu {
             main.playingMode = 1;
         });
 
+        //Load Game Button
         Image loadGameButtonIcon = new Image(getClass().getResourceAsStream("/icons/load-game.png"));
         ImageView laodGameIconView = new ImageView(loadGameButtonIcon);
         Button loadGameButton = new Button("       Load last game", laodGameIconView);
@@ -128,6 +121,7 @@ public class mainMenu {
             main.playingMode = 2;
         });
 
+        //Check Sudoku Button
         Image checkSudokuIcon = new Image(getClass().getResourceAsStream("/icons/check-sudoku.png"));
         ImageView checkSudokuIconView = new ImageView(checkSudokuIcon);
         Button checkSudokuButton = new Button("       Check your Sudoku", checkSudokuIconView);
@@ -138,6 +132,7 @@ public class mainMenu {
             main.playingMode = 3;
         });
 
+        //Challange Computer Button
         Image challengeComputerIcon = new Image(getClass().getResourceAsStream("/icons/challenge-computer.png"));
         ImageView challengeComputerIconView = new ImageView(challengeComputerIcon);
         Button challangeComputerButton = new Button("       Challenge computer", challengeComputerIconView);
@@ -148,6 +143,7 @@ public class mainMenu {
             main.playingMode = 4;
         });
 
+        //Exit Button
         Image exitButtonIcon = new Image(getClass().getResourceAsStream("/icons/exit.png"));
         ImageView exitButtonIconView = new ImageView(exitButtonIcon);
         Button exitButton = new Button("       Exit", exitButtonIconView);
@@ -181,7 +177,7 @@ public class mainMenu {
         levelsLayout.getChildren().add(backArrowAndText);
         levelsLayout.setHalignment(backArrowAndText, HPos.CENTER);
 
-        //Creating elemens
+        //Back Button
         Button back = new Button("");
         back.getStyleClass().add("iconButton");
         back.setId("backButtonDark");
@@ -191,11 +187,13 @@ public class mainMenu {
 
         back.setOnAction(e -> animation.switchPanes(rightPartLayout, levelsLayout, gameModesLayout));
 
+        //Headline
         Label headlineText = new Label("Choose game level");
         headlineText.getStyleClass().add("headline-text");
         backArrowAndText.setCenter(headlineText);
         backArrowAndText.setAlignment(headlineText, Pos.CENTER);
 
+        //Level buttons
         Button easyButton = new Button("Easy");
         initButtonStyle(easyButton, levelsLayout, 1, null);
 
@@ -220,15 +218,15 @@ public class mainMenu {
 
     private void initializeSavedGames() {
         int gamesNumber = 20;
-        
+
         savedGamesLayout = new GridPane();
         savedGamesLayout.setAlignment(Pos.CENTER);
-        
+
         //Creating custom rows
         RowConstraints headlineRow = new RowConstraints();
         headlineRow.setPercentHeight(20);
         savedGamesLayout.getRowConstraints().add(headlineRow);
-        
+
         RowConstraints gamesRow = new RowConstraints();
         gamesRow.setPercentHeight(65);
         savedGamesLayout.getRowConstraints().add(gamesRow);
@@ -249,68 +247,80 @@ public class mainMenu {
 
         back.setOnAction(e -> animation.switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout));
 
+        //Headline
         Label headlineText = new Label("Choose a game");
         headlineText.getStyleClass().add("headline-text");
         backArrowAndText.setCenter(headlineText);
         backArrowAndText.setAlignment(headlineText, Pos.CENTER);
-       
+
+        //Container
         GridPane gamesContainer = new GridPane();
         gamesContainer.setVgap(20);
-        
+
+        //Scrollbar
         ScrollPane scrollPane = new ScrollPane(gamesContainer);
         scrollPane.getStyleClass().add("scroll-panel");
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setMinWidth(360);
-        savedGamesLayout.setMargin(scrollPane, new Insets(0,0,0,60));
-        
+        savedGamesLayout.setMargin(scrollPane, new Insets(0, 0, 0, 60));
+
         savedGamesLayout.setConstraints(scrollPane, 0, 1);
         savedGamesLayout.getChildren().add(scrollPane);
-        
+
+        //Game blocks
         GridPane gameBlock[] = new GridPane[gamesNumber];
-        
+
         for (int counter = 0; counter < gamesNumber; counter++) {
             gameBlock[counter] = new GridPane();
             gameBlock[counter].getStyleClass().add("game-block");
             gameBlock[counter].setId("#" + counter); //Change to game ID
-            
+
+            //Container
             BorderPane gameBlockLayout = new BorderPane();
             gameBlock[counter].setConstraints(gameBlockLayout, 0, 0);
             gameBlock[counter].getChildren().add(gameBlockLayout);
-            
+
+            //Details container
             GridPane detailsLayout = new GridPane();
             gameBlockLayout.setLeft(detailsLayout);
-            gameBlockLayout.setMargin(detailsLayout, new Insets(0,130,0,0));
-            
+            gameBlockLayout.setMargin(detailsLayout, new Insets(0, 130, 0, 0));
+
+            //Custom row constraints
             RowConstraints firstRow = new RowConstraints();
             firstRow.setPercentHeight(50);
             detailsLayout.getRowConstraints().add(firstRow);
-            
-             RowConstraints secondRow = new RowConstraints();
+
+            RowConstraints secondRow = new RowConstraints();
             secondRow.setPercentHeight(50);
             detailsLayout.getRowConstraints().add(secondRow);
-            
+
+            //Game title
             Label gameTitle = new Label("25-5-2016"); //Change to game titles
             gameTitle.getStyleClass().add("game-title");
             detailsLayout.setConstraints(gameTitle, 0, 0);
             detailsLayout.getChildren().add(gameTitle);
-            
+
+            //Game level
             Label gameLevel = new Label("Easy"); //Change to game level
             gameLevel.getStyleClass().add("game-level");
             detailsLayout.setConstraints(gameLevel, 0, 1);
             detailsLayout.getChildren().add(gameLevel);
             detailsLayout.setValignment(gameLevel, VPos.BOTTOM);
-            
+
+            //Game timer
             Label gameTimer = new Label("3:25"); //Change to game time
             gameTimer.getStyleClass().add("game-time");
             detailsLayout.setConstraints(gameTimer, 1, 1);
             detailsLayout.getChildren().add(gameTimer);
             detailsLayout.setValignment(gameTimer, VPos.BOTTOM);
-            
+
+            //Delete game button
             Button deleteGame = new Button();
             deleteGame.getStyleClass().add("delete-button");
             gameBlockLayout.setRight(deleteGame);
-            gameBlockLayout.setMargin(deleteGame, new Insets(3,0,0,0));
-            
+            gameBlockLayout.setMargin(deleteGame, new Insets(3, 0, 0, 0));
+
+            //Adding blocks to the container
             gamesContainer.setConstraints(gameBlock[counter], 0, counter);
             gamesContainer.getChildren().add(gameBlock[counter]);
         }

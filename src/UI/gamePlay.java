@@ -191,7 +191,7 @@ public class gamePlay {
     private void readSudoku() {
         for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
             for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
-                sudokuCells[rowCounter][columnCounter].getText();
+                main.userSudoku[rowCounter][columnCounter] = Integer.parseInt(sudokuCells[rowCounter][columnCounter].getText());
             }
         }
     }
