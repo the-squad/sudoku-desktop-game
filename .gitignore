@@ -50,6 +50,7 @@ Temporary Items
 *.xml
 *.properties
 dist/
+build/
 nbproject/
 nbproject/UPDATED.TXT
 nbproject/build-impl.xml
