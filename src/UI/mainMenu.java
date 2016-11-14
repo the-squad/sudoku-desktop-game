@@ -215,7 +215,7 @@ public class mainMenu {
             }
             
             splitSudoku(sudokuGame.get(0));
-            gamePlay.printSudoku();
+            gamePlay.sudokuOperation(gamePlay.PRINT_SUDOKU);
         });
 
         Button mediumButton = new Button("Medium");
@@ -232,7 +232,7 @@ public class mainMenu {
             }
             
             splitSudoku(sudokuGame.get(0));
-            gamePlay.printSudoku();
+            gamePlay.sudokuOperation(gamePlay.PRINT_SUDOKU);
         });
 
         Button hardButton = new Button("Hard");
@@ -249,7 +249,7 @@ public class mainMenu {
             }
             
             splitSudoku(sudokuGame.get(0));
-            gamePlay.printSudoku();
+            gamePlay.sudokuOperation(gamePlay.PRINT_SUDOKU);
         });
     }
 
@@ -389,7 +389,7 @@ public class mainMenu {
             gameTitle.setOnAction(e -> {
                 main.sudokuId = data[0];
                 splitSudoku(data[1]);
-                gamePlay.printSudoku();
+                gamePlay.sudokuOperation(gamePlay.PRINT_SUDOKU);
                 animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
                 savedGamesLayout.getChildren().clear();
                 animation.switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);

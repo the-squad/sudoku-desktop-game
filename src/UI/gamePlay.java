@@ -21,11 +21,13 @@ public class gamePlay {
     BorderPane gameSceneLayout;
     private static TextField[][] sudokuCells = new TextField[9][9];
 
-    ;
-
+    static int READ_SUDOKU = 1;
+    static int PRINT_SUDOKU = 2;
+    static int CLEAR_SUDOKU = 3;
 
     /**
      * Initialize game play elements
+     *
      * @return gamePlayLayout
      */
     public BorderPane initialize() {
@@ -61,7 +63,7 @@ public class gamePlay {
 
         backButton.setOnAction(e -> {
             animation.switchPanes(main.windowLayout, gameSceneLayout, main.mainMenu);
-            clearSudoku();
+            sudokuOperation(CLEAR_SUDOKU);
         });
 
         //Save Button
@@ -86,7 +88,7 @@ public class gamePlay {
 
         submitButton.setOnAction((event) -> {
             try {
-                readSudoku();
+                sudokuOperation(READ_SUDOKU);
                 checkSudoku();
             } catch (InterruptedException ex) {
                 Logger.getLogger(gamePlay.class.getName()).log(Level.SEVERE, null, ex);
@@ -146,6 +148,11 @@ public class gamePlay {
         gameSceneLayout.getChildren().addAll();
     }
 
+    /**
+     * @by Muhammad Tarek
+     * @param message
+     * @param alertType 
+     */
     private void showPopup(String message, int alertType) {
         //Alert message layout
         GridPane alertLayout = new GridPane();
@@ -198,36 +205,10 @@ public class gamePlay {
          */
     }
 
-    private void readSudoku() {
-        for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
-            for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
-                main.userSudoku[rowCounter][columnCounter] = Integer.parseInt(sudokuCells[rowCounter][columnCounter].getText());
-            }
-        }
-    }
-
-    public static void printSudoku() {
-        for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
-            for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
-                if (main.computerSolution[rowCounter][columnCounter] != 0) {
-                    sudokuCells[rowCounter][columnCounter].setText(main.computerSolution[rowCounter][columnCounter] + "");
-                    sudokuCells[rowCounter][columnCounter].setDisable(true);
-                }
-            }
-        }
-    }
-
-    private void clearSudoku() {
-        for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
-            for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
-                sudokuCells[rowCounter][columnCounter].setText("");
-                sudokuCells[rowCounter][columnCounter].setDisable(false);
-                sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-danger");
-                sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-success");
-            }
-        }
-    }
-
+    /**
+     * 
+     * @throws InterruptedException 
+     */
     private void checkSudoku() throws InterruptedException {
         sudoku Sudoku = new sudoku();
         Sudoku.setSudoku(userSudoku);
@@ -256,6 +237,30 @@ public class gamePlay {
             for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
                 for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
                     sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * @param opType
+     */
+    static void sudokuOperation(int opType) {
+        for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
+            for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
+                if (opType == 1) {
+                    main.userSudoku[rowCounter][columnCounter] = Integer.parseInt(sudokuCells[rowCounter][columnCounter].getText());
+                } else if (opType == 2) {
+                    if (main.computerSolution[rowCounter][columnCounter] != 0) {
+                        sudokuCells[rowCounter][columnCounter].setText(main.computerSolution[rowCounter][columnCounter] + "");
+                        sudokuCells[rowCounter][columnCounter].setDisable(true);
+                    } else if (opType == 3) {
+                        sudokuCells[rowCounter][columnCounter].setText("");
+                        sudokuCells[rowCounter][columnCounter].setDisable(false);
+                        sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-danger");
+                        sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-success");
+                    }
                 }
             }
         }
