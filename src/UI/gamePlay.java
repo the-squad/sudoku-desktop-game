@@ -1,5 +1,10 @@
 package UI;
 
+import static UI.global.FADE_IN;
+import static UI.global.fade;
+import static UI.global.switchPanes;
+import static UI.global.CLEAR_SUDOKU;
+import static UI.global.READ_SUDOKU;
 import static UI.global.computerSolution;
 import static UI.global.windowLayout;
 import static UI.global.mainMenuContainer;
@@ -27,9 +32,6 @@ public class gamePlay {
     BorderPane gamePlayContainer;
     private static TextField[][] sudokuCells = new TextField[9][9];
 
-    static int READ_SUDOKU = 1;
-    static int PRINT_SUDOKU = 2;
-    static int CLEAR_SUDOKU = 3;
 
     /**
      * Initialize game play elements
@@ -68,7 +70,7 @@ public class gamePlay {
         toolbarLayout.setLeft(backButton);
 
         backButton.setOnAction(e -> {
-            animation.switchPanes(windowLayout, gamePlayContainer, mainMenuContainer);
+            switchPanes(windowLayout, gamePlayContainer, mainMenuContainer);
             sudokuOperation(CLEAR_SUDOKU);
         });
 
@@ -189,13 +191,13 @@ public class gamePlay {
         alertLayout.setAlignment(Pos.CENTER);
 
         //Fading animation
-        animation.fade(alertLayout, 1000, 0, animation.FADE_IN);
+        fade(alertLayout, 1000, 0, FADE_IN);
 
         //Auto hide the alert
         Timeline countDown = new Timeline(new KeyFrame(
                 Duration.millis(3000),
                 ae -> {
-                    animation.fade(alertLayout, 1000, 0, 1);
+                    fade(alertLayout, 1000, 0, 1);
                     gamePlayContainer.setBottom(null);
                 }
         ));
@@ -243,6 +245,44 @@ public class gamePlay {
             for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
                 for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
                     sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
+                }
+            }
+        }
+    }
+
+    /**
+     *
+     * @param opType
+     */
+    static void sudokuOperation(int opType) {
+        for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
+            for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
+
+                switch (opType) {
+                    //Read Sudoku
+                    case 1:
+                        userSudoku[rowCounter][columnCounter] = Integer.parseInt(sudokuCells[rowCounter][columnCounter].getText());
+                        break;
+                    //Print Sudoku
+                    case 2:
+                        if (computerSolution[rowCounter][columnCounter] != 0) {
+                            sudokuCells[rowCounter][columnCounter].setText(computerSolution[rowCounter][columnCounter] + "");
+                            sudokuCells[rowCounter][columnCounter].setDisable(true);
+                        }
+                        break;
+                    //Clear Sudoku fields and array
+                    case 3:
+                        sudokuCells[rowCounter][columnCounter].setText("");
+                        sudokuCells[rowCounter][columnCounter].setDisable(false);
+                        sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-danger");
+                        sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-success");
+
+                        userSudoku[rowCounter][columnCounter] = 0;
+                        computerSolution[rowCounter][columnCounter] = 0;
+                        markSolution[rowCounter][columnCounter] = Boolean.FALSE;
+                        break;
+                    default:
+                        break;
                 }
             }
         }

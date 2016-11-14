@@ -1,5 +1,9 @@
 package UI;
 
+import static UI.global.FADE_IN;
+import static UI.global.fade;
+import static UI.global.switchPanes;
+import static UI.global.PRINT_SUDOKU;
 import static UI.global.computerSolution;
 import static UI.global.windowLayout;
 import static UI.global.gamePlayContainer;
@@ -117,7 +121,7 @@ public class mainMenu {
         initButtonStyle(newGameButton, gameModesLayout, 0, newGameButtonIconView);
 
         newGameButton.setOnAction(e -> {
-            animation.switchPanes(rightPartLayout, gameModesLayout, levelsLayout);
+            switchPanes(rightPartLayout, gameModesLayout, levelsLayout);
             playingMode = 1;
         });
 
@@ -129,7 +133,7 @@ public class mainMenu {
 
         loadGameButton.setOnAction(e -> {
             initializeSavedGames();
-            animation.switchPanes(rightPartLayout, gameModesLayout, savedGamesLayout);
+            switchPanes(rightPartLayout, gameModesLayout, savedGamesLayout);
             playingMode = 2;
         });
 
@@ -140,7 +144,7 @@ public class mainMenu {
         initButtonStyle(checkSudokuButton, gameModesLayout, 2, checkSudokuIconView);
 
         checkSudokuButton.setOnAction(e -> {
-            animation.switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+            switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
             playingMode = 3;
         });
 
@@ -151,7 +155,7 @@ public class mainMenu {
         initButtonStyle(challangeComputerButton, gameModesLayout, 3, challengeComputerIconView);
 
         challangeComputerButton.setOnAction(e -> {
-            animation.switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+            switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
             playingMode = 4;
         });
 
@@ -197,7 +201,7 @@ public class mainMenu {
         backArrowAndText.setAlignment(back, Pos.CENTER);
         backArrowAndText.setMargin(back, new Insets(0, -80, 0, -65));
 
-        back.setOnAction(e -> animation.switchPanes(rightPartLayout, levelsLayout, gameModesLayout));
+        back.setOnAction(e -> switchPanes(rightPartLayout, levelsLayout, gameModesLayout));
 
         //Headline
         Label headlineText = new Label("Choose game level");
@@ -210,7 +214,7 @@ public class mainMenu {
         initButtonStyle(easyButton, levelsLayout, 1, null);
 
         easyButton.setOnAction(e -> {
-            animation.switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+            switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
 
             ArrayList<String> sudokuGame = null;
             try {
@@ -220,14 +224,14 @@ public class mainMenu {
             }
             
             splitSudoku(sudokuGame.get(0));
-            gamePlay.sudokuOperation(gamePlay.PRINT_SUDOKU);
+            gamePlay.sudokuOperation(PRINT_SUDOKU);
         });
 
         Button mediumButton = new Button("Medium");
         initButtonStyle(mediumButton, levelsLayout, 2, null);
 
         mediumButton.setOnAction(e -> {
-            animation.switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+            switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
             
             ArrayList<String> sudokuGame = null;
             try {
@@ -237,14 +241,14 @@ public class mainMenu {
             }
             
             splitSudoku(sudokuGame.get(0));
-            gamePlay.sudokuOperation(gamePlay.PRINT_SUDOKU);
+            gamePlay.sudokuOperation(PRINT_SUDOKU);
         });
 
         Button hardButton = new Button("Hard");
         initButtonStyle(hardButton, levelsLayout, 3, null);
 
         hardButton.setOnAction(e -> {
-            animation.switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+            switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
             
             ArrayList<String> sudokuGame = null;
             try {
@@ -254,7 +258,7 @@ public class mainMenu {
             }
             
             splitSudoku(sudokuGame.get(0));
-            gamePlay.sudokuOperation(gamePlay.PRINT_SUDOKU);
+            gamePlay.sudokuOperation(PRINT_SUDOKU);
         });
     }
 
@@ -296,7 +300,7 @@ public class mainMenu {
         backArrowAndText.setMargin(back, new Insets(0, -170, 0, -10));
 
         back.setOnAction(e -> {
-            animation.switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);
+            switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);
             savedGamesLayout.getChildren().clear();
         });
 
@@ -394,10 +398,10 @@ public class mainMenu {
             gameTitle.setOnAction(e -> {
                 main.sudokuId = data[0];
                 splitSudoku(data[1]);
-                gamePlay.sudokuOperation(gamePlay.PRINT_SUDOKU);
-                animation.switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+                gamePlay.sudokuOperation(PRINT_SUDOKU);
+                switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
                 savedGamesLayout.getChildren().clear();
-                animation.switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);
+                switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);
             });
 
             //Deleting the game
@@ -417,7 +421,7 @@ public class mainMenu {
      * @param icon
      */
     private void initButtonStyle(Button button, GridPane layout, int position, ImageView icon) {
-        animation.fade(button, 300, position * 200, animation.FADE_IN);
+        fade(button, 300, position * 200, FADE_IN);
 
         button.getStyleClass().add("icon-text-button");
 

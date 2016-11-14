@@ -1,10 +1,13 @@
 package UI;
 
+import javafx.animation.FadeTransition;
+import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.util.Duration;
 
 /**
- * Class to init all global variables and method
+ * Class to initialize all global variables and methods
  * @author Muhammad
  */
 public class global {
@@ -18,43 +21,38 @@ public class global {
     static Boolean[][] markSolution = new Boolean[9][9]; //Where computer returns the wrong cells
 //</editor-fold>
     
+    public static final int READ_SUDOKU = 1;
+    public static final int PRINT_SUDOKU = 2;
+    public static final int CLEAR_SUDOKU = 3;
+    
+    public static final int FADE_IN = 1;
+    public static final int FADE_OUT = 2;
+    
     static int playingMode;
     
-        /**
+    /**
      *
-     * @param opType
+     * @param parent
+     * @param fromChild
+     * @param toChild
      */
-    static void sudokuOperation(int opType) {
-        for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
-            for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
+    public static void switchPanes(BorderPane parent, Object fromChild, Object toChild) {
+        fade(fromChild, 350, 0, FADE_OUT);
+        parent.setCenter(null);
+        parent.setCenter((Node)toChild);
+        fade(toChild, 350, 0, FADE_IN);
 
-                switch (opType) {
-                    //Read Sudoku
-                    case 1:
-                        userSudoku[rowCounter][columnCounter] = Integer.parseInt(sudokuCells[rowCounter][columnCounter].getText());
-                        break;
-                    //Print Sudoku
-                    case 2:
-                        if (computerSolution[rowCounter][columnCounter] != 0) {
-                            sudokuCells[rowCounter][columnCounter].setText(computerSolution[rowCounter][columnCounter] + "");
-                            sudokuCells[rowCounter][columnCounter].setDisable(true);
-                        }
-                        break;
-                    //Clear Sudoku fields and array
-                    case 3:
-                        sudokuCells[rowCounter][columnCounter].setText("");
-                        sudokuCells[rowCounter][columnCounter].setDisable(false);
-                        sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-danger");
-                        sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-success");
+    }
 
-                        userSudoku[rowCounter][columnCounter] = 0;
-                        computerSolution[rowCounter][columnCounter] = 0;
-                        markSolution[rowCounter][columnCounter] = Boolean.FALSE;
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
+    public static void fade(Object node, int duration, int delay, int fadeType) {
+        FadeTransition fadeAnimation = new FadeTransition(Duration.millis(1000), (Node) node);
+
+        if (delay != 0)
+            fadeAnimation.setDelay(Duration.millis(delay));
+        
+        fadeAnimation.setFromValue(fadeType == 1 ? 0 : 1);
+        fadeAnimation.setToValue(fadeType == 1 ? 1 : 0);
+     
+        fadeAnimation.play();
     }
 }
