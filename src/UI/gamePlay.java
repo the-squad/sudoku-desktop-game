@@ -1,5 +1,12 @@
 package UI;
 
+import static UI.global.computerSolution;
+import static UI.global.windowLayout;
+import static UI.global.mainMenuContainer;
+import static UI.global.markSolution;
+import static UI.global.playingMode;
+import static UI.global.userSudoku;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
@@ -10,7 +17,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
-import static UI.main.userSudoku;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import sudoku.checker;
@@ -18,7 +24,7 @@ import sudoku.sudoku;
 
 public class gamePlay {
 
-    BorderPane gameSceneLayout;
+    BorderPane gamePlayContainer;
     private static TextField[][] sudokuCells = new TextField[9][9];
 
     static int READ_SUDOKU = 1;
@@ -32,7 +38,7 @@ public class gamePlay {
      */
     public BorderPane initialize() {
         //Main layout
-        gameSceneLayout = new BorderPane();
+        gamePlayContainer = new BorderPane();
 
         //Toolbar layout
         BorderPane toolbarLayout = new BorderPane();
@@ -62,7 +68,7 @@ public class gamePlay {
         toolbarLayout.setLeft(backButton);
 
         backButton.setOnAction(e -> {
-            animation.switchPanes(main.windowLayout, gameSceneLayout, main.mainMenu);
+            animation.switchPanes(windowLayout, gamePlayContainer, mainMenuContainer);
             sudokuOperation(CLEAR_SUDOKU);
         });
 
@@ -84,7 +90,7 @@ public class gamePlay {
         });
 
         //Adding the toolbar in the top of the window
-        gameSceneLayout.setTop(toolbarLayout);
+        gamePlayContainer.setTop(toolbarLayout);
 
         submitButton.setOnAction((event) -> {
             try {
@@ -95,7 +101,7 @@ public class gamePlay {
             }
         });
 
-        return gameSceneLayout;
+        return gamePlayContainer;
     }
 
     /**
@@ -143,23 +149,23 @@ public class gamePlay {
             }
         }
 
-        gameSceneLayout.setCenter(cardBg);
-        gameSceneLayout.setAlignment(cardBg, Pos.CENTER);
-        gameSceneLayout.getChildren().addAll();
+        gamePlayContainer.setCenter(cardBg);
+        gamePlayContainer.setAlignment(cardBg, Pos.CENTER);
+        gamePlayContainer.getChildren().addAll();
     }
 
     /**
      * @by Muhammad Tarek
      * @param message
-     * @param alertType 
+     * @param alertType
      */
     private void showPopup(String message, int alertType) {
         //Alert message layout
         GridPane alertLayout = new GridPane();
         alertLayout.setHgap(10);
 
-        gameSceneLayout.setBottom(alertLayout);
-        gameSceneLayout.setAlignment(alertLayout, Pos.CENTER);
+        gamePlayContainer.setBottom(alertLayout);
+        gamePlayContainer.setAlignment(alertLayout, Pos.CENTER);
 
         //Alert message
         Label alertMessage = new Label(message);
@@ -190,7 +196,7 @@ public class gamePlay {
                 Duration.millis(3000),
                 ae -> {
                     animation.fade(alertLayout, 1000, 0, 1);
-                    gameSceneLayout.setBottom(null);
+                    gamePlayContainer.setBottom(null);
                 }
         ));
         countDown.play();
@@ -206,8 +212,8 @@ public class gamePlay {
     }
 
     /**
-     * 
-     * @throws InterruptedException 
+     *
+     * @throws InterruptedException
      */
     private void checkSudoku() throws InterruptedException {
         sudoku Sudoku = new sudoku();
@@ -215,18 +221,18 @@ public class gamePlay {
 
         Sudoku.initSudokuWrongCells();
 
-        if (main.playingMode != 4) {
+        if (playingMode != 4) {
             checker Checker = new checker();
 
             Checker.check();
-            main.markSolution = Sudoku.getsudokuWrongCells();
+            markSolution = Sudoku.getsudokuWrongCells();
         }
 
         Boolean isSudoku = true;
 
         for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
             for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
-                if (main.markSolution[rowCounter][columnCounter]) {
+                if (markSolution[rowCounter][columnCounter]) {
                     sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-danger");
                     isSudoku = false;
                 }
@@ -242,27 +248,12 @@ public class gamePlay {
         }
     }
 
-    /**
-     *
-     * @param opType
-     */
-    static void sudokuOperation(int opType) {
-        for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
-            for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
-                if (opType == 1) {
-                    main.userSudoku[rowCounter][columnCounter] = Integer.parseInt(sudokuCells[rowCounter][columnCounter].getText());
-                } else if (opType == 2) {
-                    if (main.computerSolution[rowCounter][columnCounter] != 0) {
-                        sudokuCells[rowCounter][columnCounter].setText(main.computerSolution[rowCounter][columnCounter] + "");
-                        sudokuCells[rowCounter][columnCounter].setDisable(true);
-                    } else if (opType == 3) {
-                        sudokuCells[rowCounter][columnCounter].setText("");
-                        sudokuCells[rowCounter][columnCounter].setDisable(false);
-                        sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-danger");
-                        sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-success");
-                    }
-                }
-            }
+    static void controlGameModeObjects() {
+        if (playingMode == 1 || playingMode == 2) {
+            //TODO
+            /**
+             * Hide save button, timer, hint, game level and pause button
+             */
         }
     }
 }

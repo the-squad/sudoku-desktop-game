@@ -1,5 +1,10 @@
 package UI;
 
+import static UI.global.computerSolution;
+import static UI.global.windowLayout;
+import static UI.global.gamePlayContainer;
+import static UI.global.playingMode;
+
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,7 +28,7 @@ import javafx.scene.layout.RowConstraints;
 
 public class mainMenu {
 
-    GridPane mainMenuLayout;
+    GridPane mainMenuContainer;
     BorderPane rightPartLayout;
     GridPane gameModesLayout;
     GridPane levelsLayout;
@@ -36,7 +41,7 @@ public class mainMenu {
      */
     public GridPane initialize() {
         //Main menu layout
-        mainMenuLayout = new GridPane();
+        mainMenuContainer = new GridPane();
 
         //Creating two columns
         ColumnConstraints leftPart = new ColumnConstraints();
@@ -45,19 +50,19 @@ public class mainMenu {
         ColumnConstraints rightPart = new ColumnConstraints();
         rightPart.setPercentWidth(65);
 
-        mainMenuLayout.getColumnConstraints().addAll(leftPart, rightPart);
+        mainMenuContainer.getColumnConstraints().addAll(leftPart, rightPart);
 
         //Creating 100% height row
         RowConstraints fullHeight = new RowConstraints();
         fullHeight.setPercentHeight(100);
 
-        mainMenuLayout.getRowConstraints().add(fullHeight);
+        mainMenuContainer.getRowConstraints().add(fullHeight);
 
         //Creating left part layout
         BorderPane leftPartLayout = new BorderPane();
         leftPartLayout.getStyleClass().add("left-part");
-        mainMenuLayout.setConstraints(leftPartLayout, 0, 0);
-        mainMenuLayout.getChildren().add(leftPartLayout);
+        mainMenuContainer.setConstraints(leftPartLayout, 0, 0);
+        mainMenuContainer.getChildren().add(leftPartLayout);
 
         //Left part elements
         Label logo = new Label();
@@ -82,15 +87,15 @@ public class mainMenu {
         //Right part layout
         rightPartLayout = new BorderPane();
         rightPartLayout.setPadding(new Insets(25));
-        mainMenuLayout.setConstraints(rightPartLayout, 1, 0);
-        mainMenuLayout.getChildren().add(rightPartLayout);
+        mainMenuContainer.setConstraints(rightPartLayout, 1, 0);
+        mainMenuContainer.getChildren().add(rightPartLayout);
 
         //Initalize modes
         initializeGameModes();
         initializeLevelsMenu();
         rightPartLayout.setCenter(gameModesLayout);
 
-        return mainMenuLayout;
+        return mainMenuContainer;
     }
 
     private void initializeGameModes() {
@@ -113,7 +118,7 @@ public class mainMenu {
 
         newGameButton.setOnAction(e -> {
             animation.switchPanes(rightPartLayout, gameModesLayout, levelsLayout);
-            main.playingMode = 1;
+            playingMode = 1;
         });
 
         //Load Game Button
@@ -125,7 +130,7 @@ public class mainMenu {
         loadGameButton.setOnAction(e -> {
             initializeSavedGames();
             animation.switchPanes(rightPartLayout, gameModesLayout, savedGamesLayout);
-            main.playingMode = 2;
+            playingMode = 2;
         });
 
         //Check Sudoku Button
@@ -135,8 +140,8 @@ public class mainMenu {
         initButtonStyle(checkSudokuButton, gameModesLayout, 2, checkSudokuIconView);
 
         checkSudokuButton.setOnAction(e -> {
-            animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
-            main.playingMode = 3;
+            animation.switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+            playingMode = 3;
         });
 
         //Challange Computer Button
@@ -146,8 +151,8 @@ public class mainMenu {
         initButtonStyle(challangeComputerButton, gameModesLayout, 3, challengeComputerIconView);
 
         challangeComputerButton.setOnAction(e -> {
-            animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
-            main.playingMode = 4;
+            animation.switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+            playingMode = 4;
         });
 
         //Exit Button
@@ -205,7 +210,7 @@ public class mainMenu {
         initButtonStyle(easyButton, levelsLayout, 1, null);
 
         easyButton.setOnAction(e -> {
-            animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
+            animation.switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
 
             ArrayList<String> sudokuGame = null;
             try {
@@ -222,7 +227,7 @@ public class mainMenu {
         initButtonStyle(mediumButton, levelsLayout, 2, null);
 
         mediumButton.setOnAction(e -> {
-            animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
+            animation.switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
             
             ArrayList<String> sudokuGame = null;
             try {
@@ -239,7 +244,7 @@ public class mainMenu {
         initButtonStyle(hardButton, levelsLayout, 3, null);
 
         hardButton.setOnAction(e -> {
-            animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
+            animation.switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
             
             ArrayList<String> sudokuGame = null;
             try {
@@ -390,7 +395,7 @@ public class mainMenu {
                 main.sudokuId = data[0];
                 splitSudoku(data[1]);
                 gamePlay.sudokuOperation(gamePlay.PRINT_SUDOKU);
-                animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
+                animation.switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
                 savedGamesLayout.getChildren().clear();
                 animation.switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);
             });
@@ -436,7 +441,7 @@ public class mainMenu {
 
         for (int row = 0; row < 9; row++) {
             for (int column = 0; column < 9; column++) {
-                main.computerSolution[row][column] = Integer.parseInt(Sudoku.charAt(charptr) + "");
+                computerSolution[row][column] = Integer.parseInt(Sudoku.charAt(charptr) + "");
                 charptr++;
             }
         }
