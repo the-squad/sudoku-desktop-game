@@ -4,8 +4,9 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/F:/Code/Java/Sudoku/src/UI/gamePlay.java</file>
+            <file>file:/F:/Code/Java/Sudoku/src/UI/global.java</file>
+            <file>file:/F:/Code/Java/Sudoku/src/UI/mainMenu.java</file>
             <file>file:/F:/Code/Java/Sudoku/src/UI/main.java</file>
-            <file>file:/F:/Code/Java/Sudoku/src/sudoku/Database.java</file>
         </group>
     </open-files>
 </project-private>

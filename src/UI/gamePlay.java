@@ -197,7 +197,7 @@ public class gamePlay {
         Timeline countDown = new Timeline(new KeyFrame(
                 Duration.millis(3000),
                 ae -> {
-                    fade(alertLayout, 1000, 0, 1);
+                    fade(alertLayout, 0, 1000, 1);
                     gamePlayContainer.setBottom(null);
                 }
         ));

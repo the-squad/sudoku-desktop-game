@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -29,6 +32,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.util.Duration;
 
 public class mainMenu {
 
@@ -222,7 +226,7 @@ public class mainMenu {
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             splitSudoku(sudokuGame.get(0));
             gamePlay.sudokuOperation(PRINT_SUDOKU);
         });
@@ -232,14 +236,14 @@ public class mainMenu {
 
         mediumButton.setOnAction(e -> {
             switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
-            
+
             ArrayList<String> sudokuGame = null;
             try {
                 sudokuGame = main.database.Select("Medium", 0);
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             splitSudoku(sudokuGame.get(0));
             gamePlay.sudokuOperation(PRINT_SUDOKU);
         });
@@ -249,14 +253,14 @@ public class mainMenu {
 
         hardButton.setOnAction(e -> {
             switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
-            
+
             ArrayList<String> sudokuGame = null;
             try {
                 sudokuGame = main.database.Select("Hard", 0);
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             splitSudoku(sudokuGame.get(0));
             gamePlay.sudokuOperation(PRINT_SUDOKU);
         });
@@ -421,8 +425,7 @@ public class mainMenu {
      * @param icon
      */
     private void initButtonStyle(Button button, GridPane layout, int position, ImageView icon) {
-        fade(button, 300, position * 200, FADE_IN);
-
+        button.setOpacity(0);
         button.getStyleClass().add("icon-text-button");
 
         if (icon != null) {
@@ -434,6 +437,7 @@ public class mainMenu {
         layout.setHalignment(button, HPos.CENTER);
         layout.setValignment(button, VPos.CENTER);
         layout.getChildren().add(button);
+        fade(button, 300, 150 * (position + 1), FADE_IN);
     }
 
     /**

@@ -12,37 +12,37 @@ import javafx.stage.Stage;
 import sudoku.Database;
 
 public class main extends Application {
-    
+
     static String sudokuId;
-    
+
     static Database database = new Database();
-    
+
     @Override
     public void start(Stage primaryStage) {
         //Connect to database
         database.DBconnect();
-         
+
         //Initiliaza screens
         windowLayout = new BorderPane();
-              
-        gamePlayContainer = new gamePlay().initialize();
+
         mainMenuContainer = new mainMenu().initialize();
-        
+        gamePlayContainer = new gamePlay().initialize();
+
         windowLayout.setCenter(mainMenuContainer);
-        
+
         //Main stage property
         primaryStage.setTitle("Sudoku Game!");
         primaryStage.setMinWidth(1000);
         primaryStage.setMinHeight(700);
-        
+
         Scene windowScene = new Scene(windowLayout, 1000, 650);
         //Connecting the stylesheet
         windowScene.getStylesheets().add("/stylesheets/mainMenuSceneStyle.css");
         windowScene.getStylesheets().add("/stylesheets/gameSceneStyle.css");
         primaryStage.setScene(windowScene);
-        primaryStage.show();       
+        primaryStage.show();
     }
-    
+
     public static void main(String[] args) throws InterruptedException {
         launch(args);
     }
