@@ -40,6 +40,11 @@
     -fx-font-weight: bold;
 }
 
+.name-text-field:disabled {
+    -fx-opacity: 1;
+    -fx-border-color: transparent;
+}
+
 .score-line {
     -fx-font-size: 15pt;
     -fx-label-font-weight: 500;
