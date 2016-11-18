@@ -44,10 +44,6 @@
 }
 
 .icon-text-button {
-    -fx-background-color: #fff;
-    -fx-min-width: 300;
-    -fx-min-height: 55;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.03, 0.0, 1.0);
     -fx-background-radius: 4;
     -fx-alignment: left;
     -fx-font-family: "Lato";
@@ -56,6 +52,18 @@
     -fx-text-fill: rgba(41,47,51, 0.9);
     -fx-padding: 0 0 0 20;
     -fx-cursor: hand;
+}
+
+.white-button {
+    -fx-background-color: #fff;
+    -fx-min-width: 300;
+    -fx-min-height: 55;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.03, 0.0, 1.0);
+}
+
+.white-button:hover {
+    -fx-background-color: rgb(244, 244, 244);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.03, 0.0, 1.0);
 }
 
 #backButtonDark {
@@ -144,7 +152,7 @@
     -fx-font-size: 16;
     -fx-font-weight: 600;
     -fx-text-fill: rgba(41,47,51, 0.6);
-    
+
 }
 
 .game-title:hover {

@@ -164,3 +164,33 @@
 .alert-icon-danger {
     -fx-background-image: url("../icons/cancel.png");
 }
+
+/*
+    Game controls
+*/
+.text {
+    -fx-font-family: "Lato";
+    -fx-fill-color: rgba(41,47,51, 0.9);
+}
+
+.text--headline {
+    -fx-font-size: 13;
+    -fx-font-weight: 400;
+    -fx-padding: 0 0 5 20;
+}
+
+.text--normal {
+    -fx-font-size: 25;
+    -fx-font-weight: 600;
+    -fx-padding: 0 0 30 20;
+}
+
+.transparent-button {
+    -fx-background-color: rgba(41,47,51, 0);
+    -fx-min-width: 150;
+    -fx-min-height: 40;
+}
+
+.transparent-button:hover {
+    -fx-background-color: rgba(41,47,51, 0.1);
+}

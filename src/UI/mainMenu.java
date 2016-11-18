@@ -1,5 +1,14 @@
 package UI;
 
+import static UI.global.switchPanes;
+import static UI.global.PRINT_SUDOKU;
+import static UI.global.WHITE_BG;
+import static UI.global.computerSolution;
+import static UI.global.windowLayout;
+import static UI.global.gamePlayContainer;
+import static UI.global.playingMode;
+import static UI.global.initButtonStyle;
+
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,7 +32,7 @@ import javafx.scene.layout.RowConstraints;
 
 public class mainMenu {
 
-    GridPane mainMenuLayout;
+    GridPane mainMenuContainer;
     BorderPane rightPartLayout;
     GridPane gameModesLayout;
     GridPane levelsLayout;
@@ -36,7 +45,7 @@ public class mainMenu {
      */
     public GridPane initialize() {
         //Main menu layout
-        mainMenuLayout = new GridPane();
+        mainMenuContainer = new GridPane();
 
         //Creating two columns
         ColumnConstraints leftPart = new ColumnConstraints();
@@ -45,19 +54,19 @@ public class mainMenu {
         ColumnConstraints rightPart = new ColumnConstraints();
         rightPart.setPercentWidth(65);
 
-        mainMenuLayout.getColumnConstraints().addAll(leftPart, rightPart);
+        mainMenuContainer.getColumnConstraints().addAll(leftPart, rightPart);
 
         //Creating 100% height row
         RowConstraints fullHeight = new RowConstraints();
         fullHeight.setPercentHeight(100);
 
-        mainMenuLayout.getRowConstraints().add(fullHeight);
+        mainMenuContainer.getRowConstraints().add(fullHeight);
 
         //Creating left part layout
         BorderPane leftPartLayout = new BorderPane();
         leftPartLayout.getStyleClass().add("left-part");
-        mainMenuLayout.setConstraints(leftPartLayout, 0, 0);
-        mainMenuLayout.getChildren().add(leftPartLayout);
+        mainMenuContainer.setConstraints(leftPartLayout, 0, 0);
+        mainMenuContainer.getChildren().add(leftPartLayout);
 
         //Left part elements
         Label logo = new Label();
@@ -71,7 +80,7 @@ public class mainMenu {
         leftPartLayout.setCenter(logoText);
         leftPartLayout.setAlignment(logoText, Pos.TOP_CENTER);
 
-        Label version = new Label("Version 0.1");
+        Label version = new Label("Version 0.2");
         version.getStyleClass().add("version");
         leftPartLayout.setBottom(version);
         leftPartLayout.setAlignment(version, Pos.TOP_CENTER);
@@ -82,15 +91,15 @@ public class mainMenu {
         //Right part layout
         rightPartLayout = new BorderPane();
         rightPartLayout.setPadding(new Insets(25));
-        mainMenuLayout.setConstraints(rightPartLayout, 1, 0);
-        mainMenuLayout.getChildren().add(rightPartLayout);
+        mainMenuContainer.setConstraints(rightPartLayout, 1, 0);
+        mainMenuContainer.getChildren().add(rightPartLayout);
 
         //Initalize modes
         initializeGameModes();
         initializeLevelsMenu();
         rightPartLayout.setCenter(gameModesLayout);
 
-        return mainMenuLayout;
+        return mainMenuContainer;
     }
 
     private void initializeGameModes() {
@@ -109,52 +118,52 @@ public class mainMenu {
         Image newGameButtonIcon = new Image(getClass().getResourceAsStream("/icons/new-game.png"));
         ImageView newGameButtonIconView = new ImageView(newGameButtonIcon);
         Button newGameButton = new Button("       New Game", newGameButtonIconView);
-        initButtonStyle(newGameButton, gameModesLayout, 0, newGameButtonIconView);
-
+        initButtonStyle(newGameButton, gameModesLayout, 0, newGameButtonIconView, WHITE_BG);
+ 
         newGameButton.setOnAction(e -> {
-            animation.switchPanes(rightPartLayout, gameModesLayout, levelsLayout);
-            main.playingMode = 1;
+            switchPanes(rightPartLayout, gameModesLayout, levelsLayout);
+            playingMode = 1;
         });
 
         //Load Game Button
         Image loadGameButtonIcon = new Image(getClass().getResourceAsStream("/icons/load-game.png"));
         ImageView laodGameIconView = new ImageView(loadGameButtonIcon);
         Button loadGameButton = new Button("       Load last game", laodGameIconView);
-        initButtonStyle(loadGameButton, gameModesLayout, 1, laodGameIconView);
+        initButtonStyle(loadGameButton, gameModesLayout, 1, laodGameIconView, WHITE_BG);
 
         loadGameButton.setOnAction(e -> {
             initializeSavedGames();
-            animation.switchPanes(rightPartLayout, gameModesLayout, savedGamesLayout);
-            main.playingMode = 2;
+            switchPanes(rightPartLayout, gameModesLayout, savedGamesLayout);
+            playingMode = 2;
         });
 
         //Check Sudoku Button
         Image checkSudokuIcon = new Image(getClass().getResourceAsStream("/icons/check-sudoku.png"));
         ImageView checkSudokuIconView = new ImageView(checkSudokuIcon);
         Button checkSudokuButton = new Button("       Check your Sudoku", checkSudokuIconView);
-        initButtonStyle(checkSudokuButton, gameModesLayout, 2, checkSudokuIconView);
+        initButtonStyle(checkSudokuButton, gameModesLayout, 2, checkSudokuIconView, WHITE_BG);
 
         checkSudokuButton.setOnAction(e -> {
-            animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
-            main.playingMode = 3;
+            switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+            playingMode = 3;
         });
 
         //Challange Computer Button
         Image challengeComputerIcon = new Image(getClass().getResourceAsStream("/icons/challenge-computer.png"));
         ImageView challengeComputerIconView = new ImageView(challengeComputerIcon);
         Button challangeComputerButton = new Button("       Challenge computer", challengeComputerIconView);
-        initButtonStyle(challangeComputerButton, gameModesLayout, 3, challengeComputerIconView);
+        initButtonStyle(challangeComputerButton, gameModesLayout, 3, challengeComputerIconView, WHITE_BG);
 
         challangeComputerButton.setOnAction(e -> {
-            animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
-            main.playingMode = 4;
+            switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+            playingMode = 4;
         });
 
         //Exit Button
         Image exitButtonIcon = new Image(getClass().getResourceAsStream("/icons/exit.png"));
         ImageView exitButtonIconView = new ImageView(exitButtonIcon);
         Button exitButton = new Button("       Exit", exitButtonIconView);
-        initButtonStyle(exitButton, gameModesLayout, 4, exitButtonIconView);
+        initButtonStyle(exitButton, gameModesLayout, 4, exitButtonIconView, WHITE_BG);
 
         exitButton.setOnAction(e -> {
             System.exit(0);
@@ -192,7 +201,7 @@ public class mainMenu {
         backArrowAndText.setAlignment(back, Pos.CENTER);
         backArrowAndText.setMargin(back, new Insets(0, -80, 0, -65));
 
-        back.setOnAction(e -> animation.switchPanes(rightPartLayout, levelsLayout, gameModesLayout));
+        back.setOnAction(e -> switchPanes(rightPartLayout, levelsLayout, gameModesLayout));
 
         //Headline
         Label headlineText = new Label("Choose game level");
@@ -202,10 +211,10 @@ public class mainMenu {
 
         //Level buttons
         Button easyButton = new Button("Easy");
-        initButtonStyle(easyButton, levelsLayout, 1, null);
+        initButtonStyle(easyButton, levelsLayout, 1, null, WHITE_BG);
 
         easyButton.setOnAction(e -> {
-            animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
+            switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
 
             ArrayList<String> sudokuGame = null;
             try {
@@ -213,43 +222,43 @@ public class mainMenu {
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             splitSudoku(sudokuGame.get(0));
-            gamePlay.printSudoku();
+            gamePlay.sudokuOperation(PRINT_SUDOKU);
         });
 
         Button mediumButton = new Button("Medium");
-        initButtonStyle(mediumButton, levelsLayout, 2, null);
+        initButtonStyle(mediumButton, levelsLayout, 2, null, WHITE_BG);
 
         mediumButton.setOnAction(e -> {
-            animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
-            
+            switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+
             ArrayList<String> sudokuGame = null;
             try {
                 sudokuGame = main.database.Select("Medium", 0);
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             splitSudoku(sudokuGame.get(0));
-            gamePlay.printSudoku();
+            gamePlay.sudokuOperation(PRINT_SUDOKU);
         });
 
         Button hardButton = new Button("Hard");
-        initButtonStyle(hardButton, levelsLayout, 3, null);
+        initButtonStyle(hardButton, levelsLayout, 3, null, WHITE_BG);
 
         hardButton.setOnAction(e -> {
-            animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
-            
+            switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+
             ArrayList<String> sudokuGame = null;
             try {
                 sudokuGame = main.database.Select("Hard", 0);
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
+
             splitSudoku(sudokuGame.get(0));
-            gamePlay.printSudoku();
+            gamePlay.sudokuOperation(PRINT_SUDOKU);
         });
     }
 
@@ -291,7 +300,7 @@ public class mainMenu {
         backArrowAndText.setMargin(back, new Insets(0, -170, 0, -10));
 
         back.setOnAction(e -> {
-            animation.switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);
+            switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);
             savedGamesLayout.getChildren().clear();
         });
 
@@ -389,10 +398,10 @@ public class mainMenu {
             gameTitle.setOnAction(e -> {
                 main.sudokuId = data[0];
                 splitSudoku(data[1]);
-                gamePlay.printSudoku();
-                animation.switchPanes(main.windowLayout, main.mainMenu, main.gamePlay);
+                gamePlay.sudokuOperation(PRINT_SUDOKU);
+                switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
                 savedGamesLayout.getChildren().clear();
-                animation.switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);
+                switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);
             });
 
             //Deleting the game
@@ -400,31 +409,6 @@ public class mainMenu {
                 //TODO
             });
         }
-    }
-
-    /**
-     * Initialize button styles, icons sizes Muhammad Tarek
-     *
-     * @since 6, November
-     * @param button
-     * @param layout
-     * @param position
-     * @param icon
-     */
-    private void initButtonStyle(Button button, GridPane layout, int position, ImageView icon) {
-        animation.fade(button, 300, position * 200, animation.FADE_IN);
-
-        button.getStyleClass().add("icon-text-button");
-
-        if (icon != null) {
-            icon.setFitHeight(24);
-            icon.setFitWidth(24);
-        }
-
-        layout.setConstraints(button, 0, position);
-        layout.setHalignment(button, HPos.CENTER);
-        layout.setValignment(button, VPos.CENTER);
-        layout.getChildren().add(button);
     }
 
     /**
@@ -436,7 +420,7 @@ public class mainMenu {
 
         for (int row = 0; row < 9; row++) {
             for (int column = 0; column < 9; column++) {
-                main.computerSolution[row][column] = Integer.parseInt(Sudoku.charAt(charptr) + "");
+                computerSolution[row][column] = Integer.parseInt(Sudoku.charAt(charptr) + "");
                 charptr++;
             }
         }
