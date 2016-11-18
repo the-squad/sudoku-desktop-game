@@ -1,13 +1,13 @@
 package UI;
 
-import static UI.global.FADE_IN;
-import static UI.global.fade;
 import static UI.global.switchPanes;
 import static UI.global.PRINT_SUDOKU;
+import static UI.global.WHITE_BG;
 import static UI.global.computerSolution;
 import static UI.global.windowLayout;
 import static UI.global.gamePlayContainer;
 import static UI.global.playingMode;
+import static UI.global.initButtonStyle;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -16,9 +16,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -32,7 +29,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
-import javafx.util.Duration;
 
 public class mainMenu {
 
@@ -84,7 +80,7 @@ public class mainMenu {
         leftPartLayout.setCenter(logoText);
         leftPartLayout.setAlignment(logoText, Pos.TOP_CENTER);
 
-        Label version = new Label("Version 0.1");
+        Label version = new Label("Version 0.2");
         version.getStyleClass().add("version");
         leftPartLayout.setBottom(version);
         leftPartLayout.setAlignment(version, Pos.TOP_CENTER);
@@ -122,8 +118,8 @@ public class mainMenu {
         Image newGameButtonIcon = new Image(getClass().getResourceAsStream("/icons/new-game.png"));
         ImageView newGameButtonIconView = new ImageView(newGameButtonIcon);
         Button newGameButton = new Button("       New Game", newGameButtonIconView);
-        initButtonStyle(newGameButton, gameModesLayout, 0, newGameButtonIconView);
-
+        initButtonStyle(newGameButton, gameModesLayout, 0, newGameButtonIconView, WHITE_BG);
+ 
         newGameButton.setOnAction(e -> {
             switchPanes(rightPartLayout, gameModesLayout, levelsLayout);
             playingMode = 1;
@@ -133,7 +129,7 @@ public class mainMenu {
         Image loadGameButtonIcon = new Image(getClass().getResourceAsStream("/icons/load-game.png"));
         ImageView laodGameIconView = new ImageView(loadGameButtonIcon);
         Button loadGameButton = new Button("       Load last game", laodGameIconView);
-        initButtonStyle(loadGameButton, gameModesLayout, 1, laodGameIconView);
+        initButtonStyle(loadGameButton, gameModesLayout, 1, laodGameIconView, WHITE_BG);
 
         loadGameButton.setOnAction(e -> {
             initializeSavedGames();
@@ -145,7 +141,7 @@ public class mainMenu {
         Image checkSudokuIcon = new Image(getClass().getResourceAsStream("/icons/check-sudoku.png"));
         ImageView checkSudokuIconView = new ImageView(checkSudokuIcon);
         Button checkSudokuButton = new Button("       Check your Sudoku", checkSudokuIconView);
-        initButtonStyle(checkSudokuButton, gameModesLayout, 2, checkSudokuIconView);
+        initButtonStyle(checkSudokuButton, gameModesLayout, 2, checkSudokuIconView, WHITE_BG);
 
         checkSudokuButton.setOnAction(e -> {
             switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
@@ -156,7 +152,7 @@ public class mainMenu {
         Image challengeComputerIcon = new Image(getClass().getResourceAsStream("/icons/challenge-computer.png"));
         ImageView challengeComputerIconView = new ImageView(challengeComputerIcon);
         Button challangeComputerButton = new Button("       Challenge computer", challengeComputerIconView);
-        initButtonStyle(challangeComputerButton, gameModesLayout, 3, challengeComputerIconView);
+        initButtonStyle(challangeComputerButton, gameModesLayout, 3, challengeComputerIconView, WHITE_BG);
 
         challangeComputerButton.setOnAction(e -> {
             switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
@@ -167,7 +163,7 @@ public class mainMenu {
         Image exitButtonIcon = new Image(getClass().getResourceAsStream("/icons/exit.png"));
         ImageView exitButtonIconView = new ImageView(exitButtonIcon);
         Button exitButton = new Button("       Exit", exitButtonIconView);
-        initButtonStyle(exitButton, gameModesLayout, 4, exitButtonIconView);
+        initButtonStyle(exitButton, gameModesLayout, 4, exitButtonIconView, WHITE_BG);
 
         exitButton.setOnAction(e -> {
             System.exit(0);
@@ -215,7 +211,7 @@ public class mainMenu {
 
         //Level buttons
         Button easyButton = new Button("Easy");
-        initButtonStyle(easyButton, levelsLayout, 1, null);
+        initButtonStyle(easyButton, levelsLayout, 1, null, WHITE_BG);
 
         easyButton.setOnAction(e -> {
             switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
@@ -232,7 +228,7 @@ public class mainMenu {
         });
 
         Button mediumButton = new Button("Medium");
-        initButtonStyle(mediumButton, levelsLayout, 2, null);
+        initButtonStyle(mediumButton, levelsLayout, 2, null, WHITE_BG);
 
         mediumButton.setOnAction(e -> {
             switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
@@ -249,7 +245,7 @@ public class mainMenu {
         });
 
         Button hardButton = new Button("Hard");
-        initButtonStyle(hardButton, levelsLayout, 3, null);
+        initButtonStyle(hardButton, levelsLayout, 3, null, WHITE_BG);
 
         hardButton.setOnAction(e -> {
             switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
@@ -413,31 +409,6 @@ public class mainMenu {
                 //TODO
             });
         }
-    }
-
-    /**
-     * Initialize button styles, icons sizes Muhammad Tarek
-     *
-     * @since 6, November
-     * @param button
-     * @param layout
-     * @param position
-     * @param icon
-     */
-    private void initButtonStyle(Button button, GridPane layout, int position, ImageView icon) {
-        button.setOpacity(0);
-        button.getStyleClass().add("icon-text-button");
-
-        if (icon != null) {
-            icon.setFitHeight(24);
-            icon.setFitWidth(24);
-        }
-
-        layout.setConstraints(button, 0, position);
-        layout.setHalignment(button, HPos.CENTER);
-        layout.setValignment(button, VPos.CENTER);
-        layout.getChildren().add(button);
-        fade(button, 300, 150 * (position + 1), FADE_IN);
     }
 
     /**

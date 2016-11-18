@@ -5,7 +5,9 @@ import static UI.global.fade;
 import static UI.global.switchPanes;
 import static UI.global.CLEAR_SUDOKU;
 import static UI.global.READ_SUDOKU;
+import static UI.global.TRANSPARENT_BG;
 import static UI.global.computerSolution;
+import static UI.global.initButtonStyle;
 import static UI.global.windowLayout;
 import static UI.global.mainMenuContainer;
 import static UI.global.markSolution;
@@ -24,6 +26,8 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import sudoku.checker;
 import sudoku.sudoku;
 
@@ -35,7 +39,7 @@ public class gamePlay {
 
     /**
      * Initialize game play elements
-     *
+     * @author Muhammad Tarek
      * @return gamePlayLayout
      */
     public BorderPane initialize() {
@@ -47,7 +51,6 @@ public class gamePlay {
         toolbarLayout.getStyleClass().add("toolbar");
 
         toolbarLayout.setPrefHeight(75);
-        toolbarLayout.setPrefWidth(1000);
 
         //Headline + saveButton button layout
         BorderPane headlineAndSaveLayout = new BorderPane();
@@ -102,12 +105,70 @@ public class gamePlay {
                 Logger.getLogger(gamePlay.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+        
+        //Left panel
+        BorderPane leftPanelLayout = new BorderPane();
+        leftPanelLayout.setPadding(new Insets(30, 0, 30, 10));
+        gamePlayContainer.setLeft(leftPanelLayout);
+        
+        GridPane gameDetailsLayout = new GridPane();
+        leftPanelLayout.setTop(gameDetailsLayout);
+        
+        GridPane gameControlsLayout = new GridPane();
+        gameControlsLayout.setVgap(10);
+        leftPanelLayout.setBottom(gameControlsLayout);
+        
+        Label levelHeadline = new Label("Level");
+        levelHeadline.getStyleClass().add("text");
+        levelHeadline.getStyleClass().add("text--headline");
+        gameDetailsLayout.setConstraints(levelHeadline, 0, 0);
+        
+        Label levelLabel = new Label("Easy");
+        levelLabel.getStyleClass().add("text");
+        levelLabel.getStyleClass().add("text--normal");
+        gameDetailsLayout.setConstraints(levelLabel, 0, 1);
+        
+        
+        Label timerHeadline = new Label("Time");
+        timerHeadline.getStyleClass().add("text");
+        timerHeadline.getStyleClass().add("text--headline");
+        gameDetailsLayout.setConstraints(timerHeadline, 0, 2);
+        
+        Label timerLabel = new Label("1:00");
+        timerLabel.getStyleClass().add("text");
+        timerLabel.getStyleClass().add("text--normal");
+        gameDetailsLayout.setConstraints(timerLabel, 0, 4);
+        
+        gameDetailsLayout.getChildren().addAll(levelHeadline, levelLabel, timerHeadline, timerLabel);
+        
+        //Pause Button
+        Image pauseButtonIcon = new Image(getClass().getResourceAsStream("/icons/pause.png"));
+        ImageView pauseButtonIconView = new ImageView(pauseButtonIcon);
+        Button pauseGameButton = new Button("       Pause", pauseButtonIconView);
+        initButtonStyle(pauseGameButton, gameControlsLayout, 0, pauseButtonIconView, TRANSPARENT_BG);
+        
+        pauseGameButton.setOnAction(e -> {
+            
+        });
+        
+        //Hint Button
+        Image hintButtonIcon = new Image(getClass().getResourceAsStream("/icons/hint.png"));
+        ImageView hintButtonIconView = new ImageView(hintButtonIcon);
+        Button hintButton = new Button("       Hint", hintButtonIconView);
+        initButtonStyle(hintButton, gameControlsLayout, 1, hintButtonIconView, TRANSPARENT_BG);
+        
+        //Solve Button
+        Image solveButtonIcon = new Image(getClass().getResourceAsStream("/icons/challenge-computer.png"));
+        ImageView solveButtonIconView = new ImageView(solveButtonIcon);
+        Button solveGameButton = new Button("       Solve", solveButtonIconView);
+        initButtonStyle(solveGameButton, gameControlsLayout, 2, solveButtonIconView, TRANSPARENT_BG);
 
         return gamePlayContainer;
     }
 
     /**
      * Create Sudoku cells
+     * @author Muhammad Tarek
      */
     private void initSudokuBlock() {
         //Sudoku card layout
@@ -152,12 +213,13 @@ public class gamePlay {
         }
 
         gamePlayContainer.setCenter(cardBg);
+        gamePlayContainer.setMargin(cardBg, new Insets(0,0,0, - 150));
         gamePlayContainer.setAlignment(cardBg, Pos.CENTER);
         gamePlayContainer.getChildren().addAll();
     }
 
     /**
-     * @by Muhammad Tarek
+     * @author Muhammad Tarek
      * @param message
      * @param alertType
      */
@@ -214,7 +276,7 @@ public class gamePlay {
     }
 
     /**
-     *
+     * @author 
      * @throws InterruptedException
      */
     private void checkSudoku() throws InterruptedException {
@@ -251,7 +313,7 @@ public class gamePlay {
     }
 
     /**
-     *
+     * @author Muhammad Tarek, Mustafa Magdy
      * @param opType
      */
     static void sudokuOperation(int opType) {
@@ -285,15 +347,6 @@ public class gamePlay {
                         break;
                 }
             }
-        }
-    }
-
-    static void controlGameModeObjects() {
-        if (playingMode == 1 || playingMode == 2) {
-            //TODO
-            /**
-             * Hide save button, timer, hint, game level and pause button
-             */
         }
     }
 }

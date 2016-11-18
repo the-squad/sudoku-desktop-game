@@ -4,7 +4,11 @@ import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
 import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -20,6 +24,7 @@ public class global {
     static BorderPane windowLayout;
     static BorderPane gamePlayContainer;
     static GridPane mainMenuContainer;
+    static GridPane scorePageContainer;
 
     //<editor-fold defaultstate="collapsed" desc="Sudoku Arrays">
     static Integer[][] userSudoku = new Integer[9][9]; //Reads the Sudoku from the user
@@ -33,6 +38,9 @@ public class global {
 
     public static final int FADE_IN = 1;
     public static final int FADE_OUT = 2;
+    
+    public static final int TRANSPARENT_BG = 1;
+    public static final int WHITE_BG = 2;
 
     static int playingMode;
 
@@ -101,5 +109,36 @@ public class global {
         fadeAnimation.setToValue(fadeType == 1 ? 1 : 0);
 
         fadeAnimation.play();
+    }
+    
+       /**
+     * Initialize button styles, icons sizes Muhammad Tarek
+     *
+     * @since 6, November
+     * @param button
+     * @param layout
+     * @param position
+     * @param icon
+     */
+    static void initButtonStyle(Button button, GridPane layout, int position, ImageView icon, int bgColor) {
+        button.setOpacity(0);
+        button.getStyleClass().add("icon-text-button");
+
+        if (icon != null) {
+            icon.setFitHeight(bgColor == 1 ? 20 : 24);
+            icon.setFitWidth(bgColor == 1 ? 20 : 24);
+        }
+        
+        if (bgColor == 1)
+            button.getStyleClass().add("transparent-button");
+        else
+            button.getStyleClass().add("white-button");
+
+        layout.setConstraints(button, 0, position);
+        layout.setHalignment(button, HPos.CENTER);
+        layout.setValignment(button, VPos.CENTER);
+        layout.getChildren().add(button);
+        
+        fade(button, 300, 150 * (position + 1), FADE_IN);
     }
 }

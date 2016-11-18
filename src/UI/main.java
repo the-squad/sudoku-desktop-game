@@ -3,6 +3,7 @@ package UI;
 import static UI.global.windowLayout;
 import static UI.global.gamePlayContainer;
 import static UI.global.mainMenuContainer;
+import static UI.global.scorePageContainer;
 
 import javafx.application.Application;
 import static javafx.application.Application.launch;
@@ -27,8 +28,9 @@ public class main extends Application {
 
         mainMenuContainer = new mainMenu().initialize();
         gamePlayContainer = new gamePlay().initialize();
+        scorePageContainer = new scoreBoard().initialize();
 
-        windowLayout.setCenter(mainMenuContainer);
+        windowLayout.setCenter(scorePageContainer); //Change to mainMenu later
 
         //Main stage property
         primaryStage.setTitle("Sudoku Game!");
@@ -39,6 +41,7 @@ public class main extends Application {
         //Connecting the stylesheet
         windowScene.getStylesheets().add("/stylesheets/mainMenuSceneStyle.css");
         windowScene.getStylesheets().add("/stylesheets/gameSceneStyle.css");
+        windowScene.getStylesheets().add("/stylesheets/scoreSceneStyle.css");
         primaryStage.setScene(windowScene);
         primaryStage.show();
     }
