@@ -1,5 +1,7 @@
 package UI;
 
+import static UI.gamePlay.levelLabel;
+import static UI.gamePlay.sudokuOperation;
 import static UI.global.switchPanes;
 import static UI.global.PRINT_SUDOKU;
 import static UI.global.WHITE_BG;
@@ -20,6 +22,7 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -119,7 +122,7 @@ public class mainMenu {
         ImageView newGameButtonIconView = new ImageView(newGameButtonIcon);
         Button newGameButton = new Button("       New Game", newGameButtonIconView);
         initButtonStyle(newGameButton, gameModesLayout, 0, newGameButtonIconView, WHITE_BG);
- 
+
         newGameButton.setOnAction(e -> {
             switchPanes(rightPartLayout, gameModesLayout, levelsLayout);
             playingMode = 1;
@@ -219,6 +222,7 @@ public class mainMenu {
             ArrayList<String> sudokuGame = null;
             try {
                 sudokuGame = main.database.Select("Easy", 0);
+                levelLabel.setText(easyButton.getText());
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -236,6 +240,7 @@ public class mainMenu {
             ArrayList<String> sudokuGame = null;
             try {
                 sudokuGame = main.database.Select("Medium", 0);
+                levelLabel.setText(mediumButton.getText());
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -253,6 +258,7 @@ public class mainMenu {
             ArrayList<String> sudokuGame = null;
             try {
                 sudokuGame = main.database.Select("Hard", 0);
+                levelLabel.setText(hardButton.getText());
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -269,6 +275,10 @@ public class mainMenu {
             savedGames = main.database.Select(null, 1);
         } catch (SQLException ex) {
             Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (savedGames == null) {
+            savedGames = new ArrayList<>();
         }
 
         int gamesNumber = savedGames.size();
@@ -324,7 +334,6 @@ public class mainMenu {
         savedGamesLayout.setConstraints(scrollPane, 0, 1);
         savedGamesLayout.getChildren().add(scrollPane);
 
-        //Game blocks
         GridPane gameBlock[] = new GridPane[gamesNumber];
 
         for (int counter = 0; counter < gamesNumber; counter++) {
@@ -398,7 +407,7 @@ public class mainMenu {
             gameTitle.setOnAction(e -> {
                 main.sudokuId = data[0];
                 splitSudoku(data[1]);
-                gamePlay.sudokuOperation(PRINT_SUDOKU);
+                sudokuOperation(PRINT_SUDOKU);
                 switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
                 savedGamesLayout.getChildren().clear();
                 switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);
@@ -406,7 +415,13 @@ public class mainMenu {
 
             //Deleting the game
             deleteButton.setOnAction(e -> {
-                //TODO
+                String gameID = deleteButton.getParent().getParent().getId();
+
+                try {
+                    main.database.deleteGame(Integer.parseInt(gameID.replace("#", "")));
+                } catch (SQLException ex) {
+
+                }
             });
         }
     }

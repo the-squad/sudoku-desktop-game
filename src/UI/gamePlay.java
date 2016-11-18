@@ -35,7 +35,7 @@ public class gamePlay {
 
     BorderPane gamePlayContainer;
     private static TextField[][] sudokuCells = new TextField[9][9];
-
+    static Label levelLabel;
 
     /**
      * Initialize game play elements
@@ -91,7 +91,7 @@ public class gamePlay {
 
         initSudokuBlock();
         saveButton.setOnAction(e -> {
-            showPopup("Game is saveButtond successfuly", 1);
+            showPopup("Game is saved successfuly", 1);
         });
 
         //Adding the toolbar in the top of the window
@@ -123,7 +123,7 @@ public class gamePlay {
         levelHeadline.getStyleClass().add("text--headline");
         gameDetailsLayout.setConstraints(levelHeadline, 0, 0);
         
-        Label levelLabel = new Label("Easy");
+        levelLabel = new Label();
         levelLabel.getStyleClass().add("text");
         levelLabel.getStyleClass().add("text--normal");
         gameDetailsLayout.setConstraints(levelLabel, 0, 1);
@@ -134,7 +134,7 @@ public class gamePlay {
         timerHeadline.getStyleClass().add("text--headline");
         gameDetailsLayout.setConstraints(timerHeadline, 0, 2);
         
-        Label timerLabel = new Label("1:00");
+        Label timerLabel = new Label();
         timerLabel.getStyleClass().add("text");
         timerLabel.getStyleClass().add("text--normal");
         gameDetailsLayout.setConstraints(timerLabel, 0, 4);

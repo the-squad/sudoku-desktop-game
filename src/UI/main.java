@@ -30,7 +30,7 @@ public class main extends Application {
         gamePlayContainer = new gamePlay().initialize();
         scorePageContainer = new scoreBoard().initialize();
 
-        windowLayout.setCenter(scorePageContainer); //Change to mainMenu later
+        windowLayout.setCenter(mainMenuContainer);
 
         //Main stage property
         primaryStage.setTitle("Sudoku Game!");
