@@ -34,21 +34,20 @@ public class Database {
         if (choice == 0) // choice 0 means to select from allSudoku table and return a specified sudoko by difficulty 
         {
             randomNum = rnd.nextInt(5 - 1) + 1; // Generate Random Number from 1 to 5 to select the sudoku because easch mode has 5 sudoku
-            query = "Select Sudoku from 'allSudoku' WHERE Diff = " + "\"" + Difficulty + "\""; // get all sudoko according to the Difficulty from allSudoku Table
+            query = "Select Sudoku,ID from 'allSudoku' WHERE Diff = " + "\"" + Difficulty + "\""; // get all sudoko according to the Difficulty from allSudoku Table
         } else if (choice == 1) { // choice 1 means to load the saved sudoko from Load table
-            query = "Select * from 'Load'";  // get the saved sudoku from Load table
+            query = "Select *,allSudoku.Sudoku as original from Load JOIN allSudoku ON load.originalID = allSudoku.ID";  // get the saved sudoku from Load table
         }
         // variable from result set class to take the result of the query 
         ResultSet result = stmt.executeQuery(query); //Query Excution
         ArrayList<String> arr = new ArrayList();    // array used to get the results
         ArrayList<String> arr2 = new ArrayList();  // array 2 to hold the random sudoku from arr number 1
-
         while (result.next()) {
             if (choice == 0) {
-                arr.add(result.getString("Sudoku")); //Fill the first array with all Sudukos from allSudoku Table
+                arr.add(result.getString("Sudoku")+","+result.getString("ID")); //Fill the first array with all Sudukos from allSudoku Table
             } else {
                 arr.add(result.getInt("ID") + "," + result.getString("Sudoku") + "," + result.getInt("Timer")
-                        + "," + result.getString("Level") + "," + result.getString("savingTime")); // get all Sudokus in Load Table
+                        + "," + result.getString("Diff") + "," + result.getString("savingTime") + "," + result.getString("original")+","+result.getString("originalID")); // get all Sudokus in Load Table
             }
         }
         if (arr.isEmpty()) {
@@ -62,11 +61,37 @@ public class Database {
 
     }
 
-    public void insert(String SU, int Timer, String level) throws SQLException {
+    public void saveGame(String SU, int Timer, String level, int originalId ,int oldId) throws SQLException {
         String query = null;
         Statement stmt = conn.createStatement(); // variable from statement class used to write query in to be excuted
-        query = "INSERT INTO Load (Sudoku , Timer , Level) Values ( " + "\"" + SU + "\"" + "," + "\"" + Timer + "\"" + "," + "\"" + level + "\"" + ")";
+        query = "INSERT INTO Load (Sudoku , Timer , Level, originalID) Values ( " + "\"" + SU + "\"" + "," + "\"" + Timer + "\"" + "," + "\"" + level + "\"" + "," + "\"" + originalId + "\"" + ")";
+        stmt.executeUpdate(query);
+        this.deleteGame(oldId);
+    }
+    
+    public void deleteGame(int id) throws SQLException
+    {
+        Statement stmt = conn.createStatement(); // variable from statement class used to write query in to be excuted
+        String query  = "DELETE FROM LOAD WHERE ID = "+ id;
         stmt.executeUpdate(query);
     }
-
+    
+    public void addDashboard(String name,int time,String Diff) throws SQLException
+    {
+        Statement stmt = conn.createStatement();
+        String query = "INSERT INTO Dashboard (name , Diff , Time) Values ( " + "\"" + name + "\"" + "," + "\"" + Diff + "\"" + "," + "\"" + time + "\"" +")";
+        stmt.executeUpdate(query);
+    }
+    
+    public ArrayList<String> highfive(String Diff) throws SQLException
+    {
+        Statement stmt = conn.createStatement();
+        String query = "SELECT * FROM Dashboard where Diff = \"" + Diff + "\" order by time limit 5";
+        ResultSet reuslt = stmt.executeQuery(query);
+        ArrayList<String> x = new ArrayList<>();
+        while (reuslt.next()) {
+            x.add(reuslt.getString("Name")+","+reuslt.getString("Diff")+","+reuslt.getString("Time"));
+        }
+        return x;
+    }
 }
