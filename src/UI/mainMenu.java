@@ -2,10 +2,12 @@ package UI;
 
 import static UI.gamePlay.levelLabel;
 import static UI.gamePlay.sudokuOperation;
+import static UI.global.FADE_OUT;
 import static UI.global.switchPanes;
 import static UI.global.PRINT_SUDOKU;
 import static UI.global.WHITE_BG;
 import static UI.global.computerSolution;
+import static UI.global.fade;
 import static UI.global.windowLayout;
 import static UI.global.gamePlayContainer;
 import static UI.global.playingMode;
@@ -18,10 +20,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -31,6 +37,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.util.Duration;
 
 public class mainMenu {
 
@@ -417,6 +424,22 @@ public class mainMenu {
             //Deleting the game
             deleteButton.setOnAction(e -> {
                 String gameID = deleteButton.getParent().getParent().getId();
+                Object gameBlockObject = deleteButton.getParent().getParent();
+                int gameBlockNumber = gamesContainer.getRowIndex((Node) gameBlockObject);
+                fade(gameBlockObject, 200, 0, FADE_OUT);
+               
+                for (int blockCounter = gameBlockNumber; blockCounter < gamesNumber; blockCounter++) {
+                    Timeline updateGameTimeline = new Timeline();
+                    
+                    KeyValue fromKeyValue = new KeyValue(gameBlock[blockCounter + 1].translateYProperty(), gameBlock[blockCounter + 1].getTranslateY());
+                    KeyValue toKeyValue = new KeyValue(gameBlock[blockCounter + 1].translateYProperty(), gameBlock[blockCounter + 1].getTranslateY() - 20 - gameBlock[blockCounter + 1].getHeight());
+                    
+                    KeyFrame startMove = new KeyFrame(Duration.ZERO, fromKeyValue);
+                    KeyFrame finishMove = new KeyFrame(Duration.millis(300), toKeyValue);
+                    
+                    updateGameTimeline.getKeyFrames().addAll(startMove, finishMove);
+                    updateGameTimeline.play();
+                }
 
                 try {
                     main.database.deleteGame(Integer.parseInt(gameID.replace("#", "")));
