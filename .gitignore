@@ -45,3 +45,16 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
+*.swp
+*.TXT
+*.xml
+*.properties
+dist/
+build/
+nbproject/
+nbproject/UPDATED.TXT
+nbproject/build-impl.xml
+nbproject/jfx-impl.xml
+nbproject/UPDATED.TXT
+nbproject/private/private.properties
+nbproject/build-impl.xml
