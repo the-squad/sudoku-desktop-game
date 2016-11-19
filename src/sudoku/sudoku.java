@@ -70,7 +70,7 @@ public class sudoku {
      */
     private boolean solveSudoku(int x, int y, List<List<Integer>> sudokuList) {
         // Check if the function exceeded one second.
-        if(System.currentTimeMillis() - startTime > 1000){
+        if(System.currentTimeMillis() - startTime > 1000) {
             return false;
         }
         // Next cell number

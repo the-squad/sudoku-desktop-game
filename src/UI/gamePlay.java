@@ -2,6 +2,7 @@ package UI;
 
 import static UI.global.*;
 import static UI.main.database;
+import static UI.scoreBoard.timeLabel;
 import java.sql.SQLException;
 
 import javafx.animation.KeyFrame;
@@ -337,11 +338,23 @@ public class gamePlay {
         }
 
         if (isSudoku) {
+            Timeline gameSuccessTimeline = new Timeline();
+            
             for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
                 for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
+                     sudokuCells[rowCounter][columnCounter].setDisable(true);
                     sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
                 }
             }
+            
+            timeLabel.setText(timerLabel.getText());
+            
+            KeyFrame goToScoreBoard = new KeyFrame(Duration.millis(2000), e-> {
+                switchPanes(windowLayout, gamePlayContainer, scorePageContainer);
+            });
+            
+            gameSuccessTimeline.getKeyFrames().add(goToScoreBoard);
+            gameSuccessTimeline.play();
         }
     }
 
