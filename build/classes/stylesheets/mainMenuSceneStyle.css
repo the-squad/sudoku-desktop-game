@@ -1,10 +1,4 @@
-.root {
-    -fx-background-color: #eee;
-}
 
-/*
-    Left part
-*/
 .left-part {
     -fx-background-color: rgb(65, 131, 215);
 }
@@ -43,46 +37,13 @@
     -fx-font-wieght: 500;
 }
 
-.icon-text-button {
-    -fx-background-radius: 4;
-    -fx-alignment: left;
-    -fx-font-family: "Lato";
-    -fx-font-size: 16;
-    -fx-font-weight: 700;
-    -fx-text-fill: rgba(41,47,51, 0.9);
-    -fx-padding: 0 0 0 20;
-    -fx-cursor: hand;
-}
 
-.white-button {
-    -fx-background-color: #fff;
-    -fx-min-width: 300;
-    -fx-min-height: 55;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.03, 0.0, 1.0);
-}
-
-.white-button:hover {
-    -fx-background-color: rgb(244, 244, 244);
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.03, 0.0, 1.0);
-}
-
-#backButtonDark {
-    -fx-background-image: url("../icons/go-back-left-arrow.png");
-    -fx-max-height: 25;
-    -fx-max-width: 25;
-    -fx-background-size: 20px;
-}
-
-#backButtonDark:hover {
-    -fx-background-color: rgba(41,47,51, 0.1);
-}
 /*
     Scrollbar
 */
 .scroll-pane,
 .scroll-pane:focused,
 .scroll-pane > .viewport {
-    -fx-background-insets: #eee;
     -fx-background-color: #eee;
 }
 
@@ -122,7 +83,6 @@
     visibility: false;
 }
 
-
 /*
     Games block
 */
@@ -132,9 +92,7 @@
     -fx-min-height: 70;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.03, 0.0, 1.0);
     -fx-background-radius: 4;
-    -fx-alignment: left;
     -fx-font-family: "Lato";
-
     -fx-padding: 15;
 }
 
@@ -159,18 +117,3 @@
     -fx-underline: true;
 }
 
-.delete-button {
-    -fx-background-image: url("../icons/delete.png");
-    -fx-min-height: 35;
-    -fx-min-width: 35;
-    -fx-background-size: 25px;
-    -fx-background-color: transparent;
-    -fx-background-repeat: no-repeat;
-    -fx-background-position: center;
-    -fx-border-radius: 4;
-    -fx-cursor: hand;
-}
-
-.delete-button:hover {
-    -fx-background-color: rgba(41,47,51, 0.1);
-}

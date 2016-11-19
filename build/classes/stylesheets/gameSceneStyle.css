@@ -1,49 +1,8 @@
-.root {
-    -fx-background-color: #eee;
-}
 
-/*
-    Toolar bar
-*/
 .toolbar {
     -fx-background-color: rgb(65, 131, 215);
     -fx-padding: 25px;
     -fx-width: 100%;
-}
-
-/*
-    Unify design for iconButtons
-*/
-.iconButton {
-    -fx-background-color: transparent;
-    -fx-background-size: 25px;
-    -fx-background-repeat: no-repeat;
-    -fx-background-position: center;
-    -fx-min-height: 35;
-    -fx-min-width: 35;
-    -fx-border-radius: 4;
-    -fx-cursor: hand;
-}
-
-.iconButton:hover {
-    -fx-background-color: rgba(255,255,255, 0.2);
-}
-/*
-    Cutom icon for buttons
-*/
-#backButton {
-    -fx-background-image: url("../icons/ic_arrow_back_white_48dp_1x.png");
-}
-
-#saveButton {
-    -fx-background-image: url("../icons/ic_save_white_48dp_1x.png");
-}
-
-#submitButton {
-    -fx-font-family: "Lato";
-    -fx-text-fill: #fff;
-    -fx-font-size: 12pt;
-    -fx-font-weight: 500;
 }
 
 #headline {
@@ -174,7 +133,7 @@
 }
 
 .text--headline {
-    -fx-font-size: 13;
+    -fx-font-size: 11;
     -fx-font-weight: 400;
     -fx-padding: 0 0 5 20;
 }
@@ -183,14 +142,4 @@
     -fx-font-size: 25;
     -fx-font-weight: 600;
     -fx-padding: 0 0 30 20;
-}
-
-.transparent-button {
-    -fx-background-color: rgba(41,47,51, 0);
-    -fx-min-width: 150;
-    -fx-min-height: 40;
-}
-
-.transparent-button:hover {
-    -fx-background-color: rgba(41,47,51, 0.1);
 }

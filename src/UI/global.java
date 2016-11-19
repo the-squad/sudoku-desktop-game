@@ -5,6 +5,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.geometry.HPos;
+import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -129,10 +130,13 @@ public class global {
             icon.setFitWidth(bgColor == 1 ? 20 : 24);
         }
         
+        button.getStyleClass().add("button-icon_text");
+        button.setAlignment(Pos.CENTER_LEFT);
+        
         if (bgColor == 1)
-            button.getStyleClass().add("transparent-button");
+            button.getStyleClass().add("button-icon_text--transparent");
         else
-            button.getStyleClass().add("white-button");
+            button.getStyleClass().add("button-icon_text--white");
 
         layout.setConstraints(button, 0, position);
         layout.setHalignment(button, HPos.CENTER);

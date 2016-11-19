@@ -30,7 +30,7 @@ public class main extends Application {
         gamePlayContainer = new gamePlay().initialize();
         scorePageContainer = new scoreBoard().initialize();
 
-        windowLayout.setCenter(scorePageContainer); //Change to mainMenu later
+        windowLayout.setCenter(scorePageContainer);
 
         //Main stage property
         primaryStage.setTitle("Sudoku Game!");
@@ -42,6 +42,7 @@ public class main extends Application {
         windowScene.getStylesheets().add("/stylesheets/mainMenuSceneStyle.css");
         windowScene.getStylesheets().add("/stylesheets/gameSceneStyle.css");
         windowScene.getStylesheets().add("/stylesheets/scoreSceneStyle.css");
+        windowScene.getStylesheets().add("/stylesheets/global.css");
         primaryStage.setScene(windowScene);
         primaryStage.show();
     }

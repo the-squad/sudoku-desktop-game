@@ -1,9 +1,13 @@
 package UI;
 
+import static UI.gamePlay.levelLabel;
+import static UI.gamePlay.sudokuOperation;
+import static UI.global.FADE_OUT;
 import static UI.global.switchPanes;
 import static UI.global.PRINT_SUDOKU;
 import static UI.global.WHITE_BG;
 import static UI.global.computerSolution;
+import static UI.global.fade;
 import static UI.global.windowLayout;
 import static UI.global.gamePlayContainer;
 import static UI.global.playingMode;
@@ -16,10 +20,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -29,6 +37,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.util.Duration;
 
 public class mainMenu {
 
@@ -119,7 +128,7 @@ public class mainMenu {
         ImageView newGameButtonIconView = new ImageView(newGameButtonIcon);
         Button newGameButton = new Button("       New Game", newGameButtonIconView);
         initButtonStyle(newGameButton, gameModesLayout, 0, newGameButtonIconView, WHITE_BG);
- 
+
         newGameButton.setOnAction(e -> {
             switchPanes(rightPartLayout, gameModesLayout, levelsLayout);
             playingMode = 1;
@@ -194,14 +203,14 @@ public class mainMenu {
         levelsLayout.setHalignment(backArrowAndText, HPos.CENTER);
 
         //Back Button
-        Button back = new Button("");
-        back.getStyleClass().add("iconButton");
-        back.setId("backButtonDark");
-        backArrowAndText.setLeft(back);
-        backArrowAndText.setAlignment(back, Pos.CENTER);
-        backArrowAndText.setMargin(back, new Insets(0, -80, 0, -65));
+        Button backButton = new Button("");
+        backButton.getStyleClass().add("button-icon--dark");
+        backButton.getStyleClass().add("back-icon--dark");
+        backArrowAndText.setLeft(backButton);
+        backArrowAndText.setAlignment(backButton, Pos.CENTER);
+        backArrowAndText.setMargin(backButton, new Insets(0, -80, 0, -65));
 
-        back.setOnAction(e -> switchPanes(rightPartLayout, levelsLayout, gameModesLayout));
+        backButton.setOnAction(e -> switchPanes(rightPartLayout, levelsLayout, gameModesLayout));
 
         //Headline
         Label headlineText = new Label("Choose game level");
@@ -219,6 +228,7 @@ public class mainMenu {
             ArrayList<String> sudokuGame = null;
             try {
                 sudokuGame = main.database.Select("Easy", 0);
+                levelLabel.setText(easyButton.getText());
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -236,6 +246,7 @@ public class mainMenu {
             ArrayList<String> sudokuGame = null;
             try {
                 sudokuGame = main.database.Select("Medium", 0);
+                levelLabel.setText(mediumButton.getText());
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -253,6 +264,7 @@ public class mainMenu {
             ArrayList<String> sudokuGame = null;
             try {
                 sudokuGame = main.database.Select("Hard", 0);
+                levelLabel.setText(hardButton.getText());
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -269,6 +281,10 @@ public class mainMenu {
             savedGames = main.database.Select(null, 1);
         } catch (SQLException ex) {
             Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (savedGames == null) {
+            savedGames = new ArrayList<>();
         }
 
         int gamesNumber = savedGames.size();
@@ -292,14 +308,14 @@ public class mainMenu {
         savedGamesLayout.setHalignment(backArrowAndText, HPos.CENTER);
 
         //Creating elemens
-        Button back = new Button("");
-        back.getStyleClass().add("iconButton");
-        back.setId("backButtonDark");
-        backArrowAndText.setLeft(back);
-        backArrowAndText.setAlignment(back, Pos.CENTER);
-        backArrowAndText.setMargin(back, new Insets(0, -170, 0, -10));
+        Button backButton = new Button("");
+        backButton.getStyleClass().add("button-icon--dark");
+        backButton.getStyleClass().add("back-icon--dark");
+        backArrowAndText.setLeft(backButton);
+        backArrowAndText.setAlignment(backButton, Pos.CENTER);
+        backArrowAndText.setMargin(backButton, new Insets(0, -170, 0, -10));
 
-        back.setOnAction(e -> {
+        backButton.setOnAction(e -> {
             switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);
             savedGamesLayout.getChildren().clear();
         });
@@ -324,7 +340,6 @@ public class mainMenu {
         savedGamesLayout.setConstraints(scrollPane, 0, 1);
         savedGamesLayout.getChildren().add(scrollPane);
 
-        //Game blocks
         GridPane gameBlock[] = new GridPane[gamesNumber];
 
         for (int counter = 0; counter < gamesNumber; counter++) {
@@ -332,6 +347,7 @@ public class mainMenu {
 
             gameBlock[counter] = new GridPane();
             gameBlock[counter].getStyleClass().add("game-block");
+            gameBlock[counter].setAlignment(Pos.CENTER_LEFT);
             gameBlock[counter].setId("#" + data[0]); //Change to game ID
 
             //Container
@@ -355,7 +371,7 @@ public class mainMenu {
 
             //Game title
             Button gameTitle = new Button(data[4]);
-            gameTitle.getStyleClass().add("game-title");
+            gameTitle.getStyleClass().add("button-transparent--dark");
             detailsLayout.setConstraints(gameTitle, 0, 0);
             detailsLayout.getChildren().add(gameTitle);
 
@@ -386,9 +402,10 @@ public class mainMenu {
 
             //Delete game button
             Button deleteButton = new Button();
-            deleteButton.getStyleClass().add("delete-button");
+            deleteButton.getStyleClass().add("button-icon--dark");
+            deleteButton.getStyleClass().add("delete-icon");
             gameBlockLayout.setRight(deleteButton);
-            gameBlockLayout.setMargin(deleteButton, new Insets(3, 0, 0, 0));
+            gameBlockLayout.setMargin(deleteButton, new Insets(4, 0, 0, 0));
 
             //Adding blocks to the container
             gamesContainer.setConstraints(gameBlock[counter], 0, counter);
@@ -398,7 +415,7 @@ public class mainMenu {
             gameTitle.setOnAction(e -> {
                 main.sudokuId = data[0];
                 splitSudoku(data[1]);
-                gamePlay.sudokuOperation(PRINT_SUDOKU);
+                sudokuOperation(PRINT_SUDOKU);
                 switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
                 savedGamesLayout.getChildren().clear();
                 switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);
@@ -406,7 +423,29 @@ public class mainMenu {
 
             //Deleting the game
             deleteButton.setOnAction(e -> {
-                //TODO
+                String gameID = deleteButton.getParent().getParent().getId();
+                Object gameBlockObject = deleteButton.getParent().getParent();
+                int gameBlockNumber = gamesContainer.getRowIndex((Node) gameBlockObject);
+                fade(gameBlockObject, 200, 0, FADE_OUT);
+               
+                for (int blockCounter = gameBlockNumber; blockCounter < gamesNumber; blockCounter++) {
+                    Timeline updateGameTimeline = new Timeline();
+                    
+                    KeyValue fromKeyValue = new KeyValue(gameBlock[blockCounter + 1].translateYProperty(), gameBlock[blockCounter + 1].getTranslateY());
+                    KeyValue toKeyValue = new KeyValue(gameBlock[blockCounter + 1].translateYProperty(), gameBlock[blockCounter + 1].getTranslateY() - 20 - gameBlock[blockCounter + 1].getHeight());
+                    
+                    KeyFrame startMove = new KeyFrame(Duration.ZERO, fromKeyValue);
+                    KeyFrame finishMove = new KeyFrame(Duration.millis(300), toKeyValue);
+                    
+                    updateGameTimeline.getKeyFrames().addAll(startMove, finishMove);
+                    updateGameTimeline.play();
+                }
+
+                try {
+                    main.database.deleteGame(Integer.parseInt(gameID.replace("#", "")));
+                } catch (SQLException ex) {
+
+                }
             });
         }
     }
