@@ -1,13 +1,20 @@
 package UI;
 
+import static UI.gamePlay.levelLabel;
+import static UI.gamePlay.sudokuOperation;
+import static UI.global.CLEAR_SUDOKU;
 import static UI.global.FADE_IN;
 import static UI.global.FADE_OUT;
 import static UI.global.fade;
+import static UI.global.gameTime;
 import static UI.global.windowLayout;
 import static UI.global.mainMenuContainer;
 import static UI.global.switchPanes;
+import static UI.main.database;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 
 import javafx.geometry.HPos;
@@ -33,7 +40,7 @@ public class scoreBoard {
     private Label inputLabel;
     private TextField nameTextField;
     private Label scoreBoardArray[] = new Label[5];
-    private Label timeLabel;
+    static Label timeLabel;
 
     public void setScoreBoardArray(Label[] scoreBoardArray) {
         this.scoreBoardArray = scoreBoardArray;
@@ -91,6 +98,11 @@ public class scoreBoard {
                 timeLabel.setPadding(new Insets(5, 0, 15, 0));
                 fade(saveDataLayout, 750, 0, FADE_IN);
                
+                try {
+                    database.addDashboard(nameTextField.getText(), gameTime.getTime(), levelLabel.getText());
+                } catch (SQLException ex) {
+                    Logger.getLogger(scoreBoard.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
 
@@ -129,23 +141,15 @@ public class scoreBoard {
         scorePageContainer.getChildren().add(backToMenuButton);
 
         backToMenuButton.setOnAction(e -> {
+            sudokuOperation(CLEAR_SUDOKU);
             switchPanes(windowLayout, scorePageContainer, mainMenuContainer);
             Timeline resetUITimeline = new Timeline();
             KeyFrame startReset = new KeyFrame(Duration.millis(300), event -> resetUI());
             resetUITimeline.getKeyFrames().add(startReset);
             resetUITimeline.play();
-            
         });
 
         return scorePageContainer;
-    }
-
-    static void printTimeRecords() {
-        //Edit records text
-    }
-
-    static void printGameTime() {
-        //Edit game time
     }
 
     private void resetUI() {

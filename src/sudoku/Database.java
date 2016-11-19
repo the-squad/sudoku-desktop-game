@@ -61,10 +61,10 @@ public class Database {
 
     }
 
-    public void saveGame(String SU, int Timer, String level, int originalId ,int oldId) throws SQLException {
+    public void saveGame(String SU, int Timer, int originalId ,int oldId) throws SQLException {
         String query = null;
         Statement stmt = conn.createStatement(); // variable from statement class used to write query in to be excuted
-        query = "INSERT INTO Load (Sudoku , Timer , Level, originalID) Values ( " + "\"" + SU + "\"" + "," + "\"" + Timer + "\"" + "," + "\"" + level + "\"" + "," + "\"" + originalId + "\"" + ")";
+        query = "INSERT INTO Load (Sudoku , Timer , originalID) Values ( " + "\"" + SU + "\"" + "," + "\"" + Timer + "\"" + "," + "\"" + originalId + "\"" + ")";
         stmt.executeUpdate(query);
         this.deleteGame(oldId);
     }

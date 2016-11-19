@@ -1,17 +1,8 @@
 package UI;
 
-import static UI.gamePlay.levelLabel;
-import static UI.gamePlay.sudokuOperation;
-import static UI.global.FADE_OUT;
-import static UI.global.switchPanes;
-import static UI.global.PRINT_SUDOKU;
-import static UI.global.WHITE_BG;
-import static UI.global.computerSolution;
-import static UI.global.fade;
-import static UI.global.windowLayout;
-import static UI.global.gamePlayContainer;
-import static UI.global.playingMode;
-import static UI.global.initButtonStyle;
+import static UI.gamePlay.*;
+import static UI.global.*;
+import static UI.main.database;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -227,8 +218,12 @@ public class mainMenu {
 
             ArrayList<String> sudokuGame = null;
             try {
-                sudokuGame = main.database.Select("Easy", 0);
+                sudokuGame = database.Select("Easy", 0);
+                sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
+                
                 levelLabel.setText(easyButton.getText());
+                gameTime.setTimer(timerLabel, 0);
+                gameTime.start();
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -245,8 +240,12 @@ public class mainMenu {
 
             ArrayList<String> sudokuGame = null;
             try {
-                sudokuGame = main.database.Select("Medium", 0);
+                sudokuGame = database.Select("Medium", 0);
+                sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
+                
                 levelLabel.setText(mediumButton.getText());
+                gameTime.setTimer(timerLabel, 0);
+                gameTime.start();
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -263,7 +262,11 @@ public class mainMenu {
 
             ArrayList<String> sudokuGame = null;
             try {
-                sudokuGame = main.database.Select("Hard", 0);
+                sudokuGame = database.Select("Hard", 0);
+                sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
+                
+                gameTime.setTimer(timerLabel, 0);
+                gameTime.start();
                 levelLabel.setText(hardButton.getText());
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
@@ -413,10 +416,21 @@ public class mainMenu {
 
             //Switching scenes and printing the Sudoku
             gameTitle.setOnAction(e -> {
-                main.sudokuId = data[0];
+                //Printing Sudoku and saving Sudoku ID
+                sudokuId = data[0];
+                sudokuIdOriginal = data[6];
                 splitSudoku(data[1]);
                 sudokuOperation(PRINT_SUDOKU);
+
                 switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+
+                levelLabel.setText(data[3]);
+                timerLabel.setText(gameTimer.getText());
+
+                gameTime.setTimer(timerLabel, Integer.parseInt(data[2]));
+                gameTime.start();
+
+                //Clear container
                 savedGamesLayout.getChildren().clear();
                 switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);
             });
@@ -427,16 +441,17 @@ public class mainMenu {
                 Object gameBlockObject = deleteButton.getParent().getParent();
                 int gameBlockNumber = gamesContainer.getRowIndex((Node) gameBlockObject);
                 fade(gameBlockObject, 200, 0, FADE_OUT);
-               
-                for (int blockCounter = gameBlockNumber; blockCounter < gamesNumber; blockCounter++) {
+
+                for (int blockCounter = gameBlockNumber; blockCounter < gamesNumber - 1; blockCounter++) {
+                    //Creating timeline animation
                     Timeline updateGameTimeline = new Timeline();
-                    
+
                     KeyValue fromKeyValue = new KeyValue(gameBlock[blockCounter + 1].translateYProperty(), gameBlock[blockCounter + 1].getTranslateY());
                     KeyValue toKeyValue = new KeyValue(gameBlock[blockCounter + 1].translateYProperty(), gameBlock[blockCounter + 1].getTranslateY() - 20 - gameBlock[blockCounter + 1].getHeight());
-                    
+
                     KeyFrame startMove = new KeyFrame(Duration.ZERO, fromKeyValue);
                     KeyFrame finishMove = new KeyFrame(Duration.millis(300), toKeyValue);
-                    
+
                     updateGameTimeline.getKeyFrames().addAll(startMove, finishMove);
                     updateGameTimeline.play();
                 }

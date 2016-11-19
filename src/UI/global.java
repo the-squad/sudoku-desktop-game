@@ -14,6 +14,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+import sudoku.timer;
 
 /**
  * Class to initialize all global variables and methods
@@ -44,6 +45,9 @@ public class global {
     public static final int WHITE_BG = 2;
 
     static int playingMode;
+    static String sudokuId = "0";
+    static String sudokuIdOriginal;
+    static timer gameTime = new timer();
 
     /**
      *
@@ -90,7 +94,6 @@ public class global {
 
         translateAnimation.getKeyFrames().addAll(startFadeOut, startMoveOut, finishFadeOut, fnishMoveOut, clear, startFadeIn, startMoveIn, addingToCenter, finishFadeIn, finishMoveIn);
         translateAnimation.play();
-
     }
 
     /**

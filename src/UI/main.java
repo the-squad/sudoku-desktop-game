@@ -14,8 +14,6 @@ import sudoku.Database;
 
 public class main extends Application {
 
-    static String sudokuId;
-
     static Database database = new Database();
 
     @Override
@@ -30,7 +28,7 @@ public class main extends Application {
         gamePlayContainer = new gamePlay().initialize();
         scorePageContainer = new scoreBoard().initialize();
 
-        windowLayout.setCenter(scorePageContainer);
+        windowLayout.setCenter(mainMenuContainer);
 
         //Main stage property
         primaryStage.setTitle("Sudoku Game!");
