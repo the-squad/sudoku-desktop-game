@@ -38,7 +38,12 @@ public class sudoku {
     }
 
     public void setSudoku(Integer[][] sudoku) {
-        solvedSudoku = sudoku.clone();
+        solvedSudoku = new Integer[9][9];
+        for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
+            for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
+                solvedSudoku[rowCounter][columnCounter] = sudoku[rowCounter][columnCounter];
+            }
+        }
         this.sudoku = sudoku;
     }
     
@@ -50,7 +55,7 @@ public class sudoku {
      */
     public boolean solveSudoku() {
         startTime = System.currentTimeMillis();
-        List<List<Integer>> sudokuList = Arrays.stream(sudoku).map(Arrays::asList).collect(Collectors.toList());
+        List<List<Integer>> sudokuList = Arrays.stream(solvedSudoku).map(Arrays::asList).collect(Collectors.toList());
         return solveSudoku(0, 0, sudokuList);
     }
 

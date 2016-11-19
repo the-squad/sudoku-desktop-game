@@ -28,6 +28,7 @@ public class gamePlay {
     static Label levelLabel;
     static Label timerLabel;
     private BorderPane cardBg;
+    sudoku Sudoku = new sudoku();
 
     /**
      * Initialize game play elements
@@ -175,6 +176,14 @@ public class gamePlay {
         Button hintButton = new Button("       Hint", hintButtonIconView);
         initButtonStyle(hintButton, gameControlsLayout, 1, hintButtonIconView, TRANSPARENT_BG);
         
+        hintButton.setOnAction(e -> {
+            sudokuOperation(READ_SUDOKU);
+            Sudoku.setSudoku(userSudoku);
+            int[] hintDetails = Sudoku.hint();
+            sudokuCells[hintDetails[0]][hintDetails[1]].setText(hintDetails[2] + "");
+            
+        });
+        
         //Solve Button
         Image solveButtonIcon = new Image(getClass().getResourceAsStream("/icons/challenge-computer.png"));
         ImageView solveButtonIconView = new ImageView(solveButtonIcon);
@@ -305,7 +314,6 @@ public class gamePlay {
      * @throws InterruptedException
      */
     private void checkSudoku() throws InterruptedException {
-        sudoku Sudoku = new sudoku();
         Sudoku.setSudoku(userSudoku);
 
         Sudoku.initSudokuWrongCells();
