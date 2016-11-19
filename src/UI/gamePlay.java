@@ -68,8 +68,8 @@ public class gamePlay {
 
         //Back Button
         Button backButton = new Button("");
-        backButton.getStyleClass().add("iconButton");
-        backButton.setId("backButton");
+        backButton.getStyleClass().add("button-icon--white");
+        backButton.getStyleClass().add("back-icon--white");
         toolbarLayout.setLeft(backButton);
 
         backButton.setOnAction(e -> {
@@ -79,14 +79,13 @@ public class gamePlay {
 
         //Save Button
         Button saveButton = new Button("");
-        saveButton.getStyleClass().add("iconButton");
-        saveButton.setId("saveButton");
+        saveButton.getStyleClass().add("button-icon--white");
+        saveButton.getStyleClass().addAll("save-icon");
         headlineAndSaveLayout.setRight(saveButton);
         headlineAndSaveLayout.setMargin(saveButton, new Insets(0, 15, 0, 0));
 
         Button submitButton = new Button("Submit");
-        submitButton.getStyleClass().add("iconButton");
-        submitButton.setId("submitButton");
+        submitButton.getStyleClass().add("button-transparent");
         toolbarLayout.setRight(submitButton);
 
         initSudokuBlock();
@@ -108,7 +107,7 @@ public class gamePlay {
         
         //Left panel
         BorderPane leftPanelLayout = new BorderPane();
-        leftPanelLayout.setPadding(new Insets(30, 0, 30, 10));
+        leftPanelLayout.setPadding(new Insets(30, 0, 40, 10));
         gamePlayContainer.setLeft(leftPanelLayout);
         
         GridPane gameDetailsLayout = new GridPane();
@@ -118,7 +117,7 @@ public class gamePlay {
         gameControlsLayout.setVgap(10);
         leftPanelLayout.setBottom(gameControlsLayout);
         
-        Label levelHeadline = new Label("Level");
+        Label levelHeadline = new Label("LEVEL");
         levelHeadline.getStyleClass().add("text");
         levelHeadline.getStyleClass().add("text--headline");
         gameDetailsLayout.setConstraints(levelHeadline, 0, 0);
@@ -129,7 +128,7 @@ public class gamePlay {
         gameDetailsLayout.setConstraints(levelLabel, 0, 1);
         
         
-        Label timerHeadline = new Label("Time");
+        Label timerHeadline = new Label("TIME");
         timerHeadline.getStyleClass().add("text");
         timerHeadline.getStyleClass().add("text--headline");
         gameDetailsLayout.setConstraints(timerHeadline, 0, 2);

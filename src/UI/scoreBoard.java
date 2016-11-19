@@ -1,5 +1,6 @@
 package UI;
 
+import static UI.global.FADE_IN;
 import static UI.global.FADE_OUT;
 import static UI.global.fade;
 import static UI.global.windowLayout;
@@ -60,6 +61,7 @@ public class scoreBoard {
         timeLabel = new Label("1:00");
         timeLabel.getStyleClass().add("score-text");
         timeLabel.getStyleClass().add("game-score-time");
+        timeLabel.setPadding(new Insets(5, 0, 30, 0));
         centerObject(timeLabel);
         scorePageContainer.setConstraints(timeLabel, 0, 1);
 
@@ -81,21 +83,14 @@ public class scoreBoard {
 
         nameTextField.setOnKeyPressed((KeyEvent keyEvent) -> {
             if (keyEvent.getCode() == KeyCode.ENTER) {
-                fade(inputLabel, 300, 0, FADE_OUT);
-                Timeline changeTextfieldTimeline = new Timeline();
-                
-                KeyValue startDisable = new KeyValue(nameTextField.disableProperty(), false);
-                KeyValue endDisable = new KeyValue(nameTextField.disableProperty(), true);
-                
-                KeyFrame startAction = new KeyFrame(Duration.ZERO, startDisable);
-                KeyFrame endAction = new KeyFrame(Duration.millis(250), endDisable);
-                KeyFrame removeLabel = new KeyFrame(Duration.millis(300), e -> {
-                    saveDataLayout.getChildren().remove(inputLabel);
-                    saveDataLayout.setAlignment(Pos.CENTER);
-                    nameTextField.setAlignment(Pos.CENTER);
-                });
-                changeTextfieldTimeline.getKeyFrames().addAll(startAction, endAction, removeLabel);
-                changeTextfieldTimeline.play();
+                fade(saveDataLayout, 750, 0, FADE_OUT);
+                nameTextField.setDisable(true);
+                saveDataLayout.getChildren().remove(inputLabel);
+                saveDataLayout.setAlignment(Pos.CENTER);
+                nameTextField.setAlignment(Pos.CENTER);
+                timeLabel.setPadding(new Insets(5, 0, 15, 0));
+                fade(saveDataLayout, 750, 0, FADE_IN);
+               
             }
         });
 
@@ -127,8 +122,7 @@ public class scoreBoard {
         }
 
         Button backToMenuButton = new Button("BACK TO MAIN MENU");
-        backToMenuButton.getStyleClass().add("score-button");
-        backToMenuButton.setId("back--button");
+        backToMenuButton.getStyleClass().add("button-white");
         backToMenuButton.setPadding(new Insets(10, 20, 10, 20));
         scorePageContainer.setConstraints(backToMenuButton, 0, 10);
         centerObject(backToMenuButton);
@@ -157,6 +151,8 @@ public class scoreBoard {
     private void resetUI() {
         saveDataLayout.setConstraints(inputLabel, 0, 0);
         nameTextField.setDisable(false);
+        timeLabel.setPadding(new Insets(5, 0, 30, 0));
+        nameTextField.setAlignment(Pos.CENTER_LEFT);
     }
 
     private void centerObject(Object node) {

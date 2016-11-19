@@ -3,10 +3,8 @@
 }
 
 .score-text {
-
     -fx-font-family: "Lato";
     -fx-text-fill: #fff;
-
 }
 
 .page-headline {
@@ -17,7 +15,6 @@
 .game-score-time {
     -fx-label-font-weight: 600;
     -fx-font-size: 30pt;
-    -fx-padding: 5 0 30 0;
 }
 
 .input-label {
@@ -35,7 +32,6 @@
     -fx-background-color: transparent;
     -fx-font-family: "Lato";
     -fx-font-size: 14pt;
-    -fx-alignment: left;
     -fx-text-fill: rgb(255,255,255);
     -fx-font-weight: bold;
 }
@@ -43,23 +39,11 @@
 .name-text-field:disabled {
     -fx-opacity: 1;
     -fx-border-color: transparent;
+    -fx-font-size: 20pt;
+    -fx-max-width: 450;
 }
 
 .score-line {
     -fx-font-size: 15pt;
     -fx-label-font-weight: 500;
-}
-
-.score-button {
-    -fx-background-color: #fff;
-    -fx-border-radius: 4;
-    -fx-cursor: hand;
-    -fx-font-family: "Lato";
-    -fx-text-fill: rgb(65, 131, 215);
-    -fx-font-weight: 700;
-    -fx-min-height: 30;
-    -fx-max-height: 40;
-    -fx-min-width: 90;
-    -fx-max-width: 250;
-    -fx-font-size: 12pt;
 }

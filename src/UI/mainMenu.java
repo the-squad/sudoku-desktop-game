@@ -22,7 +22,6 @@ import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -197,14 +196,14 @@ public class mainMenu {
         levelsLayout.setHalignment(backArrowAndText, HPos.CENTER);
 
         //Back Button
-        Button back = new Button("");
-        back.getStyleClass().add("iconButton");
-        back.setId("backButtonDark");
-        backArrowAndText.setLeft(back);
-        backArrowAndText.setAlignment(back, Pos.CENTER);
-        backArrowAndText.setMargin(back, new Insets(0, -80, 0, -65));
+        Button backButton = new Button("");
+        backButton.getStyleClass().add("button-icon--dark");
+        backButton.getStyleClass().add("back-icon--dark");
+        backArrowAndText.setLeft(backButton);
+        backArrowAndText.setAlignment(backButton, Pos.CENTER);
+        backArrowAndText.setMargin(backButton, new Insets(0, -80, 0, -65));
 
-        back.setOnAction(e -> switchPanes(rightPartLayout, levelsLayout, gameModesLayout));
+        backButton.setOnAction(e -> switchPanes(rightPartLayout, levelsLayout, gameModesLayout));
 
         //Headline
         Label headlineText = new Label("Choose game level");
@@ -302,14 +301,14 @@ public class mainMenu {
         savedGamesLayout.setHalignment(backArrowAndText, HPos.CENTER);
 
         //Creating elemens
-        Button back = new Button("");
-        back.getStyleClass().add("iconButton");
-        back.setId("backButtonDark");
-        backArrowAndText.setLeft(back);
-        backArrowAndText.setAlignment(back, Pos.CENTER);
-        backArrowAndText.setMargin(back, new Insets(0, -170, 0, -10));
+        Button backButton = new Button("");
+        backButton.getStyleClass().add("button-icon--dark");
+        backButton.getStyleClass().add("back-icon--dark");
+        backArrowAndText.setLeft(backButton);
+        backArrowAndText.setAlignment(backButton, Pos.CENTER);
+        backArrowAndText.setMargin(backButton, new Insets(0, -170, 0, -10));
 
-        back.setOnAction(e -> {
+        backButton.setOnAction(e -> {
             switchPanes(rightPartLayout, savedGamesLayout, gameModesLayout);
             savedGamesLayout.getChildren().clear();
         });
@@ -341,6 +340,7 @@ public class mainMenu {
 
             gameBlock[counter] = new GridPane();
             gameBlock[counter].getStyleClass().add("game-block");
+            gameBlock[counter].setAlignment(Pos.CENTER_LEFT);
             gameBlock[counter].setId("#" + data[0]); //Change to game ID
 
             //Container
@@ -364,7 +364,7 @@ public class mainMenu {
 
             //Game title
             Button gameTitle = new Button(data[4]);
-            gameTitle.getStyleClass().add("game-title");
+            gameTitle.getStyleClass().add("button-transparent--dark");
             detailsLayout.setConstraints(gameTitle, 0, 0);
             detailsLayout.getChildren().add(gameTitle);
 
@@ -395,9 +395,10 @@ public class mainMenu {
 
             //Delete game button
             Button deleteButton = new Button();
-            deleteButton.getStyleClass().add("delete-button");
+            deleteButton.getStyleClass().add("button-icon--dark");
+            deleteButton.getStyleClass().add("delete-icon");
             gameBlockLayout.setRight(deleteButton);
-            gameBlockLayout.setMargin(deleteButton, new Insets(3, 0, 0, 0));
+            gameBlockLayout.setMargin(deleteButton, new Insets(4, 0, 0, 0));
 
             //Adding blocks to the container
             gamesContainer.setConstraints(gameBlock[counter], 0, counter);

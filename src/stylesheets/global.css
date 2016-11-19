@@ -1,0 +1,134 @@
+.root {
+    -fx-background-color: #eee;
+}
+
+/*******************************************************************************
+    Button
+*******************************************************************************/
+.button,
+.button-icon,
+.button-transparent,
+.button-icon_text,
+.button-icon_text--white, 
+.button-transparent--dark,
+.button-white {
+    -fx-border-radius: 4;
+    -fx-cursor: hand;
+    -fx-font-family: "Lato";
+    -fx-font-weight: 700;
+    -fx-font-size: 12pt;
+    -fx-font-weight: 500;
+    -fx-min-height: 35;
+}
+
+/*******************************************************************************
+    Icon with text buttons
+    1. White background
+    2. Transparent background
+*******************************************************************************/
+.button-icon_text,
+.button-icon_text--white,
+.button-icon_text--transparent{
+    -fx-font-weight: 700;
+    -fx-text-fill: rgba(41,47,51, 0.9);
+    -fx-padding: 0 0 0 20;
+}
+
+.button-icon_text--white {
+    -fx-background-color: #fff;
+    -fx-min-width: 300;
+    -fx-min-height: 55;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.03, 0.0, 1.0);
+}
+
+.button-icon_text--white:hover {
+    -fx-background-color: rgb(244, 244, 244);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.03, 0.0, 1.0);
+}
+
+.button-icon_text--transparent {
+    -fx-background-color: transparent;
+    -fx-min-width: 150;
+    -fx-min-height: 40;
+}
+
+.button-icon_text--transparent:hover {
+    -fx-background-color: rgba(41,47,51, 0.1);
+}
+
+/*******************************************************************************
+    Transparent button
+    1. White text
+    2. Dark text
+    White button with blue text
+*******************************************************************************/
+.button-transparent {
+    -fx-background-color: transparent;
+    -fx-text-fill: #fff;
+}
+
+.button-transparent:hover {
+    -fx-background-color: rgba(255,255,255, 0.2);
+}
+
+.button-transparent--dark {
+    -fx-background-color: transparent;
+    -fx-font-weight: 700;
+    -fx-min-height: 15;
+    -fx-padding: 0 0 3 0;
+}
+
+.button-transparent--dark:hover {
+    -fx-text-fill: rgb(65, 131, 215);
+}
+
+.button-white {
+    -fx-background-color: #fff;
+    -fx-text-fill: rgb(65, 131, 215);
+}
+
+/*******************************************************************************
+    Buttons with icons only:
+    1. Save button
+    2. Back button
+        2.1. White
+        2.2. Dark
+*******************************************************************************/
+.button-icon--white,
+.button-icon--dark {
+    -fx-background-color: transparent;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-min-width: 35;
+}
+
+.button-icon--white {
+    -fx-background-size: 25px;
+}
+
+.button-icon--white:hover {
+    -fx-background-color: rgba(255,255,255, 0.2);
+}
+
+.button-icon--dark {
+    -fx-background-size: 20px;
+}
+
+.button-icon--dark:hover {
+    -fx-background-color: rgba(41,47,51, 0.1);
+}
+
+.back-icon--white {
+    -fx-background-image: url("../icons/ic_arrow_back_white_48dp_1x.png");
+}
+
+.save-icon {
+    -fx-background-image: url("../icons/ic_save_white_48dp_1x.png");
+}
+
+.back-icon--dark {
+    -fx-background-image: url("../icons/go-back-left-arrow.png");
+}
+.delete-icon {
+    -fx-background-image: url("../icons/delete.png");
+}
