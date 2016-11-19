@@ -1,18 +1,8 @@
 package UI;
 
-import static UI.global.FADE_IN;
-import static UI.global.fade;
-import static UI.global.switchPanes;
-import static UI.global.CLEAR_SUDOKU;
-import static UI.global.READ_SUDOKU;
-import static UI.global.TRANSPARENT_BG;
-import static UI.global.computerSolution;
-import static UI.global.initButtonStyle;
-import static UI.global.windowLayout;
-import static UI.global.mainMenuContainer;
-import static UI.global.markSolution;
-import static UI.global.playingMode;
-import static UI.global.userSudoku;
+import static UI.global.*;
+import static UI.main.database;
+import java.sql.SQLException;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -34,8 +24,10 @@ import sudoku.sudoku;
 public class gamePlay {
 
     BorderPane gamePlayContainer;
-    private static TextField[][] sudokuCells = new TextField[9][9];
+    private static final TextField[][] sudokuCells = new TextField[9][9];
     static Label levelLabel;
+    static Label timerLabel;
+    private BorderPane cardBg;
 
     /**
      * Initialize game play elements
@@ -74,7 +66,9 @@ public class gamePlay {
 
         backButton.setOnAction(e -> {
             switchPanes(windowLayout, gamePlayContainer, mainMenuContainer);
+            saveCurrentGame();
             sudokuOperation(CLEAR_SUDOKU);
+            gameTime.pause();
         });
 
         //Save Button
@@ -90,6 +84,7 @@ public class gamePlay {
 
         initSudokuBlock();
         saveButton.setOnAction(e -> {
+            saveCurrentGame();
             showPopup("Game is saved successfuly", 1);
         });
 
@@ -108,6 +103,7 @@ public class gamePlay {
         //Left panel
         BorderPane leftPanelLayout = new BorderPane();
         leftPanelLayout.setPadding(new Insets(30, 0, 40, 10));
+        gamePlayContainer.setMargin(leftPanelLayout, new Insets(0, -150, 0, 0));
         gamePlayContainer.setLeft(leftPanelLayout);
         
         GridPane gameDetailsLayout = new GridPane();
@@ -133,7 +129,7 @@ public class gamePlay {
         timerHeadline.getStyleClass().add("text--headline");
         gameDetailsLayout.setConstraints(timerHeadline, 0, 2);
         
-        Label timerLabel = new Label();
+        timerLabel = new Label();
         timerLabel.getStyleClass().add("text");
         timerLabel.getStyleClass().add("text--normal");
         gameDetailsLayout.setConstraints(timerLabel, 0, 4);
@@ -146,10 +142,33 @@ public class gamePlay {
         Button pauseGameButton = new Button("       Pause", pauseButtonIconView);
         initButtonStyle(pauseGameButton, gameControlsLayout, 0, pauseButtonIconView, TRANSPARENT_BG);
         
+        //Resume Button
+        Button resumeGameButton = new Button();
+        resumeGameButton.getStyleClass().add("button-icon--big");
+        resumeGameButton.getStyleClass().add("resume-icon");
+        
         pauseGameButton.setOnAction(e -> {
+            //Hiding Sudoku card and pause button and showing resume button
+            fade(cardBg, 250, 0, FADE_OUT);
+            gamePlayContainer.setCenter(null);
+            gamePlayContainer.setCenter(resumeGameButton);
+            fade(resumeGameButton, 250, 0, FADE_IN);
+            fade(pauseGameButton, 250, 0, FADE_OUT);
             
+            gameTime.pause();
         });
         
+        resumeGameButton.setOnAction(e -> {
+            //Hiding resume button and showing Sudoku card and pause button
+            fade(resumeGameButton, 250, 0, FADE_OUT);
+            gamePlayContainer.setCenter(null);
+            gamePlayContainer.setCenter(cardBg);
+            fade(cardBg, 250, 0, FADE_IN);
+            fade(pauseGameButton, 250, 0, FADE_IN);
+            
+            gameTime.start();
+        });
+           
         //Hint Button
         Image hintButtonIcon = new Image(getClass().getResourceAsStream("/icons/hint.png"));
         ImageView hintButtonIconView = new ImageView(hintButtonIcon);
@@ -171,7 +190,7 @@ public class gamePlay {
      */
     private void initSudokuBlock() {
         //Sudoku card layout
-        BorderPane cardBg = new BorderPane();
+        cardBg = new BorderPane();
         cardBg.getStyleClass().add("card");
         cardBg.setPadding(new Insets(7));
 
@@ -212,7 +231,6 @@ public class gamePlay {
         }
 
         gamePlayContainer.setCenter(cardBg);
-        gamePlayContainer.setMargin(cardBg, new Insets(0,0,0, - 150));
         gamePlayContainer.setAlignment(cardBg, Pos.CENTER);
         gamePlayContainer.getChildren().addAll();
     }
@@ -265,13 +283,21 @@ public class gamePlay {
         countDown.play();
     }
 
-    private void saveButtonCurrentGame() {
-        //TODO
+    private void saveCurrentGame(){
+        sudokuOperation(READ_SUDOKU);
+        String sudokuGame = "";
+        
+        for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
+            for (int columnCounter = 0; columnCounter < 9; columnCounter++) { 
+                sudokuGame += userSudoku[rowCounter][columnCounter];
+            }    
+        }
 
-        /*
-         1. Read the Sudoku from the screen
-         2. Show pop-up telling the user that the game is saveButtond
-         */
+        try {
+            database.saveGame(sudokuGame, gameTime.getTime(), Integer.parseInt(sudokuIdOriginal), Integer.parseInt(sudokuId));
+        } catch (SQLException ex) {
+            Logger.getLogger(gamePlay.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -322,7 +348,7 @@ public class gamePlay {
                 switch (opType) {
                     //Read Sudoku
                     case 1:
-                        userSudoku[rowCounter][columnCounter] = Integer.parseInt(sudokuCells[rowCounter][columnCounter].getText());
+                        userSudoku[rowCounter][columnCounter] = Integer.parseInt("".equals(sudokuCells[rowCounter][columnCounter].getText()) ? "0" : sudokuCells[rowCounter][columnCounter].getText());
                         break;
                     //Print Sudoku
                     case 2:

@@ -95,7 +95,8 @@
         2.2. Dark
 *******************************************************************************/
 .button-icon--white,
-.button-icon--dark {
+.button-icon--dark,
+.button-icon--big {
     -fx-background-color: transparent;
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;
@@ -114,8 +115,14 @@
     -fx-background-size: 20px;
 }
 
-.button-icon--dark:hover {
+.button-icon--dark:hover,
+.button-icon--big:hover {
     -fx-background-color: rgba(41,47,51, 0.1);
+}
+
+.button-icon--big {
+    -fx-min-width: 85;
+    -fx-min-height: 85;
 }
 
 .back-icon--white {
@@ -129,6 +136,11 @@
 .back-icon--dark {
     -fx-background-image: url("../icons/go-back-left-arrow.png");
 }
+
 .delete-icon {
     -fx-background-image: url("../icons/delete.png");
+}
+
+.resume-icon {
+    -fx-background-image: url("../icons/play.png");
 }
