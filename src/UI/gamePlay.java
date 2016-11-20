@@ -432,16 +432,18 @@ public class gamePlay {
                 }
             }
 
-            timeLabel.setText(timerLabel.getText());
+            if (playingMode == 1 || playingMode == 2) {
+                timeLabel.setText(timerLabel.getText());
 
-            KeyFrame goToScoreBoard = new KeyFrame(Duration.millis(2000), e -> {
-                switchPanes(windowLayout, gamePlayContainer, scorePageContainer);
-            });
+                KeyFrame goToScoreBoard = new KeyFrame(Duration.millis(2000), e -> {
+                    switchPanes(windowLayout, gamePlayContainer, scorePageContainer);
+                });
 
-            gameSuccessTimeline.getKeyFrames().add(goToScoreBoard);
-            gameSuccessTimeline.play();
+                gameSuccessTimeline.getKeyFrames().add(goToScoreBoard);
+                gameSuccessTimeline.play();
 
-            gameTime.pause();
+                gameTime.pause();
+            }
         }
     }
 
