@@ -123,6 +123,9 @@ public class mainMenu {
         newGameButton.setOnAction(e -> {
             switchPanes(rightPartLayout, gameModesLayout, levelsLayout);
             playingMode = 1;
+            gamePlayContainer.setLeft(leftPanelLayout);
+            saveButton.setVisible(true);
+            saveButton.setDisable(false);
         });
 
         //Load Game Button
@@ -135,6 +138,9 @@ public class mainMenu {
             initializeSavedGames();
             switchPanes(rightPartLayout, gameModesLayout, savedGamesLayout);
             playingMode = 2;
+            gamePlayContainer.setLeft(leftPanelLayout);
+            saveButton.setVisible(true);
+            saveButton.setDisable(false);
         });
 
         //Check Sudoku Button
@@ -146,6 +152,9 @@ public class mainMenu {
         checkSudokuButton.setOnAction(e -> {
             switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
             playingMode = 3;
+            gamePlayContainer.setLeft(null);
+            saveButton.setVisible(false);
+            saveButton.setDisable(true);
         });
 
         //Challange Computer Button
@@ -157,6 +166,9 @@ public class mainMenu {
         challangeComputerButton.setOnAction(e -> {
             switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
             playingMode = 4;
+            gamePlayContainer.setLeft(null);
+            saveButton.setVisible(false);
+            saveButton.setDisable(true);
         });
 
         //Exit Button
