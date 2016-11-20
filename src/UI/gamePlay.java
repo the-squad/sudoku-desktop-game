@@ -17,6 +17,8 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.animation.KeyValue;
+import javafx.event.ActionEvent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import sudoku.checker;
@@ -30,9 +32,15 @@ public class gamePlay {
     static Label timerLabel;
     private BorderPane cardBg;
     sudoku Sudoku = new sudoku();
+    private Button solveGameButton;
+    private Button resumeGameButton;
+    private Button pauseGameButton;
+    private Button hintButton;
+    private Timeline hideAndShow;
 
     /**
      * Initialize game play elements
+     *
      * @author Muhammad Tarek
      * @return gamePlayLayout
      */
@@ -71,6 +79,17 @@ public class gamePlay {
             saveCurrentGame();
             sudokuOperation(CLEAR_SUDOKU);
             gameTime.pause();
+            fade(resumeGameButton, 250, 0, FADE_OUT);
+            gamePlayContainer.setCenter(null);
+            gamePlayContainer.setCenter(cardBg);
+            fade(cardBg, 250, 0, FADE_IN);
+            fade(resumeGameButton, 250, 0, FADE_OUT);
+            fade(pauseGameButton, 250, 0, FADE_IN);
+            pauseGameButton.setDisable(false);
+            hintButton.setDisable(false);
+            solveGameButton.setDisable(false);
+            timerLabel.setOpacity(1);
+            hideAndShow.stop();
         });
 
         //Save Button
@@ -101,54 +120,109 @@ public class gamePlay {
                 Logger.getLogger(gamePlay.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        
+
         //Left panel
         BorderPane leftPanelLayout = new BorderPane();
         leftPanelLayout.setPadding(new Insets(30, 0, 40, 10));
         gamePlayContainer.setMargin(leftPanelLayout, new Insets(0, -150, 0, 0));
         gamePlayContainer.setLeft(leftPanelLayout);
-        
+
         GridPane gameDetailsLayout = new GridPane();
         leftPanelLayout.setTop(gameDetailsLayout);
-        
+
         GridPane gameControlsLayout = new GridPane();
         gameControlsLayout.setVgap(10);
         leftPanelLayout.setBottom(gameControlsLayout);
-        
+
         Label levelHeadline = new Label("LEVEL");
         levelHeadline.getStyleClass().add("text");
         levelHeadline.getStyleClass().add("text--headline");
         gameDetailsLayout.setConstraints(levelHeadline, 0, 0);
-        
+
         levelLabel = new Label();
         levelLabel.getStyleClass().add("text");
         levelLabel.getStyleClass().add("text--normal");
         gameDetailsLayout.setConstraints(levelLabel, 0, 1);
-        
-        
+
         Label timerHeadline = new Label("TIME");
         timerHeadline.getStyleClass().add("text");
         timerHeadline.getStyleClass().add("text--headline");
         gameDetailsLayout.setConstraints(timerHeadline, 0, 2);
-        
+
         timerLabel = new Label();
         timerLabel.getStyleClass().add("text");
         timerLabel.getStyleClass().add("text--normal");
         gameDetailsLayout.setConstraints(timerLabel, 0, 4);
         
-        gameDetailsLayout.getChildren().addAll(levelHeadline, levelLabel, timerHeadline, timerLabel);
+        //Hint alert label
+        Label hintAlertLabel = new Label("+10 Seconds");
+        hintAlertLabel.getStyleClass().add("alert-text");
+        hintAlertLabel.setOpacity(0);
+        gameDetailsLayout.setConstraints(hintAlertLabel, 0, 5);
+        hintAlertLabel.setTranslateY(50);
         
+        //Alerting the user with the +10 seconds
+        Timeline showAlertTimeline = new Timeline();
+        
+        KeyValue fromOpacity = new KeyValue(hintAlertLabel.opacityProperty(), 1);
+        KeyValue toOpacity = new KeyValue(hintAlertLabel.opacityProperty(), 0);
+        
+        KeyValue fromPosition = new KeyValue(hintAlertLabel.translateYProperty(), hintAlertLabel.getTranslateY());
+        KeyValue toPosition = new KeyValue(hintAlertLabel.translateYProperty(), hintAlertLabel.getTranslateY() - 100);
+        
+        KeyFrame showFrame = new KeyFrame(Duration.millis(50), e-> hintAlertLabel.setOpacity(1));
+        KeyFrame startMoving = new KeyFrame(Duration.ZERO, fromPosition);
+        KeyFrame finishMoving = new KeyFrame(Duration.millis(450), toPosition);
+        KeyFrame startOpacity = new KeyFrame(Duration.millis(350), fromOpacity);
+        KeyFrame finishOpacity = new KeyFrame(Duration.millis(450), toOpacity);
+        
+        KeyFrame resetOpacity = new KeyFrame(Duration.millis(455), e -> hintAlertLabel.setOpacity(0));
+        KeyFrame resetPosition = new KeyFrame(Duration.millis(455), e -> hintAlertLabel.setTranslateY(hintAlertLabel.getTranslateY() + 100));
+        
+        showAlertTimeline.getKeyFrames().addAll(showFrame, startMoving, finishMoving, startOpacity, finishOpacity);
+
+        gameDetailsLayout.getChildren().addAll(levelHeadline, levelLabel, timerHeadline, timerLabel, hintAlertLabel);
+        
+
         //Pause Button
         Image pauseButtonIcon = new Image(getClass().getResourceAsStream("/icons/pause.png"));
         ImageView pauseButtonIconView = new ImageView(pauseButtonIcon);
-        Button pauseGameButton = new Button("       Pause", pauseButtonIconView);
+        pauseGameButton = new Button("       Pause", pauseButtonIconView);
         initButtonStyle(pauseGameButton, gameControlsLayout, 0, pauseButtonIconView, TRANSPARENT_BG);
-        
+
         //Resume Button
-        Button resumeGameButton = new Button();
+        resumeGameButton = new Button();
         resumeGameButton.getStyleClass().add("button-icon--big");
         resumeGameButton.getStyleClass().add("resume-icon");
+
+        //Hint Button
+        Image hintButtonIcon = new Image(getClass().getResourceAsStream("/icons/hint.png"));
+        ImageView hintButtonIconView = new ImageView(hintButtonIcon);
+        hintButton = new Button("       Hint", hintButtonIconView);
+        initButtonStyle(hintButton, gameControlsLayout, 1, hintButtonIconView, TRANSPARENT_BG);
         
+
+        hintButton.setOnAction(e -> {
+            sudokuOperation(READ_SUDOKU);
+            Sudoku.setSudoku(userSudoku);
+            int[] hintDetails = Sudoku.hint();
+            gameTime.addTenSeconds();
+            sudokuCells[hintDetails[0]][hintDetails[1]].setText(hintDetails[2] + "");
+            showAlertTimeline.play();
+        });
+
+        //Solve Button
+        Image solveButtonIcon = new Image(getClass().getResourceAsStream("/icons/challenge-computer.png"));
+        ImageView solveButtonIconView = new ImageView(solveButtonIcon);
+        solveGameButton = new Button("       Solve", solveButtonIconView);
+        initButtonStyle(solveGameButton, gameControlsLayout, 2, solveButtonIconView, TRANSPARENT_BG);
+        
+        //Timer label animation 
+        hideAndShow = new Timeline(new KeyFrame(Duration.seconds(0.5), (ActionEvent event) -> {
+            fade(timerLabel, 100, 0, (timerLabel.getOpacity() == 0 ? FADE_IN : FADE_OUT));
+        }));
+        hideAndShow.setCycleCount(Timeline.INDEFINITE);
+
         pauseGameButton.setOnAction(e -> {
             //Hiding Sudoku card and pause button and showing resume button
             fade(cardBg, 250, 0, FADE_OUT);
@@ -156,10 +230,14 @@ public class gamePlay {
             gamePlayContainer.setCenter(resumeGameButton);
             fade(resumeGameButton, 250, 0, FADE_IN);
             fade(pauseGameButton, 250, 0, FADE_OUT);
-            
+
             gameTime.pause();
+            pauseGameButton.setDisable(true);
+            hintButton.setDisable(true);
+            solveGameButton.setDisable(true);
+            hideAndShow.play();
         });
-        
+
         resumeGameButton.setOnAction(e -> {
             //Hiding resume button and showing Sudoku card and pause button
             fade(resumeGameButton, 250, 0, FADE_OUT);
@@ -167,35 +245,21 @@ public class gamePlay {
             gamePlayContainer.setCenter(cardBg);
             fade(cardBg, 250, 0, FADE_IN);
             fade(pauseGameButton, 250, 0, FADE_IN);
-            
+
             gameTime.start();
+            pauseGameButton.setDisable(false);
+            hintButton.setDisable(false);
+            solveGameButton.setDisable(false);
+            timerLabel.setOpacity(1);
+            hideAndShow.stop();
         });
-           
-        //Hint Button
-        Image hintButtonIcon = new Image(getClass().getResourceAsStream("/icons/hint.png"));
-        ImageView hintButtonIconView = new ImageView(hintButtonIcon);
-        Button hintButton = new Button("       Hint", hintButtonIconView);
-        initButtonStyle(hintButton, gameControlsLayout, 1, hintButtonIconView, TRANSPARENT_BG);
-        
-        hintButton.setOnAction(e -> {
-            sudokuOperation(READ_SUDOKU);
-            Sudoku.setSudoku(userSudoku);
-            int[] hintDetails = Sudoku.hint();
-            sudokuCells[hintDetails[0]][hintDetails[1]].setText(hintDetails[2] + "");
-            
-        });
-        
-        //Solve Button
-        Image solveButtonIcon = new Image(getClass().getResourceAsStream("/icons/challenge-computer.png"));
-        ImageView solveButtonIconView = new ImageView(solveButtonIcon);
-        Button solveGameButton = new Button("       Solve", solveButtonIconView);
-        initButtonStyle(solveGameButton, gameControlsLayout, 2, solveButtonIconView, TRANSPARENT_BG);
 
         return gamePlayContainer;
     }
 
     /**
      * Create Sudoku cells
+     *
      * @author Muhammad Tarek
      */
     private void initSudokuBlock() {
@@ -237,6 +301,11 @@ public class gamePlay {
                         sudokuCells[rowCounter][columnCounter].getStyleClass().add("border-top-right");
                     }
                 }
+
+                //Adding listener to validate the Sudoku input
+                sudokuCells[rowCounter][columnCounter].textProperty().addListener(e -> {
+
+                });
             }
         }
 
@@ -293,14 +362,14 @@ public class gamePlay {
         countDown.play();
     }
 
-    private void saveCurrentGame(){
+    private void saveCurrentGame() {
         sudokuOperation(READ_SUDOKU);
         String sudokuGame = "";
-        
+
         for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
-            for (int columnCounter = 0; columnCounter < 9; columnCounter++) { 
+            for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
                 sudokuGame += userSudoku[rowCounter][columnCounter];
-            }    
+            }
         }
 
         try {
@@ -311,8 +380,7 @@ public class gamePlay {
     }
 
     /**
-     * @author 
-     * @throws InterruptedException
+     * @author @throws InterruptedException
      */
     private void checkSudoku() throws InterruptedException {
         Sudoku.setSudoku(userSudoku);
@@ -339,22 +407,24 @@ public class gamePlay {
 
         if (isSudoku) {
             Timeline gameSuccessTimeline = new Timeline();
-            
+
             for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
                 for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
-                     sudokuCells[rowCounter][columnCounter].setDisable(true);
+                    sudokuCells[rowCounter][columnCounter].setDisable(true);
                     sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
                 }
             }
-            
+
             timeLabel.setText(timerLabel.getText());
-            
-            KeyFrame goToScoreBoard = new KeyFrame(Duration.millis(2000), e-> {
+
+            KeyFrame goToScoreBoard = new KeyFrame(Duration.millis(2000), e -> {
                 switchPanes(windowLayout, gamePlayContainer, scorePageContainer);
             });
-            
+
             gameSuccessTimeline.getKeyFrames().add(goToScoreBoard);
             gameSuccessTimeline.play();
+            
+            gameTime.pause();
         }
     }
 
@@ -394,5 +464,26 @@ public class gamePlay {
                 }
             }
         }
+    }
+
+    /**
+     *
+     * @param input
+     * @return
+     */
+    private boolean checkInput(String input) {
+        int checkInput;
+
+        try {
+            checkInput = Integer.parseInt(input);
+            if (checkInput <= 0 || checkInput > 9) {
+                return false;
+            }
+
+        } catch (Exception e) {
+            return false;
+        }
+
+        return true;
     }
 }

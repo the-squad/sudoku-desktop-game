@@ -28,10 +28,14 @@
 *******************************************************************************/
 .button-icon_text,
 .button-icon_text--white,
-.button-icon_text--transparent{
+.button-icon_text--transparent {
     -fx-font-weight: 700;
     -fx-text-fill: rgba(41,47,51, 0.9);
     -fx-padding: 0 0 0 20;
+}
+
+.button-icon_text--transparent:disabled {
+    -fx-opacity: 0.5;
 }
 
 .button-icon_text--white {

@@ -42,6 +42,11 @@ public class timer {
         timer.cancel();
     }
     
+    public void addTenSeconds() {
+        time += 10;
+        timerLabel.setText(gameTime.getMinutes() + ":" + gameTime.getSeconds());
+    }
+    
     public int getTime() {
         return time;
     }
