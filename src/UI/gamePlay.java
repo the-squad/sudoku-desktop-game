@@ -495,7 +495,6 @@ public class gamePlay {
                 }
             }
         }
-
         return isSudoku;
     }
 
@@ -529,6 +528,11 @@ public class gamePlay {
                         computerSolution[rowCounter][columnCounter] = 0;
                         markSolution[rowCounter][columnCounter] = Boolean.FALSE;
                         break;
+                    //Count empty cells
+                    case 4:
+                        if (computerSolution[rowCounter][columnCounter] != 0)
+                            EMPTY_CELLS--;
+                        break;
                     default:
                         break;
                 }
@@ -549,7 +553,6 @@ public class gamePlay {
             if (checkInput <= 0 || checkInput > 9) {
                 return false;
             }
-
         } catch (Exception e) {
             return false;
         }
