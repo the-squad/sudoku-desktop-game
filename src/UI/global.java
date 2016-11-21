@@ -37,6 +37,7 @@ public class global {
     public static final int READ_SUDOKU = 1;
     public static final int PRINT_SUDOKU = 2;
     public static final int CLEAR_SUDOKU = 3;
+    public static final int COUNT_SUDOKU = 4;
 
     public static final int FADE_IN = 1;
     public static final int FADE_OUT = 2;

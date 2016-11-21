@@ -126,6 +126,7 @@ public class mainMenu {
             gamePlayContainer.setLeft(leftPanelLayout);
             saveButton.setVisible(true);
             saveButton.setDisable(false);
+            submitButton.setDisable(true);
         });
 
         //Load Game Button
@@ -141,6 +142,7 @@ public class mainMenu {
             gamePlayContainer.setLeft(leftPanelLayout);
             saveButton.setVisible(true);
             saveButton.setDisable(false);
+            submitButton.setDisable(true);
         });
 
         //Check Sudoku Button
@@ -155,6 +157,8 @@ public class mainMenu {
             gamePlayContainer.setLeft(null);
             saveButton.setVisible(false);
             saveButton.setDisable(true);
+            submitButton.setDisable(false);
+            submitButton.setText("Check");
         });
 
         //Challange Computer Button
@@ -169,6 +173,8 @@ public class mainMenu {
             gamePlayContainer.setLeft(null);
             saveButton.setVisible(false);
             saveButton.setDisable(true);
+            submitButton.setDisable(false);
+            submitButton.setText("Challenge");
         });
 
         //Exit Button
@@ -242,6 +248,7 @@ public class mainMenu {
 
             splitSudoku(sudokuGame.get(0));
             gamePlay.sudokuOperation(PRINT_SUDOKU);
+            sudokuOperation(COUNT_SUDOKU);
         });
 
         Button mediumButton = new Button("Medium");
@@ -263,7 +270,8 @@ public class mainMenu {
             }
 
             splitSudoku(sudokuGame.get(0));
-            gamePlay.sudokuOperation(PRINT_SUDOKU);
+            sudokuOperation(PRINT_SUDOKU);
+            sudokuOperation(COUNT_SUDOKU);
         });
 
         Button hardButton = new Button("Hard");
@@ -286,6 +294,7 @@ public class mainMenu {
 
             splitSudoku(sudokuGame.get(0));
             gamePlay.sudokuOperation(PRINT_SUDOKU);
+            sudokuOperation(COUNT_SUDOKU);
         });
     }
 
@@ -433,6 +442,7 @@ public class mainMenu {
                 sudokuIdOriginal = data[6];
                 splitSudoku(data[1]);
                 sudokuOperation(PRINT_SUDOKU);
+                sudokuOperation(COUNT_SUDOKU);
 
                 switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
 

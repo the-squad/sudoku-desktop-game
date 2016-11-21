@@ -18,7 +18,10 @@ import javafx.util.Duration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.KeyValue;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import sudoku.checker;
@@ -39,6 +42,9 @@ public class gamePlay {
     private Timeline hideAndShow;
     static BorderPane leftPanelLayout;
     static Button saveButton;
+    static Button submitButton;
+
+    static int emptyCells = 81;
 
     /**
      * Initialize game play elements
@@ -101,7 +107,7 @@ public class gamePlay {
         headlineAndSaveLayout.setRight(saveButton);
         headlineAndSaveLayout.setMargin(saveButton, new Insets(0, 15, 0, 0));
 
-        Button submitButton = new Button("Submit");
+        submitButton = new Button("Submit");
         submitButton.getStyleClass().add("button-transparent");
         toolbarLayout.setRight(submitButton);
 
@@ -320,22 +326,20 @@ public class gamePlay {
                 }
 
                 //Adding listener to validate the Sudoku input
-                sudokuCells[rowCounter][columnCounter].textProperty().addListener(e -> {
-
+                sudokuCells[rowCounter][columnCounter].textProperty().addListener((observable, oldVal, newVal) -> {
+                    //Can't select textfield
                 });
             }
+
+            gamePlayContainer.setCenter(cardBg);
+            gamePlayContainer.setAlignment(cardBg, Pos.CENTER);
+            gamePlayContainer.getChildren().addAll();
         }
-
-        gamePlayContainer.setCenter(cardBg);
-        gamePlayContainer.setAlignment(cardBg, Pos.CENTER);
-        gamePlayContainer.getChildren().addAll();
-    }
-
-    /**
-     * @author Muhammad Tarek
-     * @param message
-     * @param alertType
-     */
+        /**
+         * @author Muhammad Tarek
+         * @param message
+         * @param alertType
+         */
     private void showPopup(String message, int alertType) {
         //Alert message layout
         GridPane alertLayout = new GridPane();
@@ -477,6 +481,14 @@ public class gamePlay {
                         userSudoku[rowCounter][columnCounter] = 0;
                         computerSolution[rowCounter][columnCounter] = 0;
                         markSolution[rowCounter][columnCounter] = Boolean.FALSE;
+                        break;
+
+                    //Count Empty Cells
+                    case 4:
+                        emptyCells = 81;
+                        if (sudokuCells[rowCounter][columnCounter].getText() != null || !sudokuCells[rowCounter][columnCounter].getText().trim().isEmpty()) {
+                            emptyCells--;
+                        }
                         break;
                     default:
                         break;
