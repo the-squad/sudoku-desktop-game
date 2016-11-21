@@ -2,7 +2,6 @@ package UI;
 
 import static UI.gamePlay.*;
 import static UI.global.*;
-import static UI.main.database;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -32,18 +31,48 @@ import javafx.util.Duration;
 
 public class mainMenu {
 
-    GridPane mainMenuContainer;
-    BorderPane rightPartLayout;
-    GridPane gameModesLayout;
-    GridPane levelsLayout;
-    GridPane savedGamesLayout;
+    // <editor-fold defaultstate="collapsed" desc="Main Panes">
+    private GridPane mainMenuContainer;
+    private BorderPane rightPartLayout;
+    private BorderPane leftPartLayout;
+    private GridPane gameModesLayout;
+    private GridPane levelsLayout;
+    private GridPane savedGamesLayout;
+    private BorderPane backArrowAndText;
+    private GridPane gamesContainer;
+    private BorderPane gameBlockLayout;
+    private GridPane detailsLayout;
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="Labels">
+    private Label logo;
+    private Label logoText;
+    private Label version;
+    private Label headlineText;
+    private Label gameLevel;
+    private Label gameTimer;
+    // </editor-fold>
+    
+    // <editor-fold defaultstate="collapsed" desc="Buttons">
+    private Button newGameButton;
+    private Button loadGameButton;
+    private Button checkSudokuButton;
+    private Button challangeComputerButton;
+    private Button exitButton;
+    private Button backButton;
+    private Button easyButton;
+    private Button mediumButton;
+    private Button hardButton;
+    private Button gameTitle;
+    private Button deleteButton;
+    // </editor-fold>
 
     /**
      * Initialize main menu elements
      *
      * @return mainMenuScene
      */
-    public GridPane initialize() {
+    public GridPane initialize() {        
         //Main menu layout
         mainMenuContainer = new GridPane();
 
@@ -63,24 +92,24 @@ public class mainMenu {
         mainMenuContainer.getRowConstraints().add(fullHeight);
 
         //Creating left part layout
-        BorderPane leftPartLayout = new BorderPane();
+        leftPartLayout = new BorderPane();
         leftPartLayout.getStyleClass().add("left-part");
         mainMenuContainer.setConstraints(leftPartLayout, 0, 0);
         mainMenuContainer.getChildren().add(leftPartLayout);
 
         //Left part elements
-        Label logo = new Label();
+        logo = new Label();
         logo.getStyleClass().add("logo");
         leftPartLayout.setTop(logo);
         leftPartLayout.setAlignment(logo, Pos.BOTTOM_CENTER);
         leftPartLayout.setMargin(logo, new Insets(175, 0, 30, 0));
 
-        Label logoText = new Label("Sudodu Game");
+        logoText = new Label("Sudodu Game");
         logoText.getStyleClass().add("logo-text");
         leftPartLayout.setCenter(logoText);
         leftPartLayout.setAlignment(logoText, Pos.TOP_CENTER);
 
-        Label version = new Label("Version 0.2");
+        version = new Label("Version 0.2");
         version.getStyleClass().add("version");
         leftPartLayout.setBottom(version);
         leftPartLayout.setAlignment(version, Pos.TOP_CENTER);
@@ -117,13 +146,13 @@ public class mainMenu {
         //New Game Button
         Image newGameButtonIcon = new Image(getClass().getResourceAsStream("/icons/new-game.png"));
         ImageView newGameButtonIconView = new ImageView(newGameButtonIcon);
-        Button newGameButton = new Button("       New Game", newGameButtonIconView);
+        newGameButton = new Button("       New Game", newGameButtonIconView);
         initButtonStyle(newGameButton, gameModesLayout, 0, newGameButtonIconView, WHITE_BG);
 
         newGameButton.setOnAction(e -> {
             switchPanes(rightPartLayout, gameModesLayout, levelsLayout);
             playingMode = 1;
-            gamePlayContainer.setLeft(leftPanelLayout);
+            gamePlayContainer.setLeft(gameLeftPanelContainer);
             saveButton.setVisible(true);
             saveButton.setDisable(false);
             submitButton.setDisable(true);
@@ -132,14 +161,14 @@ public class mainMenu {
         //Load Game Button
         Image loadGameButtonIcon = new Image(getClass().getResourceAsStream("/icons/load-game.png"));
         ImageView laodGameIconView = new ImageView(loadGameButtonIcon);
-        Button loadGameButton = new Button("       Load last game", laodGameIconView);
+        loadGameButton = new Button("       Load last game", laodGameIconView);
         initButtonStyle(loadGameButton, gameModesLayout, 1, laodGameIconView, WHITE_BG);
 
         loadGameButton.setOnAction(e -> {
             initializeSavedGames();
             switchPanes(rightPartLayout, gameModesLayout, savedGamesLayout);
             playingMode = 2;
-            gamePlayContainer.setLeft(leftPanelLayout);
+            gamePlayContainer.setLeft(gameLeftPanelContainer);
             saveButton.setVisible(true);
             saveButton.setDisable(false);
             submitButton.setDisable(true);
@@ -148,11 +177,11 @@ public class mainMenu {
         //Check Sudoku Button
         Image checkSudokuIcon = new Image(getClass().getResourceAsStream("/icons/check-sudoku.png"));
         ImageView checkSudokuIconView = new ImageView(checkSudokuIcon);
-        Button checkSudokuButton = new Button("       Check your Sudoku", checkSudokuIconView);
+        checkSudokuButton = new Button("       Check your Sudoku", checkSudokuIconView);
         initButtonStyle(checkSudokuButton, gameModesLayout, 2, checkSudokuIconView, WHITE_BG);
 
         checkSudokuButton.setOnAction(e -> {
-            switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+            switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
             playingMode = 3;
             gamePlayContainer.setLeft(null);
             saveButton.setVisible(false);
@@ -164,11 +193,11 @@ public class mainMenu {
         //Challange Computer Button
         Image challengeComputerIcon = new Image(getClass().getResourceAsStream("/icons/challenge-computer.png"));
         ImageView challengeComputerIconView = new ImageView(challengeComputerIcon);
-        Button challangeComputerButton = new Button("       Challenge computer", challengeComputerIconView);
+        challangeComputerButton = new Button("       Challenge computer", challengeComputerIconView);
         initButtonStyle(challangeComputerButton, gameModesLayout, 3, challengeComputerIconView, WHITE_BG);
 
         challangeComputerButton.setOnAction(e -> {
-            switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+            switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
             playingMode = 4;
             gamePlayContainer.setLeft(null);
             saveButton.setVisible(false);
@@ -180,7 +209,7 @@ public class mainMenu {
         //Exit Button
         Image exitButtonIcon = new Image(getClass().getResourceAsStream("/icons/exit.png"));
         ImageView exitButtonIconView = new ImageView(exitButtonIcon);
-        Button exitButton = new Button("       Exit", exitButtonIconView);
+        exitButton = new Button("       Exit", exitButtonIconView);
         initButtonStyle(exitButton, gameModesLayout, 4, exitButtonIconView, WHITE_BG);
 
         exitButton.setOnAction(e -> {
@@ -206,13 +235,13 @@ public class mainMenu {
         }
 
         //BorderPane to hold text and back arrow
-        BorderPane backArrowAndText = new BorderPane();
+        backArrowAndText = new BorderPane();
         levelsLayout.setConstraints(backArrowAndText, 0, 0);
         levelsLayout.getChildren().add(backArrowAndText);
         levelsLayout.setHalignment(backArrowAndText, HPos.CENTER);
 
         //Back Button
-        Button backButton = new Button("");
+        backButton = new Button("");
         backButton.getStyleClass().add("button-icon--dark");
         backButton.getStyleClass().add("back-icon--dark");
         backArrowAndText.setLeft(backButton);
@@ -222,17 +251,17 @@ public class mainMenu {
         backButton.setOnAction(e -> switchPanes(rightPartLayout, levelsLayout, gameModesLayout));
 
         //Headline
-        Label headlineText = new Label("Choose game level");
+        headlineText = new Label("Choose game level");
         headlineText.getStyleClass().add("headline-text");
         backArrowAndText.setCenter(headlineText);
         backArrowAndText.setAlignment(headlineText, Pos.CENTER);
 
         //Level buttons
-        Button easyButton = new Button("Easy");
+        easyButton = new Button("Easy");
         initButtonStyle(easyButton, levelsLayout, 1, null, WHITE_BG);
 
         easyButton.setOnAction(e -> {
-            switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+            switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
 
             ArrayList<String> sudokuGame = null;
             try {
@@ -251,11 +280,11 @@ public class mainMenu {
             sudokuOperation(COUNT_SUDOKU);
         });
 
-        Button mediumButton = new Button("Medium");
+        mediumButton = new Button("Medium");
         initButtonStyle(mediumButton, levelsLayout, 2, null, WHITE_BG);
 
         mediumButton.setOnAction(e -> {
-            switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+            switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
 
             ArrayList<String> sudokuGame = null;
             try {
@@ -274,11 +303,11 @@ public class mainMenu {
             sudokuOperation(COUNT_SUDOKU);
         });
 
-        Button hardButton = new Button("Hard");
+        hardButton = new Button("Hard");
         initButtonStyle(hardButton, levelsLayout, 3, null, WHITE_BG);
 
         hardButton.setOnAction(e -> {
-            switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+            switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
 
             ArrayList<String> sudokuGame = null;
             try {
@@ -302,7 +331,7 @@ public class mainMenu {
         ArrayList<String> savedGames = null;
 
         try {
-            savedGames = main.database.Select(null, 1);
+            savedGames = database.Select(null, 1);
         } catch (SQLException ex) {
             Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -326,13 +355,19 @@ public class mainMenu {
         savedGamesLayout.getRowConstraints().add(gamesRow);
 
         //BorderPane to hold text and back arrow
-        BorderPane backArrowAndText = new BorderPane();
+        /*
+            EDITED
+        */
+        backArrowAndText = new BorderPane();
         savedGamesLayout.setConstraints(backArrowAndText, 0, 0);
         savedGamesLayout.getChildren().add(backArrowAndText);
         savedGamesLayout.setHalignment(backArrowAndText, HPos.CENTER);
 
         //Creating elemens
-        Button backButton = new Button("");
+        /*
+            EDITED
+        */
+        backButton = new Button("");
         backButton.getStyleClass().add("button-icon--dark");
         backButton.getStyleClass().add("back-icon--dark");
         backArrowAndText.setLeft(backButton);
@@ -345,13 +380,16 @@ public class mainMenu {
         });
 
         //Headline
-        Label headlineText = new Label("Choose a game");
+        /*
+            EDITED
+        */
+        headlineText = new Label("Choose a game");
         headlineText.getStyleClass().add("headline-text");
         backArrowAndText.setCenter(headlineText);
         backArrowAndText.setAlignment(headlineText, Pos.CENTER);
 
         //Container
-        GridPane gamesContainer = new GridPane();
+        gamesContainer = new GridPane();
         gamesContainer.setVgap(20);
 
         //Scrollbar
@@ -375,12 +413,12 @@ public class mainMenu {
             gameBlock[counter].setId("#" + data[0]); //Change to game ID
 
             //Container
-            BorderPane gameBlockLayout = new BorderPane();
+            gameBlockLayout = new BorderPane();
             gameBlock[counter].setConstraints(gameBlockLayout, 0, 0);
             gameBlock[counter].getChildren().add(gameBlockLayout);
 
             //Details container
-            GridPane detailsLayout = new GridPane();
+            detailsLayout = new GridPane();
             gameBlockLayout.setLeft(detailsLayout);
             gameBlockLayout.setMargin(detailsLayout, new Insets(0, 130, 0, 0));
 
@@ -394,19 +432,20 @@ public class mainMenu {
             detailsLayout.getRowConstraints().add(secondRow);
 
             //Game title
-            Button gameTitle = new Button(data[4]);
+            gameTitle = new Button(data[4]);
             gameTitle.getStyleClass().add("button-transparent--dark");
             detailsLayout.setConstraints(gameTitle, 0, 0);
             detailsLayout.getChildren().add(gameTitle);
 
             //Game level
-            Label gameLevel = new Label(data[3]);
+            gameLevel = new Label(data[3]);
             gameLevel.getStyleClass().add("game-level");
             detailsLayout.setConstraints(gameLevel, 0, 1);
             detailsLayout.getChildren().add(gameLevel);
             detailsLayout.setValignment(gameLevel, VPos.BOTTOM);
 
             //Formating the time
+            //FIXME
             String time = data[2];
             SimpleDateFormat sdf = new SimpleDateFormat("ss");
             Date dateObj = null;
@@ -417,7 +456,7 @@ public class mainMenu {
             }
 
             //Game timer
-            Label gameTimer = new Label(dateObj.getMinutes() + ":" + dateObj.getSeconds());
+            gameTimer = new Label(dateObj.getMinutes() + ":" + dateObj.getSeconds());
             gameTimer.getStyleClass().add("game-time");
             detailsLayout.setConstraints(gameTimer, 0, 1);
             detailsLayout.getChildren().add(gameTimer);
@@ -425,7 +464,7 @@ public class mainMenu {
             detailsLayout.setMargin(gameTimer, new Insets(0, 0, 0, 70));
 
             //Delete game button
-            Button deleteButton = new Button();
+            deleteButton = new Button();
             deleteButton.getStyleClass().add("button-icon--dark");
             deleteButton.getStyleClass().add("delete-icon");
             gameBlockLayout.setRight(deleteButton);
@@ -444,7 +483,7 @@ public class mainMenu {
                 sudokuOperation(PRINT_SUDOKU);
                 sudokuOperation(COUNT_SUDOKU);
 
-                switchPanes(windowLayout, mainMenuContainer, gamePlayContainer);
+                switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
 
                 levelLabel.setText(data[3]);
                 timerLabel.setText(gameTimer.getText());
@@ -479,7 +518,7 @@ public class mainMenu {
                 }
 
                 try {
-                    main.database.deleteGame(Integer.parseInt(gameID.replace("#", "")));
+                    database.deleteGame(Integer.parseInt(gameID.replace("#", "")));
                 } catch (SQLException ex) {
 
                 }

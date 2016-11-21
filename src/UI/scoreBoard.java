@@ -1,22 +1,13 @@
 package UI;
 
-import static UI.gamePlay.levelLabel;
-import static UI.gamePlay.sudokuOperation;
-import static UI.global.CLEAR_SUDOKU;
-import static UI.global.FADE_IN;
-import static UI.global.FADE_OUT;
-import static UI.global.fade;
-import static UI.global.gameTime;
-import static UI.global.windowLayout;
-import static UI.global.mainMenuContainer;
-import static UI.global.switchPanes;
-import static UI.main.database;
+import static UI.gamePlay.*;
+import static UI.global.*;
+
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -142,7 +133,7 @@ public class scoreBoard {
 
         backToMenuButton.setOnAction(e -> {
             sudokuOperation(CLEAR_SUDOKU);
-            switchPanes(windowLayout, scorePageContainer, mainMenuContainer);
+            switchPanes(screenContainer, scorePageContainer, mainMenuContainer);
             Timeline resetUITimeline = new Timeline();
             KeyFrame startReset = new KeyFrame(Duration.millis(300), event -> resetUI());
             resetUITimeline.getKeyFrames().add(startReset);
