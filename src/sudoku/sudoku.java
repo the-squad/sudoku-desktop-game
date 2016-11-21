@@ -29,6 +29,10 @@ public class sudoku {
         return sudoku;
     }
     
+    public void setUserSudoku(Integer[][] sudoku) {
+        this.sudoku = sudoku;
+    }
+    
     /**
      * Get Sudoku solved by solveSudoku()
      * @return Sudoku solution.
@@ -44,7 +48,6 @@ public class sudoku {
                 solvedSudoku[rowCounter][columnCounter] = sudoku[rowCounter][columnCounter];
             }
         }
-        this.sudoku = sudoku;
     }
     
     /**

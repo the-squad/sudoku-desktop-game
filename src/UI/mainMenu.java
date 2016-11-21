@@ -154,7 +154,6 @@ public class mainMenu {
 
             saveButton.setVisible(true);
             saveButton.setDisable(false);
-            submitButton.setDisable(true);
         });
         //</editor-fold>
         
@@ -172,7 +171,6 @@ public class mainMenu {
 
             saveButton.setVisible(true);
             saveButton.setDisable(false);
-            submitButton.setDisable(true);
         });
         //</editor-fold>
 
@@ -189,7 +187,6 @@ public class mainMenu {
 
             saveButton.setVisible(false);
             saveButton.setDisable(true);
-            submitButton.setDisable(false);
             submitButton.setText("Check");
         });
         //</editor-fold>
@@ -207,7 +204,6 @@ public class mainMenu {
             
             saveButton.setVisible(false);
             saveButton.setDisable(true);
-            submitButton.setDisable(false);
             submitButton.setText("Challenge");
         });
 //</editor-fold>
@@ -284,7 +280,6 @@ public class mainMenu {
             
             splitSudoku(sudokuGame.get(0));
             sudokuOperation(PRINT_SUDOKU);
-            sudokuOperation(COUNT_SUDOKU);
         });
 //</editor-fold>
 
@@ -309,7 +304,6 @@ public class mainMenu {
 
             splitSudoku(sudokuGame.get(0));
             sudokuOperation(PRINT_SUDOKU);
-            sudokuOperation(COUNT_SUDOKU);
         });
         //</editor-fold>
 
@@ -333,8 +327,7 @@ public class mainMenu {
             }
             
             splitSudoku(sudokuGame.get(0));
-            gamePlay.sudokuOperation(PRINT_SUDOKU);
-            sudokuOperation(COUNT_SUDOKU);
+            sudokuOperation(PRINT_SUDOKU);
         });
         //</editor-fold>
     }
@@ -487,7 +480,6 @@ public class mainMenu {
                 sudokuIdOriginal = data[6];
                 splitSudoku(data[1]);
                 sudokuOperation(PRINT_SUDOKU);
-                sudokuOperation(COUNT_SUDOKU);
 
                 switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
 
