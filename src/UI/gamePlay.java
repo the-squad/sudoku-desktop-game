@@ -335,11 +335,13 @@ public class gamePlay {
             gamePlayContainer.setAlignment(cardBg, Pos.CENTER);
             gamePlayContainer.getChildren().addAll();
         }
-        /**
-         * @author Muhammad Tarek
-         * @param message
-         * @param alertType
-         */
+    }
+
+    /**
+     * @author Muhammad Tarek
+     * @param message
+     * @param alertType
+     */
     private void showPopup(String message, int alertType) {
         //Alert message layout
         GridPane alertLayout = new GridPane();
