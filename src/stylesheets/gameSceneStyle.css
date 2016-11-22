@@ -143,3 +143,11 @@
     -fx-font-weight: 600;
     -fx-padding: 0 0 30 20;
 }
+
+.alert-text {
+    -fx-font-family: "Lato";
+    -fx-fill-color: rgba(41,47,51, 0.9);
+    -fx-font-size: 14;
+    -fx-font-weight: 400;
+    -fx-padding: 0 0 0 20;
+}

@@ -36,7 +36,7 @@ public class Database {
             randomNum = rnd.nextInt(5 - 1) + 1; // Generate Random Number from 1 to 5 to select the sudoku because easch mode has 5 sudoku
             query = "Select Sudoku,ID from 'allSudoku' WHERE Diff = " + "\"" + Difficulty + "\""; // get all sudoko according to the Difficulty from allSudoku Table
         } else if (choice == 1) { // choice 1 means to load the saved sudoko from Load table
-            query = "Select *,allSudoku.Sudoku as original from Load JOIN allSudoku ON load.originalID = allSudoku.ID";  // get the saved sudoku from Load table
+            query = "Select *,allSudoku.Sudoku as original from Load JOIN allSudoku ON load.originalID = allSudoku.ID order by load.savingTime desc";  // get the saved sudoku from Load table
         }
         // variable from result set class to take the result of the query 
         ResultSet result = stmt.executeQuery(query); //Query Excution

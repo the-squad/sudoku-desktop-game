@@ -1,22 +1,13 @@
 package UI;
 
-import static UI.gamePlay.levelLabel;
-import static UI.gamePlay.sudokuOperation;
-import static UI.global.CLEAR_SUDOKU;
-import static UI.global.FADE_IN;
-import static UI.global.FADE_OUT;
-import static UI.global.fade;
-import static UI.global.gameTime;
-import static UI.global.windowLayout;
-import static UI.global.mainMenuContainer;
-import static UI.global.switchPanes;
-import static UI.main.database;
+import static UI.gamePlay.*;
+import static UI.global.*;
+
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -27,6 +18,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 /**
@@ -37,18 +29,18 @@ public class scoreBoard {
 
     GridPane scorePageContainer;
     private GridPane saveDataLayout;
-    private Label inputLabel;
+    
     private TextField nameTextField;
-    private Label scoreBoardArray[] = new Label[5];
+    
+    private Button backToMenuButton;
+    
+    private Label headline;
     static Label timeLabel;
+    private Label inputLabel;
+    private Label boardHeadline;
+    static Label scoreBoardArray[] = new Label[5];
+    
 
-    public void setScoreBoardArray(Label[] scoreBoardArray) {
-        this.scoreBoardArray = scoreBoardArray;
-    }
-
-    public void setTimeLabel(Label timeLabel) {
-        this.timeLabel = timeLabel;
-    }
 
     public GridPane initialize() {
         //Score page layout
@@ -108,7 +100,7 @@ public class scoreBoard {
 
         saveDataLayout.getChildren().addAll(inputLabel, nameTextField);
 
-        Label boardHeadline = new Label("Time Score Board");
+        boardHeadline = new Label("Time Score Board");
         boardHeadline.getStyleClass().add("score-text");
         boardHeadline.getStyleClass().add("page-headline");
         boardHeadline.setPadding(new Insets(50, 0, 15, 0));
@@ -118,9 +110,10 @@ public class scoreBoard {
         scorePageContainer.getChildren().addAll(headline, timeLabel, saveDataLayout, boardHeadline);
 
         for (int counter = 0; counter < 5; counter++) {
-            scoreBoardArray[counter] = new Label(counter + 1 + ".        1:00        Muhammad Tarek");
+            scoreBoardArray[counter] = new Label();
             scoreBoardArray[counter].getStyleClass().add("score-line");
             scoreBoardArray[counter].getStyleClass().add("score-text");
+            scoreBoardArray[counter].setTextAlignment(TextAlignment.LEFT);
             centerObject(scoreBoardArray[counter]);
 
             if (counter < 4) {
@@ -133,7 +126,7 @@ public class scoreBoard {
             scorePageContainer.getChildren().add(scoreBoardArray[counter]);
         }
 
-        Button backToMenuButton = new Button("BACK TO MAIN MENU");
+        backToMenuButton = new Button("BACK TO MAIN MENU");
         backToMenuButton.getStyleClass().add("button-white");
         backToMenuButton.setPadding(new Insets(10, 20, 10, 20));
         scorePageContainer.setConstraints(backToMenuButton, 0, 10);
@@ -142,7 +135,7 @@ public class scoreBoard {
 
         backToMenuButton.setOnAction(e -> {
             sudokuOperation(CLEAR_SUDOKU);
-            switchPanes(windowLayout, scorePageContainer, mainMenuContainer);
+            switchPanes(screenContainer, scorePageContainer, mainMenuContainer);
             Timeline resetUITimeline = new Timeline();
             KeyFrame startReset = new KeyFrame(Duration.millis(300), event -> resetUI());
             resetUITimeline.getKeyFrames().add(startReset);

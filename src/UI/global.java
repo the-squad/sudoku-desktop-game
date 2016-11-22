@@ -14,6 +14,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Duration;
+import sudoku.Database;
+import sudoku.sudoku;
 import sudoku.timer;
 
 /**
@@ -23,10 +25,12 @@ import sudoku.timer;
  */
 public class global {
 
-    static BorderPane windowLayout;
+    // <editor-fold defaultstate="collapsed" desc="Main Panes">
+    static BorderPane screenContainer;
     static BorderPane gamePlayContainer;
     static GridPane mainMenuContainer;
     static GridPane scorePageContainer;
+    // </editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Sudoku Arrays">
     static Integer[][] userSudoku = new Integer[9][9]; //Reads the Sudoku from the user
@@ -34,20 +38,34 @@ public class global {
     static Boolean[][] markSolution = new Boolean[9][9]; //Where computer returns the wrong cells
 //</editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="Global Static Vairables">
     public static final int READ_SUDOKU = 1;
     public static final int PRINT_SUDOKU = 2;
     public static final int CLEAR_SUDOKU = 3;
+    public static final int CHECK_SUDOKU = 4;
 
     public static final int FADE_IN = 1;
     public static final int FADE_OUT = 2;
     
     public static final int TRANSPARENT_BG = 1;
     public static final int WHITE_BG = 2;
+    
+    public static final int MESSAGE_SUCCESS = 1;
+    public static final int MESSAGE_DANGER = 2;
+    // </editor-fold>
 
+    // <editor-fold defaultstate="collapsed" desc="Sudoku Info">
     static int playingMode;
     static String sudokuId = "0";
     static String sudokuIdOriginal;
+    static String sudokuLevel;
+    // </editor-fold>
+    
     static timer gameTime = new timer();
+    
+    //Creating objects
+    static Database database = new Database();
+    static sudoku Sudoku = new sudoku();
 
     /**
      *
