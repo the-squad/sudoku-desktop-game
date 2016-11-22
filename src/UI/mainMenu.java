@@ -40,14 +40,14 @@ public class mainMenu {
     private GridPane savedGamesContainer;
     private BorderPane pageHeaderContainer;
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="Labels">
     private Label logo;
     private Label logoText;
     private Label version;
     private Label headlineText;
     // </editor-fold>
-    
+
     // <editor-fold defaultstate="collapsed" desc="Buttons">
     private Button newGameButton;
     private Button loadGameButton;
@@ -65,7 +65,7 @@ public class mainMenu {
      *
      * @return mainMenuScene
      */
-    public GridPane initialize() {        
+    public GridPane initialize() {
         //Main menu layout
         mainMenuContainer = new GridPane();
 
@@ -99,14 +99,14 @@ public class mainMenu {
         //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Logo Label">
-        logoText = new Label("Sudodu Game");
+        logoText = new Label("Sudoku Game");
         logoText.getStyleClass().add("logo-text");
         leftPartContainer.setCenter(logoText);
         leftPartContainer.setAlignment(logoText, Pos.TOP_CENTER);
         //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Version Label">
-        version = new Label("Version 0.3");
+        version = new Label("Version 1.0");
         version.getStyleClass().add("version");
         leftPartContainer.setBottom(version);
         leftPartContainer.setAlignment(version, Pos.TOP_CENTER);
@@ -154,9 +154,11 @@ public class mainMenu {
 
             saveButton.setVisible(true);
             saveButton.setDisable(false);
+            submitButton.setText("Submit");
+            headlineLabel.setText("New Game");
         });
         //</editor-fold>
-        
+
         //<editor-fold defaultstate="collapsed" desc="Load Game Button">
         Image loadGameButtonIcon = new Image(getClass().getResourceAsStream("/icons/load-game.png"));
         ImageView laodGameIconView = new ImageView(loadGameButtonIcon);
@@ -171,6 +173,8 @@ public class mainMenu {
 
             saveButton.setVisible(true);
             saveButton.setDisable(false);
+            submitButton.setText("Submit");
+            headlineLabel.setText("Loaded Game");
         });
         //</editor-fold>
 
@@ -188,6 +192,7 @@ public class mainMenu {
             saveButton.setVisible(false);
             saveButton.setDisable(true);
             submitButton.setText("Check");
+            headlineLabel.setText("Check your Sudoku");
         });
         //</editor-fold>
 
@@ -196,18 +201,19 @@ public class mainMenu {
         ImageView challengeComputerIconView = new ImageView(challengeComputerIcon);
         challangeComputerButton = new Button("       Challenge Computer", challengeComputerIconView);
         initButtonStyle(challangeComputerButton, gameModesContainer, 3, challengeComputerIconView, WHITE_BG);
-        
+
         challangeComputerButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
             playingMode = 4;
             gamePlayContainer.setLeft(null);
-            
+
             saveButton.setVisible(false);
             saveButton.setDisable(true);
             submitButton.setText("Challenge");
+            headlineLabel.setText("Challenge Computer");
         });
-//</editor-fold>
-       
+        //</editor-fold>
+
         //<editor-fold defaultstate="collapsed" desc="Exit Button">
         Image exitButtonIcon = new Image(getClass().getResourceAsStream("/icons/exit.png"));
         ImageView exitButtonIconView = new ImageView(exitButtonIcon);
@@ -258,30 +264,31 @@ public class mainMenu {
         headlineText.getStyleClass().add("headline-text");
         pageHeaderContainer.setCenter(headlineText);
         pageHeaderContainer.setAlignment(headlineText, Pos.CENTER);
- 
+
         //<editor-fold defaultstate="collapsed" desc="Easy Level Button">
         easyButton = new Button("Easy");
         initButtonStyle(easyButton, levelsContainer, 1, null, WHITE_BG);
-        
+
         easyButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
-            
+
             ArrayList<String> sudokuGame = null;
             try {
                 sudokuGame = database.Select("Easy", 0);
                 sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
-                
+
                 levelLabel.setText(easyButton.getText());
                 gameTime.setTimer(timerLabel, 0);
                 gameTime.start();
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            splitSudoku(sudokuGame.get(0));
+
+            assignSudoku(sudokuGame.get(0), null);
             sudokuOperation(PRINT_SUDOKU);
+            switchPanes(rightPartContainer, levelsContainer, gameModesContainer);
         });
-//</editor-fold>
+        //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Medium Level Button">
         mediumButton = new Button("Medium");
@@ -302,32 +309,34 @@ public class mainMenu {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            splitSudoku(sudokuGame.get(0));
+            assignSudoku(sudokuGame.get(0), null);
             sudokuOperation(PRINT_SUDOKU);
+            switchPanes(rightPartContainer, levelsContainer, gameModesContainer);
         });
         //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Hard Level Button">
         hardButton = new Button("Hard");
         initButtonStyle(hardButton, levelsContainer, 3, null, WHITE_BG);
-        
+
         hardButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
-            
+
             ArrayList<String> sudokuGame = null;
             try {
                 sudokuGame = database.Select("Hard", 0);
                 sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
-                
+
                 gameTime.setTimer(timerLabel, 0);
                 gameTime.start();
                 levelLabel.setText(hardButton.getText());
             } catch (SQLException ex) {
                 Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            splitSudoku(sudokuGame.get(0));
+
+            assignSudoku(sudokuGame.get(0), null);
             sudokuOperation(PRINT_SUDOKU);
+            switchPanes(rightPartContainer, levelsContainer, gameModesContainer);
         });
         //</editor-fold>
     }
@@ -478,7 +487,8 @@ public class mainMenu {
                 //Printing Sudoku and saving Sudoku ID
                 sudokuId = data[0];
                 sudokuIdOriginal = data[6];
-                splitSudoku(data[1]);
+                assignSudoku(data[1], null);
+                assignSudoku(data[5], markSolution);
                 sudokuOperation(PRINT_SUDOKU);
 
                 switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
@@ -528,12 +538,17 @@ public class mainMenu {
      *
      * @param Sudoku
      */
-    private void splitSudoku(String Sudoku) {
+    private void assignSudoku(String Sudoku, Boolean[][] originalSudoku) {
         int charptr = 0;
 
         for (int row = 0; row < 9; row++) {
             for (int column = 0; column < 9; column++) {
-                computerSolution[row][column] = Integer.parseInt(Sudoku.charAt(charptr) + "");
+                if (originalSudoku != null) {
+                    originalSudoku[row][column] = Integer.parseInt(Sudoku.charAt(charptr) + "") == 0 ? Boolean.FALSE : Boolean.TRUE;
+                } else {
+                    computerSolution[row][column] = Integer.parseInt(Sudoku.charAt(charptr) + "");
+                }
+
                 charptr++;
             }
         }

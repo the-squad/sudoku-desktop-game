@@ -29,18 +29,16 @@ public class scoreBoard {
 
     GridPane scorePageContainer;
     private GridPane saveDataLayout;
-    
+
     private TextField nameTextField;
-    
+
     private Button backToMenuButton;
-    
-    private Label headline;
+
+    static Label scoreHeadlineLabel;
     static Label timeLabel;
     private Label inputLabel;
     private Label boardHeadline;
     static Label scoreBoardArray[] = new Label[5];
-    
-
 
     public GridPane initialize() {
         //Score page layout
@@ -49,12 +47,12 @@ public class scoreBoard {
         scorePageContainer.setAlignment(Pos.CENTER);
 
         //Page Headline
-        Label headline = new Label("Time");
-        headline.getStyleClass().add("score-text");
-        headline.getStyleClass().add("page-headline");
-        headline.setPadding(new Insets(0, 0, 5, 0));
-        centerObject(headline);
-        scorePageContainer.setConstraints(headline, 0, 0);
+        scoreHeadlineLabel = new Label("Time");
+        scoreHeadlineLabel.getStyleClass().add("score-text");
+        scoreHeadlineLabel.getStyleClass().add("page-headline");
+        scoreHeadlineLabel.setPadding(new Insets(0, 0, 5, 0));
+        centerObject(scoreHeadlineLabel);
+        scorePageContainer.setConstraints(scoreHeadlineLabel, 0, 0);
 
         //Game time
         timeLabel = new Label("1:00");
@@ -89,7 +87,7 @@ public class scoreBoard {
                 nameTextField.setAlignment(Pos.CENTER);
                 timeLabel.setPadding(new Insets(5, 0, 15, 0));
                 fade(saveDataLayout, 750, 0, FADE_IN);
-               
+
                 try {
                     database.addDashboard(nameTextField.getText(), gameTime.getTime(), levelLabel.getText());
                 } catch (SQLException ex) {
@@ -107,7 +105,7 @@ public class scoreBoard {
         scorePageContainer.setConstraints(boardHeadline, 0, 3);
         centerObject(boardHeadline);
 
-        scorePageContainer.getChildren().addAll(headline, timeLabel, saveDataLayout, boardHeadline);
+        scorePageContainer.getChildren().addAll(scoreHeadlineLabel, timeLabel, saveDataLayout, boardHeadline);
 
         for (int counter = 0; counter < 5; counter++) {
             scoreBoardArray[counter] = new Label();
@@ -137,19 +135,20 @@ public class scoreBoard {
             sudokuOperation(CLEAR_SUDOKU);
             switchPanes(screenContainer, scorePageContainer, mainMenuContainer);
             Timeline resetUITimeline = new Timeline();
-            KeyFrame startReset = new KeyFrame(Duration.millis(300), event -> resetUI());
+            KeyFrame startReset = new KeyFrame(Duration.millis(300), event -> {
+                saveDataLayout.getChildren().add(inputLabel);
+                nameTextField.setText("");
+                nameTextField.setDisable(false);
+                timeLabel.setPadding(new Insets(5, 0, 30, 0));
+                nameTextField.setAlignment(Pos.CENTER_LEFT);
+            });
             resetUITimeline.getKeyFrames().add(startReset);
             resetUITimeline.play();
+            hintButton.setDisable(false);
+            submitButton.setDisable(false);
         });
 
         return scorePageContainer;
-    }
-
-    private void resetUI() {
-        saveDataLayout.setConstraints(inputLabel, 0, 0);
-        nameTextField.setDisable(false);
-        timeLabel.setPadding(new Insets(5, 0, 30, 0));
-        nameTextField.setAlignment(Pos.CENTER_LEFT);
     }
 
     private void centerObject(Object node) {

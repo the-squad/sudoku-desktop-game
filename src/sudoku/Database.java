@@ -6,7 +6,7 @@ import java.util.*;
 public class Database {
 
     // variable from connection class
-    public Connection conn = null;
+    private Connection conn = null;
 
     public Connection DBconnect() {
         try {
@@ -44,10 +44,10 @@ public class Database {
         ArrayList<String> arr2 = new ArrayList();  // array 2 to hold the random sudoku from arr number 1
         while (result.next()) {
             if (choice == 0) {
-                arr.add(result.getString("Sudoku")+","+result.getString("ID")); //Fill the first array with all Sudukos from allSudoku Table
+                arr.add(result.getString("Sudoku") + "," + result.getString("ID")); //Fill the first array with all Sudukos from allSudoku Table
             } else {
                 arr.add(result.getInt("ID") + "," + result.getString("Sudoku") + "," + result.getInt("Timer")
-                        + "," + result.getString("Diff") + "," + result.getString("savingTime") + "," + result.getString("original")+","+result.getString("originalID")); // get all Sudokus in Load Table
+                        + "," + result.getString("Diff") + "," + result.getString("savingTime") + "," + result.getString("original") + "," + result.getString("originalID")); // get all Sudokus in Load Table
             }
         }
         if (arr.isEmpty()) {
@@ -61,36 +61,39 @@ public class Database {
 
     }
 
-    public void saveGame(String SU, int Timer, int originalId ,int oldId) throws SQLException {
+    public long saveGame(String SU, int Timer, int originalId, int oldId) throws SQLException {
         String query = null;
-        Statement stmt = conn.createStatement(); // variable from statement class used to write query in to be excuted
         query = "INSERT INTO Load (Sudoku , Timer , originalID) Values ( " + "\"" + SU + "\"" + "," + "\"" + Timer + "\"" + "," + "\"" + originalId + "\"" + ")";
-        stmt.executeUpdate(query);
+        PreparedStatement statement = conn.prepareStatement(query,
+                Statement.RETURN_GENERATED_KEYS);
+        statement.executeUpdate();
         this.deleteGame(oldId);
+        ResultSet generatedKeys = statement.getGeneratedKeys();
+        if (generatedKeys.next()) {
+            return generatedKeys.getLong(1);
+        }
+        return 0;
     }
-    
-    public void deleteGame(int id) throws SQLException
-    {
+
+    public void deleteGame(int id) throws SQLException {
         Statement stmt = conn.createStatement(); // variable from statement class used to write query in to be excuted
-        String query  = "DELETE FROM LOAD WHERE ID = "+ id;
+        String query = "DELETE FROM LOAD WHERE ID = " + id;
         stmt.executeUpdate(query);
     }
-    
-    public void addDashboard(String name,int time,String Diff) throws SQLException
-    {
+
+    public void addDashboard(String name, int time, String Diff) throws SQLException {
         Statement stmt = conn.createStatement();
-        String query = "INSERT INTO Dashboard (name , Diff , Time) Values ( " + "\"" + name + "\"" + "," + "\"" + Diff + "\"" + "," + "\"" + time + "\"" +")";
+        String query = "INSERT INTO Dashboard (name , Diff , Time) Values ( " + "\"" + name + "\"" + "," + "\"" + Diff + "\"" + "," + "\"" + time + "\"" + ")";
         stmt.executeUpdate(query);
     }
-    
-    public ArrayList<String> highfive(String Diff) throws SQLException
-    {
+
+    public ArrayList<String> highfive(String Diff) throws SQLException {
         Statement stmt = conn.createStatement();
         String query = "SELECT * FROM Dashboard where Diff = \"" + Diff + "\" order by time limit 5";
         ResultSet reuslt = stmt.executeQuery(query);
         ArrayList<String> x = new ArrayList<>();
         while (reuslt.next()) {
-            x.add(reuslt.getString("Name")+","+reuslt.getString("Diff")+","+reuslt.getString("Time"));
+            x.add(reuslt.getString("Name") + "," + reuslt.getString("Diff") + "," + reuslt.getString("Time"));
         }
         return x;
     }
