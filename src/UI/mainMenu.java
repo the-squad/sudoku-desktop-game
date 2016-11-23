@@ -60,7 +60,8 @@ public class mainMenu {
     private Button hardButton;
     // </editor-fold>
     
-    int savedGamesNumber = 0;
+    private int savedGamesNumber = 0;
+    private ArrayList<String> savedGames = null;
 
     /**
      * Initialize main menu elements
@@ -128,8 +129,6 @@ public class mainMenu {
         initializeLevelsMenu();
         rightPartContainer.setCenter(gameModesContainer);
         
-        ArrayList<String> savedGamesTemp = null;
-
         //Getting number of saved games before initializing buttons
         try {
             savedGames = database.Select(null, 1);
@@ -363,7 +362,7 @@ public class mainMenu {
     }
 
     public void initializeSavedGames() {
-        ArrayList<String> savedGames = null;
+        //ArrayList<String> savedGames = null;
 
         try {
             savedGames = database.Select(null, 1);
