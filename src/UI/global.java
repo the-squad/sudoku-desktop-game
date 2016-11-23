@@ -46,12 +46,18 @@ public class global {
 
     public static final int FADE_IN = 1;
     public static final int FADE_OUT = 2;
-    
+
     public static final int TRANSPARENT_BG = 1;
     public static final int WHITE_BG = 2;
-    
+
+    public static final int Y_AXIS = 1;
+    public static final int X_AXIS = 2;
+
     public static final int MESSAGE_SUCCESS = 1;
     public static final int MESSAGE_DANGER = 2;
+    
+    public static final int RIGHT_TO_LEFT = 2;
+    public static final int LEFT_TO_RIGHT = 2;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Sudoku Info">
@@ -60,9 +66,9 @@ public class global {
     static String sudokuIdOriginal;
     static String sudokuLevel;
     // </editor-fold>
-    
+
     static timer gameTime = new timer();
-    
+
     //Creating objects
     static Database database = new Database();
     static sudoku Sudoku = new sudoku();
@@ -73,7 +79,7 @@ public class global {
      * @param fromChild
      * @param toChild
      */
-    public static void switchPanes(BorderPane parent, Pane fromChild, Pane toChild) {
+     public static void switchPanes(BorderPane parent, Pane fromChild, Pane toChild) {
         Timeline translateAnimation = new Timeline();
 
         //Creating all key values for the animation
@@ -83,8 +89,8 @@ public class global {
         KeyValue toChildOpacityStart = new KeyValue(fromChild.opacityProperty(), 0);
         KeyValue toChildOpacityEnd = new KeyValue(fromChild.opacityProperty(), 1);
 
-        KeyValue fromChildtranslateStart = new KeyValue(toChild.translateYProperty(), 0);
-        KeyValue fromChildtranslateEnd = new KeyValue(toChild.translateYProperty(), 20);
+        KeyValue fromChildtranslateStart = new KeyValue(fromChild.translateYProperty(), 0);
+        KeyValue fromChildtranslateEnd = new KeyValue(fromChild.translateYProperty(), 20);
 
         KeyValue toChildtranslateStart = new KeyValue(toChild.translateYProperty(), 20);
         KeyValue toChildtranslateEnd = new KeyValue(toChild.translateYProperty(), 0);
@@ -115,25 +121,26 @@ public class global {
     }
 
     /**
-     * 
+     *
      * @param node
      * @param duration
      * @param delay
-     * @param fadeType 
+     * @param fadeType
      */
     public static void fade(Object node, int duration, int delay, int fadeType) {
         FadeTransition fadeAnimation = new FadeTransition(Duration.millis(duration), (Node) node);
 
-        if (delay != 0)
+        if (delay != 0) {
             fadeAnimation.setDelay(Duration.millis(delay));
-        
+        }
+
         fadeAnimation.setFromValue(fadeType == 1 ? 0 : 1);
         fadeAnimation.setToValue(fadeType == 1 ? 1 : 0);
 
         fadeAnimation.play();
     }
-    
-       /**
+
+    /**
      * Initialize button styles, icons sizes Muhammad Tarek
      *
      * @since 6, November
@@ -150,20 +157,21 @@ public class global {
             icon.setFitHeight(bgColor == 1 ? 20 : 24);
             icon.setFitWidth(bgColor == 1 ? 20 : 24);
         }
-        
+
         button.getStyleClass().add("button-icon_text");
         button.setAlignment(Pos.CENTER_LEFT);
-        
-        if (bgColor == 1)
+
+        if (bgColor == 1) {
             button.getStyleClass().add("button-icon_text--transparent");
-        else
+        } else {
             button.getStyleClass().add("button-icon_text--white");
+        }
 
         layout.setConstraints(button, 0, position);
         layout.setHalignment(button, HPos.CENTER);
         layout.setValignment(button, VPos.CENTER);
         layout.getChildren().add(button);
-        
+
         fade(button, 300, 150 * (position + 1), FADE_IN);
     }
 }

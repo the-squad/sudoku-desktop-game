@@ -34,6 +34,10 @@
     -fx-padding: 0 0 0 20;
 }
 
+.button-icon_text--white:disabled {
+    -fx-opacity: 0.5;
+}
+
 .button-icon_text--transparent:disabled {
     -fx-opacity: 0.5;
 }
@@ -148,3 +152,8 @@
 .resume-icon {
     -fx-background-image: url("../icons/play.png");
 }
+
+.close-icon {
+    -fx-background-image: url("../icons/close.png");
+    -fx-background-size: 15px;
+} 

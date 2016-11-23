@@ -10,6 +10,14 @@ import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 
 import static javafx.application.Application.launch;
+import javafx.util.Duration;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
 
 public class main extends Application {
     @Override
@@ -21,9 +29,7 @@ public class main extends Application {
         screenContainer = new BorderPane();
 
         mainMenuContainer = new mainMenu().initialize();
-        //TEST
-        switchPanes(screenContainer, null, mainMenuContainer);
-        //screenContainer.setCenter(mainMenuContainer);
+        screenContainer.setCenter(mainMenuContainer);
         
         //TEST
         Timeline loadOtherContainers = new Timeline();

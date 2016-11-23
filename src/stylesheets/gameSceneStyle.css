@@ -93,13 +93,30 @@
 /*
     Alert message
 */
+.alert-success {
+    -fx-background-color: rgb(0, 200 , 83);
+}
+
+.alert-danger {
+    -fx-background-color: rgb(229,57,53);
+}
+
 .alert-message {
     -fx-font-family: "Lato";
     -fx-font-size: 15;
     -fx-font-weight: bold;
     -fx-padding: 10 0 20 0;
+    -fx-text-fill: #fff;
 }
 
+.alert-help {
+    -fx-font-family: "Lato";
+    -fx-font-size: 15;
+    -fx-font-weight: Light;
+    -fx-padding: 0 0 10 20;
+    -fx-text-fill: #fff;
+}
+/*
 .alert-message-success {
     -fx-text-fill: rgb(0, 200 , 83);
 }
@@ -107,7 +124,7 @@
 .alert-message-danger {
     -fx-text-fill: rgb(229,57,53);
 }
-
+*/
 .alert-icon {
     -fx-background-size: 17px;
     -fx-background-repeat: no-repeat;
