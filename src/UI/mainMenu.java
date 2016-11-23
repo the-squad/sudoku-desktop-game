@@ -50,7 +50,7 @@ public class mainMenu {
 
     // <editor-fold defaultstate="collapsed" desc="Buttons">
     private Button newGameButton;
-    private Button loadGameButton;
+    public Button loadGameButton;
     private Button checkSudokuButton;
     private Button challangeComputerButton;
     private Button exitButton;
@@ -59,6 +59,8 @@ public class mainMenu {
     private Button mediumButton;
     private Button hardButton;
     // </editor-fold>
+    
+    int savedGamesNumber = 0;
 
     /**
      * Initialize main menu elements
@@ -125,6 +127,21 @@ public class mainMenu {
         initializeGameModes();
         initializeLevelsMenu();
         rightPartContainer.setCenter(gameModesContainer);
+        
+        ArrayList<String> savedGamesTemp = null;
+
+        //Getting number of saved games before initializing buttons
+        try {
+            savedGames = database.Select(null, 1);
+        } catch (SQLException ex) {
+            Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (savedGames == null) {
+            savedGames = new ArrayList<>();
+        }
+
+        savedGamesNumber = savedGamesTemp.size();
 
         return mainMenuContainer;
     }
@@ -176,6 +193,10 @@ public class mainMenu {
             submitButton.setText("Submit");
             headlineLabel.setText("Loaded Game");
         });
+        
+        //Disable the button when there are no saved games
+        if (savedGamesNumber == 0)
+            loadGameButton.setDisable(true);
         //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Check Sudoku Button">
@@ -354,7 +375,7 @@ public class mainMenu {
             savedGames = new ArrayList<>();
         }
 
-        int gamesNumber = savedGames.size();
+        savedGamesNumber = savedGames.size();
 
         savedGamesContainer = new GridPane();
         savedGamesContainer.setAlignment(Pos.CENTER);
@@ -523,6 +544,11 @@ public class mainMenu {
 
                     updateGameTimeline.getKeyFrames().addAll(startMove, finishMove);
                     updateGameTimeline.play();
+                    
+                    savedGamesNumber--;
+                    if (savedGamesNumber == 0) {
+                        switchPanes(rightPartContainer, savedGamesContainer, gameModesContainer);
+                        loadGameButton.setDisable(true);
                 }
 
                 try {
