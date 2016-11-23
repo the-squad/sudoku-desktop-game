@@ -6,6 +6,17 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import javafx.animation.Timeline;
+import javafx.animation.KeyFrame;
+
+import static javafx.application.Application.launch;
+import javafx.util.Duration;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
 import static javafx.application.Application.launch;
 
 public class main extends Application {
@@ -20,9 +31,17 @@ public class main extends Application {
         mainMenuContainer = new mainMenu().initialize();
         screenContainer.setCenter(mainMenuContainer);
         
+        //TEST
+        Timeline loadOtherContainers = new Timeline();
+        KeyFrame loadGamePlay = new KeyFrame(Duration.millis(500), e -> gamePlayContainer = new gamePlay().initialize());
+        KeyFrame loadScoreBoard = new KeyFrame(Duration.millis(3000), e -> scorePageContainer = new scoreBoard().initialize());
+        loadOtherContainers.getKeyFrames().addAll(loadGamePlay, loadScoreBoard);
+        loadOtherContainers.play();
         
+        /*
         gamePlayContainer = new gamePlay().initialize();
         scorePageContainer = new scoreBoard().initialize();
+        */
 
         //Main stage property
         primaryStage.setTitle("Sudoku Game!");

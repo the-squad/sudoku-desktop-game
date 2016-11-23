@@ -1,15 +1,14 @@
 package UI;
 
 import static UI.global.*;
-import static UI.scoreBoard.scoreBoardArray;
-import static UI.scoreBoard.scoreHeadlineLabel;
-import static UI.scoreBoard.timeLabel;
+import static UI.scoreBoard.*;
+import static UI.mainMenu.loadGameButton;
+
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
@@ -26,6 +25,7 @@ import javafx.animation.KeyValue;
 import javafx.event.ActionEvent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.ColumnConstraints;
 import sudoku.checker;
 
 public class gamePlay {
@@ -52,6 +52,7 @@ public class gamePlay {
     private Label timerHeadlineLabel;
     private Label hintAlertLabel;
     private Label alertMessageLabel;
+    private Label alertHelpMessageLabel;
     private Label alertIcon;
     // </editor-fold>
 
@@ -63,12 +64,15 @@ public class gamePlay {
     private Button resumeButton;
     static Button hintButton;
     private Button solveButton;
+    private Button closePopupButton;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Timelines">
     private Timeline timerStoppedTimeline;
     private Timeline showAlertTimeline;
     private Timeline hideAlertTimeline;
+    private Timeline showPopupTimeline;
+    private Timeline hidePopupTimeline;
     // </editor-fold>
 
     /**
@@ -129,6 +133,7 @@ public class gamePlay {
             hintButton.setDisable(false);
             solveButton.setDisable(false);
             submitButton.setDisable(false);
+            loadGameButton.setDisable(false);
         });
         //</editor-fold>
 
@@ -141,7 +146,8 @@ public class gamePlay {
 
         saveButton.setOnAction(e -> {
             saveCurrentGame();
-            showPopup("Game is saved successfuly", MESSAGE_SUCCESS);
+            loadGameButton.setDisable(false);
+            showPopup("Game is saved successfuly", "You can always complete your game anytime you want", MESSAGE_SUCCESS);
         });
         //</editor-fold>
 
@@ -210,7 +216,7 @@ public class gamePlay {
                             }
                         }
                     } else {
-                        showPopup("There are missing fields", MESSAGE_DANGER);
+                        showPopup("Sudoku isn't comlete", "Please make sure to fill all Sudoku cells", MESSAGE_DANGER);
                     }
                 } else if (playingMode == 4) {
                     if (sudokuOperation(CHECK_SUDOKU)) {
@@ -232,8 +238,6 @@ public class gamePlay {
                                 }
                             }
                         }
-                    } else {
-                        showPopup("There are missing fields", MESSAGE_DANGER);
                     }
                 }
             } catch (InterruptedException | SQLException ex) {
@@ -500,13 +504,33 @@ public class gamePlay {
      * @param message
      * @param alertType
      */
-    private void showPopup(String message, int alertType) {
+    private void showPopup(String message, String helpText, int alertType) {
         //Alert message layout
         alertMessageContainer = new GridPane();
         alertMessageContainer.setHgap(10);
+        alertMessageContainer.setPrefHeight(50);
+        alertMessageContainer.setPadding(new Insets(0, 0, 0, 50));
+        alertMessageContainer.getStyleClass().add(alertType == 1 ? "alert-success" : "alert-danger");
+
+        //Creating row constraints
+        ColumnConstraints firstColumn = new ColumnConstraints();
+        firstColumn.setPercentWidth(3);
+        ColumnConstraints secondColumn = new ColumnConstraints();
+        secondColumn.setPercentWidth(20);
+        ColumnConstraints thirdColumn = new ColumnConstraints();
+        thirdColumn.setPercentWidth(70);
+        ColumnConstraints forthColumn = new ColumnConstraints();
+        alertMessageContainer.getColumnConstraints().addAll(firstColumn, secondColumn, thirdColumn, forthColumn);
 
         gamePlayContainer.setBottom(alertMessageContainer);
-        gamePlayContainer.setAlignment(alertMessageContainer, Pos.CENTER);
+        gamePlayContainer.setAlignment(alertMessageContainer, Pos.CENTER_LEFT);
+
+        //<editor-fold defaultstate="collapsed" desc="Alert Message Icon">
+        alertIcon = new Label();
+        alertIcon.getStyleClass().add("alert-icon");
+        alertIcon.getStyleClass().add(alertType == 1 ? "alert-icon-success" : "alert-icon-danger");
+        alertMessageContainer.setConstraints(alertIcon, 0, 0);
+        //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Alert Message">
         alertMessageLabel = new Label(message);
@@ -516,26 +540,57 @@ public class gamePlay {
         alertMessageContainer.setMargin(alertMessageLabel, new Insets(10, 0, 0, 0));
         //</editor-fold>
 
-        //<editor-fold defaultstate="collapsed" desc="Alert Message Icon">
-        alertIcon = new Label();
-        alertIcon.getStyleClass().add("alert-icon");
-        alertIcon.getStyleClass().add(alertType == 1 ? "alert-icon-success" : "alert-icon-danger");
-        alertMessageContainer.setConstraints(alertIcon, 0, 0);
+        //<editor-fold defaultstate="collapsed" desc="Alert Help Message">
+        alertHelpMessageLabel = new Label(helpText);
+        alertHelpMessageLabel.getStyleClass().add("alert-help");
+        alertMessageContainer.setConstraints(alertHelpMessageLabel, 2, 0);
+        alertMessageContainer.setMargin(alertHelpMessageLabel, new Insets(10, 0, 0, 0));
         //</editor-fold>
 
+        //<editor-fold defaultstate="collapsed" desc="Save Button">
+        closePopupButton = new Button("");
+        closePopupButton.getStyleClass().add("button-icon--white");
+        closePopupButton.getStyleClass().addAll("close-icon");
+        alertMessageContainer.setConstraints(closePopupButton, 3, 0);
+
+        closePopupButton.setOnAction(e -> {
+            hidePopupTimeline.play();
+        });
+        //</editor-fold> 
+
         //Adding the alert in gameScene
-        alertMessageContainer.getChildren().addAll(alertIcon, alertMessageLabel);
-        alertMessageContainer.setAlignment(Pos.CENTER);
+        alertMessageContainer.getChildren().addAll(alertIcon, alertMessageLabel, alertHelpMessageLabel, closePopupButton);
+        alertMessageContainer.setAlignment(Pos.CENTER_LEFT);
 
         //Fading animation
-        fade(alertMessageContainer, 1000, 0, FADE_IN);
+        showPopupTimeline = new Timeline();
+        
+        KeyValue fromPosition = new KeyValue(alertMessageContainer.translateYProperty(), 50);
+        KeyValue toPosition = new KeyValue(alertMessageContainer.translateYProperty(), 0);
+        
+        KeyFrame startMove = new KeyFrame(Duration.ZERO, fromPosition);
+        KeyFrame finishMove = new KeyFrame(Duration.millis(200), toPosition);
+        
+        showPopupTimeline.getKeyFrames().addAll(startMove, finishMove);
+        showPopupTimeline.play();
+        
+        hidePopupTimeline = new Timeline();
+        
+        KeyValue fromPositionReverse = new KeyValue(alertMessageContainer.translateYProperty(), 0);
+        KeyValue toPositionReverse = new KeyValue(alertMessageContainer.translateYProperty(), 50);
+        
+        KeyFrame startMoveReverse = new KeyFrame(Duration.ZERO, fromPositionReverse);
+        KeyFrame finishMoveReverse = new KeyFrame(Duration.millis(200), toPositionReverse);
+        KeyFrame clear = new KeyFrame(Duration.millis(201), e -> gamePlayContainer.setBottom(null));
+        
+        hidePopupTimeline.getKeyFrames().addAll(startMoveReverse, finishMoveReverse, clear);
+        
 
         //Auto hide the alert
         hideAlertTimeline = new Timeline(new KeyFrame(
-                Duration.millis(3000),
+                Duration.millis(10000),
                 ae -> {
-                    fade(alertMessageContainer, 0, 1000, 1);
-                    gamePlayContainer.setBottom(null);
+                    hidePopupTimeline.play();
                 }
         ));
         hideAlertTimeline.play();
