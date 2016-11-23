@@ -129,6 +129,7 @@ public class gamePlay {
             hintButton.setDisable(false);
             solveButton.setDisable(false);
             submitButton.setDisable(false);
+            loadGameButton.setDisable(false);
         });
         //</editor-fold>
 
@@ -141,6 +142,7 @@ public class gamePlay {
 
         saveButton.setOnAction(e -> {
             saveCurrentGame();
+            loadGameButton.setDisable(false);
             showPopup("Game is saved successfuly", MESSAGE_SUCCESS);
         });
         //</editor-fold>
