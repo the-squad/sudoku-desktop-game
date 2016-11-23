@@ -232,8 +232,6 @@ public class gamePlay {
                                 }
                             }
                         }
-                    } else {
-                        showPopup("There are missing fields", MESSAGE_DANGER);
                     }
                 }
             } catch (InterruptedException | SQLException ex) {
