@@ -74,8 +74,9 @@ public class global {
     static sudoku Sudoku = new sudoku();
 
     /**
-     *
-     * @param parent
+     * Switch between panes with slide animation
+     * @author Muhammad Tarek
+     * @param parent, parent pane
      * @param fromChild
      * @param toChild
      */
@@ -121,8 +122,9 @@ public class global {
     }
 
     /**
-     *
-     * @param node
+     * Fading animation
+     * @author Muhammad Tarek
+     * @param node, object that will be animated
      * @param duration
      * @param delay
      * @param fadeType
@@ -142,8 +144,7 @@ public class global {
 
     /**
      * Initialize button styles, icons sizes Muhammad Tarek
-     *
-     * @since 6, November
+     * @author Muhammad Tarek
      * @param button
      * @param layout
      * @param position

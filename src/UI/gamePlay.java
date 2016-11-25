@@ -75,7 +75,6 @@ public class gamePlay {
 
     /**
      * Initialize game play elements
-     *
      * @author Muhammad Tarek
      * @return gamePlayLayout
      */
@@ -162,7 +161,7 @@ public class gamePlay {
                     if (sudokuOperation(CHECK_SUDOKU)) {
                         sudokuOperation(READ_SUDOKU);
 
-                        if (checkSudoku(userSudoku)) {
+                        if (isSudokuValid(userSudoku)) {
                             submitButton.setDisable(true);
                             hintButton.setDisable(true);
                             pauseButton.setDisable(true);
@@ -238,7 +237,7 @@ public class gamePlay {
                     if (Sudoku.solveSudoku()) {
                         computerSolution = Sudoku.getSudokuSolution();
 
-                        if (checkSudoku(computerSolution)) {
+                        if (isSudokuValid(computerSolution)) {
                             for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
                                 for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
                                     sudokuCells[rowCounter][columnCounter].setText(computerSolution[rowCounter][columnCounter] + "");
@@ -442,8 +441,7 @@ public class gamePlay {
     }
 
     /**
-     * Create Sudoku cells
-     *
+     * Create Sudoku cells, 9x9 textfields
      * @author Muhammad Tarek
      */
     private void initSudokuBlock() {
@@ -491,7 +489,7 @@ public class gamePlay {
                 sudokuCells[rowCounter][columnCounter].textProperty().addListener((observable, oldVal, newVal) -> {
                     if (currentField.getLength() > 1) {
                         currentField.setText(oldVal);
-                    } else if (!checkInput(currentField.getText())) {
+                    } else if (!isInputValid(currentField.getText())) {
                         currentField.setText("");
                     }
 
@@ -512,9 +510,11 @@ public class gamePlay {
     }
 
     /**
+     * Shows a popup message
      * @author Muhammad Tarek
-     * @param message
-     * @param alertType
+     * @param message, what to show
+     * @param helpText, help text to tell the user what to do
+     * @param alertType, success or danger
      */
     private void showPopup(String message, String helpText, int alertType) {
         //Alert message layout
@@ -608,7 +608,8 @@ public class gamePlay {
     }
 
     /**
-     * Save current game into database
+     * Save current game into database and shows alert when it fails
+     * @author Muhammad Tarek
      */
     private void saveCurrentGame() {
         sudokuOperation(READ_SUDOKU);
@@ -628,12 +629,14 @@ public class gamePlay {
     }
 
     /**
-     * @author @throws InterruptedException
+     * Checks if there any duplicate in the Sudoku
+     * @author Mustafa Magdy, Muhammad Tarek
+     * @throws InterruptedException
+     * @param sudoku, 2D Sudoku array
      */
-    private Boolean checkSudoku(Integer[][] sudoku) throws InterruptedException {
+    private Boolean isSudokuValid(Integer[][] sudoku) throws InterruptedException {
         Sudoku.setSudoku(sudoku);
         Sudoku.setUserSudoku(sudoku);
-
         Sudoku.initSudokuWrongCells();
 
         checker Checker = new checker();
@@ -658,6 +661,11 @@ public class gamePlay {
     }
 
     /**
+     * Make some operations on Sudoku cells
+     * 1. Read Sudoku cells
+     * 2. Print Sudoku cells
+     * 3. Clear all Sudoku cells and arrays
+     * 4. Check if their any Sudoku cell is empty
      * @author Muhammad Tarek, Mustafa Magdy
      * @param opType
      */
@@ -708,11 +716,12 @@ public class gamePlay {
     }
 
     /**
-     *
-     * @param input
-     * @return
+     * Check that the input is integer
+     * @author Mustafa Magdy
+     * @param input, Sudoku cells data
+     * @return true/false 
      */
-    private boolean checkInput(String input) {
+    private boolean isInputValid(String input) {
         int checkInput;
 
         try {

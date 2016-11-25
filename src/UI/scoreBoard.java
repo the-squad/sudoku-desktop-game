@@ -22,7 +22,6 @@ import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
 /**
- *
  * @author Muhammad
  */
 public class scoreBoard {
@@ -40,6 +39,10 @@ public class scoreBoard {
     private Label boardHeadline;
     static Label scoreBoardArray[] = new Label[5];
 
+    /**
+     * Initialize score board elements
+     * @return scoreBoardContainer
+     */
     public GridPane initialize() {
         //Score page layout
         scorePageContainer = new GridPane();
@@ -152,6 +155,10 @@ public class scoreBoard {
         return scorePageContainer;
     }
 
+    /**
+     * Center an object
+     * @param node 
+     */
     private void centerObject(Object node) {
         scorePageContainer.setHalignment((Node) node, HPos.CENTER);
     }
