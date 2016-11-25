@@ -64,7 +64,7 @@ public class mainMenu {
 
     /**
      * Initialize main menu elements
-     *
+     * @author Muhammad Tarek
      * @return mainMenuScene
      */
     public GridPane initialize() {
@@ -145,6 +145,10 @@ public class mainMenu {
         return mainMenuContainer;
     }
 
+    /**
+     * Initialize game controls buttons
+     * @author Muhammad Tarek
+     */
     private void initializeGameModes() {
         gameModesContainer = new GridPane();
         gameModesContainer.setAlignment(Pos.CENTER);
@@ -250,6 +254,10 @@ public class mainMenu {
         //</editor-fold>
     }
 
+    /**
+     * Initialize game levels buttons
+     * @author Muhammad Tarek
+     */
     private void initializeLevelsMenu() {
         levelsContainer = new GridPane();
         levelsContainer.setAlignment(Pos.CENTER);
@@ -365,6 +373,10 @@ public class mainMenu {
         //</editor-fold>
     }
 
+    /**
+     * Initialize and load saved games
+     * @author Muhammad Tarek
+     */
     public void initializeSavedGames() {
         //ArrayList<String> savedGames = null;
         ArrayList<String> savedGames = null;
@@ -573,7 +585,8 @@ public class mainMenu {
     }
 
     /**
-     *
+     * Takes an array from Sudoku class copy it to another 2D array
+     * @author Muhammad Tarek, Mustaga Magdy
      * @param Sudoku
      */
     private void assignSudoku(String Sudoku, Boolean[][] originalSudoku) {

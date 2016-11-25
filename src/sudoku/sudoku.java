@@ -8,11 +8,11 @@ public class sudoku {
     protected static Integer[][] sudoku;
     protected static Integer[][] solvedSudoku;
     protected static Boolean[][] sudokuWrongCells;
-    /**
-     * Time when solveSudoku() is called.
-     */
     private long startTime;
     
+    /**
+     * @author Mustafa Magdy
+     */
     public void initSudokuWrongCells() {
         sudokuWrongCells = new Boolean[9][9];
         
@@ -20,7 +20,7 @@ public class sudoku {
             Arrays.fill(row, Boolean.FALSE);
         }
     }
-    
+
     public Boolean[][] getsudokuWrongCells() {
         return sudokuWrongCells;
     }
@@ -35,12 +35,17 @@ public class sudoku {
     
     /**
      * Get Sudoku solved by solveSudoku()
+     * @author Muhammad Al.Rifai
      * @return Sudoku solution.
      */
     public Integer[][] getSudokuSolution() {
         return solvedSudoku;
     }
 
+    /**
+     * @author Muhammad Al.Rifai
+     * @param sudoku 
+     */
     public void setSudoku(Integer[][] sudoku) {
         solvedSudoku = new Integer[9][9];
         for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
@@ -53,7 +58,7 @@ public class sudoku {
     /**
      * This method will solve the Sudoku user have entered.
      * To retreve solution, call getSudokuSolution()
-     * @since 3/11/2016
+     * @author Muhammad Al.Rifai
      * @return ture if solution exist, otherwise false.
      */
     public boolean solveSudoku() {
@@ -64,8 +69,7 @@ public class sudoku {
 
     /**
      * auxiliary function for solveSudoku()
-     *
-     * @since 3/11/2016
+     * @author Muhammad Al.Rifai
      * @param x row index
      * @param y column index
      * @param sudokuList Sudoku
@@ -104,6 +108,7 @@ public class sudoku {
 
     /**
      * Check if the number is unique in row, column and block.
+     * @author Muhammad Al.Rifai
      * @param PossibleNumber The number to check if its exist or not.
      * @param sudokuList Sudoku.
      * @param x Row index.
@@ -133,6 +138,7 @@ public class sudoku {
     
     /**
      * Fill empty cell with it's correct number.
+     * @author Muhammad Al.Rifai
      * @return Integer array with the following format {x, y, value}
      */
     public int [] hint(){
