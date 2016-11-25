@@ -49,12 +49,9 @@ Temporary Items
 *.TXT
 *.xml
 *.properties
-dist/
+nbproject/private/
 build/
-nbproject/
-nbproject/UPDATED.TXT
-nbproject/build-impl.xml
-nbproject/jfx-impl.xml
-nbproject/UPDATED.TXT
-nbproject/private/private.properties
-nbproject/build-impl.xml
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/

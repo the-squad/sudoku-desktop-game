@@ -9,15 +9,9 @@ import javafx.stage.Stage;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 
-import static javafx.application.Application.launch;
 import javafx.util.Duration;
 import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
+import javafx.scene.image.Image;
 
 public class main extends Application {
     @Override
@@ -47,6 +41,7 @@ public class main extends Application {
         primaryStage.setTitle("Sudoku Game!");
         primaryStage.setMinWidth(1000);
         primaryStage.setMinHeight(700);
+        primaryStage.getIcons().add(new Image("/icons/logo-icon.png"));
 
         Scene windowScene = new Scene(screenContainer, 1000, 650);
         //Connecting the stylesheet

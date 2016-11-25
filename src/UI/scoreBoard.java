@@ -136,6 +136,7 @@ public class scoreBoard {
             switchPanes(screenContainer, scorePageContainer, mainMenuContainer);
             Timeline resetUITimeline = new Timeline();
             KeyFrame startReset = new KeyFrame(Duration.millis(300), event -> {
+                saveDataLayout.getChildren().remove(inputLabel);
                 saveDataLayout.getChildren().add(inputLabel);
                 nameTextField.setText("");
                 nameTextField.setDisable(false);
