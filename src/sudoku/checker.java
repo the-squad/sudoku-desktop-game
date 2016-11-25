@@ -27,7 +27,7 @@ public class checker {
         Thread multiThreads[] = new Thread[9];
         for (int row = 0; row < 9; row += 3) {
             for (int col = 0; col < 9; col += 3) {
-                this.box = new boxChecker(row, col, threadId);
+                this.box = new boxChecker(row, col);
                 multiThreads[threadId] = new Thread(this.box);
                 multiThreads[threadId].start();
                 threadId++;
