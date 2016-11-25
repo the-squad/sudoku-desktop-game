@@ -8,6 +8,11 @@ public class Database {
     // variable from connection class
     private Connection conn = null;
 
+    /**
+     * Connects to the database
+     * @author Muhammad Khairala
+     * @return connection/null
+     */
     public Connection DBconnect() {
         try {
             // next 2 lines are used to connect the DB if connected return the connection else return NULL
@@ -21,9 +26,15 @@ public class Database {
         }
     }
 
-    /*  Select Function will be used to select from 2 tables (1) allSudoku (2) Load  
-     it will return a random soduko from the mode the user Specified and it will return null
-     if there wasn't and saved sudoku in Load table
+    /**
+     * Select Function will be used to select from 2 tables (1) allSudoku (2) Load  
+     * it will return a random soduko from the mode the user Specified and it will return null
+     * if there wasn't and saved sudoku in Load table
+     * @author Muhammad Khairala
+     * @param Difficulty
+     * @param choice
+     * @return array of games
+     * @throws SQLException 
      */
     public ArrayList<String> Select(String Difficulty, int choice) throws SQLException {
         // variable from statement class used to writed query in to be excuted
@@ -61,6 +72,15 @@ public class Database {
 
     }
 
+    /**
+     * @author Muhammad Khairala, Muhamamd Kamal
+     * @param SU
+     * @param Timer
+     * @param originalId
+     * @param oldId
+     * @return
+     * @throws SQLException 
+     */
     public long saveGame(String SU, int Timer, int originalId, int oldId) throws SQLException {
         String query = null;
         query = "INSERT INTO Load (Sudoku , Timer , originalID) Values ( " + "\"" + SU + "\"" + "," + "\"" + Timer + "\"" + "," + "\"" + originalId + "\"" + ")";
@@ -75,19 +95,37 @@ public class Database {
         return 0;
     }
 
+    /**
+     * @author Muhammad Khairala, Muhammad Kamal
+     * @param id
+     * @throws SQLException 
+     */
     public void deleteGame(int id) throws SQLException {
         Statement stmt = conn.createStatement(); // variable from statement class used to write query in to be excuted
         String query = "DELETE FROM LOAD WHERE ID = " + id;
         stmt.executeUpdate(query);
     }
 
-    public void addDashboard(String name, int time, String Diff) throws SQLException {
+    /**
+     * @author Muhammad Khairala, Muhammad Kamal
+     * @param name
+     * @param time
+     * @param Diff
+     * @throws SQLException 
+     */
+    public void addNewScore(String name, int time, String Diff) throws SQLException {
         Statement stmt = conn.createStatement();
         String query = "INSERT INTO Dashboard (name , Diff , Time) Values ( " + "\"" + name + "\"" + "," + "\"" + Diff + "\"" + "," + "\"" + time + "\"" + ")";
         stmt.executeUpdate(query);
     }
 
-    public ArrayList<String> highfive(String Diff) throws SQLException {
+    /**
+     * @author Muhammad Khairala, Muhammad Kamal
+     * @param Diff
+     * @return
+     * @throws SQLException 
+     */
+    public ArrayList<String> bestFiveTimes(String Diff) throws SQLException {
         Statement stmt = conn.createStatement();
         String query = "SELECT * FROM Dashboard where Diff = \"" + Diff + "\" order by time limit 5";
         ResultSet reuslt = stmt.executeQuery(query);

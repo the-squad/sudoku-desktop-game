@@ -199,7 +199,7 @@ public class gamePlay {
 
                                 ArrayList<String> bestScores = null;
 
-                                bestScores = database.highfive(levelLabel.getText());
+                                bestScores = database.bestFiveTimes(levelLabel.getText());
 
                                 if (bestScores.size() > 0) {
                                     for (int counter = 0; counter < bestScores.size(); counter++) {
