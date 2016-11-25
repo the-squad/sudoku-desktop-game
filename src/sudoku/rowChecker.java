@@ -12,6 +12,9 @@ public class rowChecker extends sudoku implements Runnable {
         this.checkrow();
     }
 
+    /**
+     * @author Mustafa Magdy
+     */
     private void checkrow() {
         Set<Integer> myset = new HashSet<>();
         for (int row = 0; row < this.sudoku.length; row++) {

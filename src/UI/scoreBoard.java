@@ -92,7 +92,7 @@ public class scoreBoard {
                 fade(saveDataLayout, 750, 0, FADE_IN);
 
                 try {
-                    database.addDashboard(nameTextField.getText(), gameTime.getTime(), levelLabel.getText());
+                    database.addNewScore(nameTextField.getText(), gameTime.getTime(), levelLabel.getText());
                 } catch (SQLException ex) {
                     Logger.getLogger(scoreBoard.class.getName()).log(Level.SEVERE, null, ex);
                 }

@@ -14,6 +14,9 @@ public class columnChecker extends sudoku implements Runnable {
         checkColumn();
     }
 
+    /**
+     * @author Mustafa Magdy
+     */
     private void checkColumn() {
         Set<Integer> myset = new HashSet<>();
         for (int column = 0; column < this.sudoku.length; column++) {
@@ -31,6 +34,12 @@ public class columnChecker extends sudoku implements Runnable {
         }
     }
 
+    /**
+     * @author Mustafa Magdy
+     * @param x
+     * @param i
+     * @return 
+     */
     public ArrayList<Integer> columnToArray(Integer x[][], int i) {
         ArrayList<Integer> colArray = new ArrayList<Integer>();
         for (int j = 0; j < x.length; j++) {

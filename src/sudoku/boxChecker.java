@@ -8,6 +8,11 @@ public class boxChecker extends sudoku implements Runnable{
     private int startColumnbox;
     private HashMap<Integer,ArrayList<String>> map;
 
+    /**
+     * @author Muhammad Kamal
+     * @param startRowbox
+     * @param startColumnbox 
+     */
     public boxChecker(int startRowbox, int startColumnbox) {
         this.startRowbox = startRowbox;
         this.startColumnbox = startColumnbox;
@@ -19,8 +24,10 @@ public class boxChecker extends sudoku implements Runnable{
         checkBox();
     }
     
-    private void checkBox()
-    {
+    /**
+     * @author Muhammad Kamal
+     */
+    private void checkBox() {
         for (int i = this.startRowbox; i < this.startRowbox + 3; i++) {
             for (int j = this.startColumnbox; j < this.startColumnbox + 3; j++) {
                 ArrayList<String> indexes;

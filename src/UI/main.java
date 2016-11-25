@@ -12,6 +12,9 @@ import javafx.animation.KeyFrame;
 import javafx.util.Duration;
 import static javafx.application.Application.launch;
 import javafx.scene.image.Image;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
 
 public class main extends Application {
     @Override

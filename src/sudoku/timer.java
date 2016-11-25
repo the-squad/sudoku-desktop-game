@@ -6,10 +6,6 @@ import java.util.TimerTask;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 
-/**
- *
- * @author Mohamed
- */
 public class timer {
 
     Label timerLabel;
@@ -17,12 +13,22 @@ public class timer {
     int time;
     Date gameTime;
 
+    /**
+     * Sets timer start point
+     * @author Muhammad Al.Rifai
+     * @param timerLabel
+     * @param seconds 
+     */
     public void setTimer(Label timerLabel, int seconds) {
         this.timerLabel = timerLabel;
         this.time = seconds;
         gameTime = new Date();
     }
 
+    /**
+     * Starts the timer
+     * @author Muhammad Al.Rifai
+     */
     public void start() {
         TimerTask t = new TimerTask() {
             @Override
@@ -38,10 +44,18 @@ public class timer {
         timer.schedule(t, 0, 1000);
     }
 
+    /**
+     * Pauses the timer
+     * @author Muhammad Al.Rifai
+     */
     public void pause() {
         timer.cancel();
     }
     
+    /**
+     * Adds 10 seconds to the timer
+     * @author Muhammad Tarek
+     */
     public void addTenSeconds() {
         time += 10;
         timerLabel.setText(gameTime.getMinutes() + ":" + gameTime.getSeconds());

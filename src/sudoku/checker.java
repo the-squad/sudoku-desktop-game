@@ -7,12 +7,10 @@ public class checker {
     rowChecker row;
     columnChecker column;
 
-    /*public checker() {
-     //Init objects
-     this.box = new boxChecker();
-     this.row = new rowChecker();
-     this.column = new columnChecker();
-     }*/
+    /**
+     * @author Muhammad Kamal, Mustafa Magdy
+     * @throws InterruptedException 
+     */
     public void check() throws InterruptedException {
         this.row = new rowChecker();
         this.column = new columnChecker();
