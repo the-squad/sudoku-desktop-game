@@ -556,8 +556,8 @@ public class mainMenu {
                     KeyValue fromKeyValue = new KeyValue(gameBlock[blockCounter + 1].translateYProperty(), gameBlock[blockCounter + 1].getTranslateY());
                     KeyValue toKeyValue = new KeyValue(gameBlock[blockCounter + 1].translateYProperty(), gameBlock[blockCounter + 1].getTranslateY() - 20 - gameBlock[blockCounter + 1].getHeight());
 
-                    KeyFrame startMove = new KeyFrame(Duration.millis(200), fromKeyValue);
-                    KeyFrame finishMove = new KeyFrame(Duration.millis(500), toKeyValue);
+                    KeyFrame startMove = new KeyFrame(Duration.millis(100), fromKeyValue);
+                    KeyFrame finishMove = new KeyFrame(Duration.millis(300), toKeyValue);
 
                     if (blockCounter == savedGamesNumber) {
                         int lastGame = savedGamesNumber;

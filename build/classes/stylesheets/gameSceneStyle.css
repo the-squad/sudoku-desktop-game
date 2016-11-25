@@ -112,19 +112,11 @@
 .alert-help {
     -fx-font-family: "Lato";
     -fx-font-size: 15;
-    -fx-font-weight: Light;
+    -fx-font-weight: 400;
     -fx-padding: 0 0 10 20;
     -fx-text-fill: #fff;
 }
-/*
-.alert-message-success {
-    -fx-text-fill: rgb(0, 200 , 83);
-}
 
-.alert-message-danger {
-    -fx-text-fill: rgb(229,57,53);
-}
-*/
 .alert-icon {
     -fx-background-size: 17px;
     -fx-background-repeat: no-repeat;
