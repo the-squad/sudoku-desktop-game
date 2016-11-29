@@ -28,22 +28,17 @@ public class main extends Application {
         mainMenuContainer = new mainMenu().initialize();
         screenContainer.setCenter(mainMenuContainer);
         
-        //TEST
+        //Loading another containers after the main containter is loaded
         Timeline loadOtherContainers = new Timeline();
         KeyFrame loadGamePlay = new KeyFrame(Duration.millis(500), e -> gamePlayContainer = new gamePlay().initialize());
         KeyFrame loadScoreBoard = new KeyFrame(Duration.millis(3000), e -> scorePageContainer = new scoreBoard().initialize());
         loadOtherContainers.getKeyFrames().addAll(loadGamePlay, loadScoreBoard);
         loadOtherContainers.play();
-        
-        /*
-        gamePlayContainer = new gamePlay().initialize();
-        scorePageContainer = new scoreBoard().initialize();
-        */
 
         //Main stage property
         primaryStage.setTitle("Sudoku Game!");
         primaryStage.setMinWidth(1000);
-        primaryStage.setMinHeight(700);
+        primaryStage.setMinHeight(600);
         primaryStage.getIcons().add(new Image("/icons/logo-icon.png"));
 
         Scene windowScene = new Scene(screenContainer, 1000, 650);
