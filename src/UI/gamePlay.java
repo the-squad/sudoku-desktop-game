@@ -599,7 +599,7 @@ public class gamePlay {
 
         //Auto hide the alert
         hideAlertTimeline = new Timeline(new KeyFrame(
-                Duration.millis(1000),
+                Duration.millis(5000),
                 ae -> {
                     hidePopupTimeline.play();
                 }
