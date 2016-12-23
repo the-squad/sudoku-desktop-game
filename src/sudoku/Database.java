@@ -36,40 +36,33 @@ public class Database {
      * @return array of games
      * @throws SQLException 
      */
-    public ArrayList<String> Select(String Difficulty, int choice) throws SQLException {
-        // variable from statement class used to writed query in to be excuted
-        Random rnd = new Random(); // variable from Random Class
-        int randomNum = 0;     //random.nextInt(max - min) + min
+    public ArrayList<String> Select() throws SQLException {
         Statement stmt = conn.createStatement(); // variable from statement class used to write query in to be excuted
-        String query = null;
-        if (choice == 0) // choice 0 means to select from allSudoku table and return a specified sudoko by difficulty 
-        {
-            randomNum = rnd.nextInt(5 - 1) + 1; // Generate Random Number from 1 to 5 to select the sudoku because easch mode has 5 sudoku
-            query = "Select Sudoku,ID from 'allSudoku' WHERE Diff = " + "\"" + Difficulty + "\""; // get all sudoko according to the Difficulty from allSudoku Table
-        } else if (choice == 1) { // choice 1 means to load the saved sudoko from Load table
-            query = "Select *,allSudoku.Sudoku as original from Load JOIN allSudoku ON load.originalID = allSudoku.ID order by load.savingTime desc";  // get the saved sudoku from Load table
-        }
+        String query = "Select *,allSudoku.Sudoku as original from Load JOIN allSudoku ON load.originalID = allSudoku.ID order by load.savingTime desc";  // get the saved sudoku from Load table
         // variable from result set class to take the result of the query 
         ResultSet result = stmt.executeQuery(query); //Query Excution
         ArrayList<String> arr = new ArrayList();    // array used to get the results
-        ArrayList<String> arr2 = new ArrayList();  // array 2 to hold the random sudoku from arr number 1
         while (result.next()) {
-            if (choice == 0) {
-                arr.add(result.getString("Sudoku") + "," + result.getString("ID")); //Fill the first array with all Sudukos from allSudoku Table
-            } else {
                 arr.add(result.getInt("ID") + "," + result.getString("Sudoku") + "," + result.getInt("Timer")
                         + "," + result.getString("Diff") + "," + result.getString("savingTime") + "," + result.getString("original") + "," + result.getString("originalID")); // get all Sudokus in Load Table
-            }
         }
         if (arr.isEmpty()) {
             return null; //return null if the array is empty
-        } else if (choice == 0) {
-            arr2.add(arr.get(randomNum)); // add random sudoku from array1 to array2 
-            return arr2; //return array2
-        } else {
+        }else {
             return arr; //return the array which contains all the loaded sudoku
         }
-
+    }
+    
+    public int saveSudoku(String sudoku, String level) throws SQLException{
+        String query = "INSERT INTO allSudoku (Sudoku , Diff) Values (" + "\"" + sudoku + "\"" + "," + "\"" + level + "\"" +")";
+        System.out.println(query);
+        PreparedStatement statement = conn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+        statement.executeUpdate();
+        ResultSet generatedKeys = statement.getGeneratedKeys();
+        if (generatedKeys.next()) {
+            return generatedKeys.getInt(1);
+        }
+        return 0;
     }
 
     /**

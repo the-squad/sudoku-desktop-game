@@ -114,7 +114,7 @@ public class mainMenu {
         //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Version Label">
-        version = new Label("Version 1.1");
+        version = new Label("Version 1.2");
         version.getStyleClass().add("version");
         leftPartContainer.setBottom(version);
         leftPartContainer.setAlignment(version, Pos.TOP_CENTER);
@@ -132,7 +132,7 @@ public class mainMenu {
         //Getting number of saved games before initializing buttons
         ArrayList<String> savedGamesTemp = null;
         try {
-            savedGamesTemp = database.Select(null, 1);
+            savedGamesTemp = database.Select();
         } catch (SQLException ex) {
             savedGamesNumberGlobal = 0;
         }
@@ -180,6 +180,7 @@ public class mainMenu {
             gamePlayContainer.setLeft(gameLeftPanelContainer);
 
             headerCenterAreaContainer.setRight(headerControlsContainer);
+            saveGameState = true;
 
             submitButton.setText("Submit");
             headlineLabel.setText("New Game");
@@ -197,6 +198,7 @@ public class mainMenu {
             switchPanes(rightPartContainer, gameModesContainer, savedGamesContainer);
             playingMode = 2;
             gamePlayContainer.setLeft(gameLeftPanelContainer);
+            saveGameState = false;
 
             headerCenterAreaContainer.setRight(headerControlsContainer);
             submitButton.setText("Submit");
@@ -308,7 +310,6 @@ public class mainMenu {
         easyButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
 
-            String sudokuGame;
             sudokuGame = generator.MakeSudoku(SudokuGenerator.EASY);
             //sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
 
@@ -329,7 +330,6 @@ public class mainMenu {
         mediumButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
 
-            String sudokuGame;
             sudokuGame = generator.MakeSudoku(SudokuGenerator.MEDIUM);
             //sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
 
@@ -349,12 +349,13 @@ public class mainMenu {
 
         hardButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
-            gamePlayContainer.setCenter(null);
+            gamePlayContainer.setCenter(loadingIcon);
+            
+            gamePlayContainer.setLeft(null);
 
             Task<String> task = new Task<String>() {
                 @Override
                 protected String call() throws Exception {
-                    String sudokuGame;
                     sudokuGame = generator.MakeSudoku(SudokuGenerator.HARD);
                     assignSudoku(sudokuGame, null);
 
@@ -369,6 +370,7 @@ public class mainMenu {
 
             task.setOnSucceeded((WorkerStateEvent t) -> {
                 gamePlayContainer.setCenter(sudokuCellsContainer);
+                gamePlayContainer.setLeft(gameLeftPanelContainer);
                 gameTime.setTimer(timerLabel, 0);
                 gameTime.start();
                 levelLabel.setText(hardButton.getText());
@@ -389,7 +391,7 @@ public class mainMenu {
         //ArrayList<String> savedGames = null;
         ArrayList<String> savedGames = null;
         try {
-            savedGames = database.Select(null, 1);
+            savedGames = database.Select();
         } catch (SQLException ex) {
             Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
         }

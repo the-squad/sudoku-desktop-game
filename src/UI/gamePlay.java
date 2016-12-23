@@ -81,6 +81,7 @@ public class gamePlay {
     private Timeline hidePopupTimeline;
     // </editor-fold>
 
+    static ImageView loadingIcon;
     Boolean listenToChange = false;
 
     /**
@@ -504,6 +505,11 @@ public class gamePlay {
             gameTime.pause();
         });
         //</editor-fold>
+        
+        //Loading icon
+        loadingIcon = new ImageView();   
+        Image ladingIconPNG = new Image(getClass().getResourceAsStream("/icons/loading-icon.png"));
+        loadingIcon.setImage(ladingIconPNG);
 
         final KeyCombination saveGameCombination = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
 
