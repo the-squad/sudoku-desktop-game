@@ -177,7 +177,8 @@ public class mainMenu {
         newGameButton.setOnAction(e -> {
             switchPanes(rightPartContainer, gameModesContainer, levelsContainer);
             playingMode = 1;
-            gamePlayContainer.setLeft(gameLeftPanelContainer);
+            gamePlayContainer.setCenter(loadingIndicator);
+            gamePlayContainer.setLeft(null);
 
             headerCenterAreaContainer.setRight(headerControlsContainer);
             saveGameState = true;
@@ -310,15 +311,26 @@ public class mainMenu {
         easyButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
 
-            sudokuGame = generator.MakeSudoku(SudokuGenerator.EASY);
-            //sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
+            Task<String> task = new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    sudokuGame = generator.MakeSudoku(SudokuGenerator.EASY);
+                    assignSudoku(sudokuGame, null);
+                    return null;
+                }
+            };
 
-            levelLabel.setText(easyButton.getText());
-            gameTime.setTimer(timerLabel, 0);
-            gameTime.start();
+            Thread generateSudokuThread = new Thread(task);
+            generateSudokuThread.setDaemon(true);
+            generateSudokuThread.start();
 
-            assignSudoku(sudokuGame, null);
-            sudokuOperation(PRINT_SUDOKU);
+            task.setOnSucceeded((WorkerStateEvent t) -> {
+                finishLoading(2);
+                gameTime.setTimer(timerLabel, 0);
+                levelLabel.setText(easyButton.getText());
+                sudokuOperation(PRINT_SUDOKU);
+            });
+
             switchPanes(rightPartContainer, levelsContainer, gameModesContainer);
         });
         //</editor-fold>
@@ -330,15 +342,26 @@ public class mainMenu {
         mediumButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
 
-            sudokuGame = generator.MakeSudoku(SudokuGenerator.MEDIUM);
-            //sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
+            Task<String> task = new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    sudokuGame = generator.MakeSudoku(SudokuGenerator.MEDIUM);
+                    assignSudoku(sudokuGame, null);
+                    return null;
+                }
+            };
 
-            levelLabel.setText(mediumButton.getText());
-            gameTime.setTimer(timerLabel, 0);
-            gameTime.start();
+            Thread generateSudokuThread = new Thread(task);
+            generateSudokuThread.setDaemon(true);
+            generateSudokuThread.start();
 
-            assignSudoku(sudokuGame, null);
-            sudokuOperation(PRINT_SUDOKU);
+            task.setOnSucceeded((WorkerStateEvent t) -> {
+                finishLoading(2);
+                gameTime.setTimer(timerLabel, 0);
+                levelLabel.setText(mediumButton.getText());
+                sudokuOperation(PRINT_SUDOKU);
+            });
+
             switchPanes(rightPartContainer, levelsContainer, gameModesContainer);
         });
         //</editor-fold>
@@ -349,17 +372,12 @@ public class mainMenu {
 
         hardButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
-            gamePlayContainer.setCenter(loadingIcon);
-            
-            gamePlayContainer.setLeft(null);
 
             Task<String> task = new Task<String>() {
                 @Override
                 protected String call() throws Exception {
                     sudokuGame = generator.MakeSudoku(SudokuGenerator.HARD);
                     assignSudoku(sudokuGame, null);
-
-                    System.out.println(sudokuGame);
                     return null;
                 }
             };
@@ -369,13 +387,11 @@ public class mainMenu {
             generateSudokuThread.start();
 
             task.setOnSucceeded((WorkerStateEvent t) -> {
-                gamePlayContainer.setCenter(sudokuCellsContainer);
-                gamePlayContainer.setLeft(gameLeftPanelContainer);
+                finishLoading(2);
                 gameTime.setTimer(timerLabel, 0);
-                gameTime.start();
                 levelLabel.setText(hardButton.getText());
                 sudokuOperation(PRINT_SUDOKU);
-            });            
+            });
 
             switchPanes(rightPartContainer, levelsContainer, gameModesContainer);
         });
@@ -614,5 +630,41 @@ public class mainMenu {
                 charptr++;
             }
         }
+    }
+
+    private void finishLoading(int gameType) {
+        Timeline showAndHideTimeline = new Timeline();
+
+        //Creating all key values for the animation
+        KeyValue loadingOpacityStart = new KeyValue(loadingIndicator.opacityProperty(), 1);
+        KeyValue loadingOpacityEnd = new KeyValue(loadingIndicator.opacityProperty(), 0);
+        
+        KeyValue panelOpacityStart = new KeyValue(loadingIndicator.opacityProperty(), 0);
+        KeyValue panelOpacityEnd = new KeyValue(loadingIndicator.opacityProperty(), 1);
+
+        KeyValue sudokuOpacityStart = new KeyValue(sudokuCellsContainer.opacityProperty(), 0);
+        KeyValue sudokuOpacityEnd = new KeyValue(sudokuCellsContainer.opacityProperty(), 1);
+
+        //Clearing the setCenter
+        KeyFrame clear = new KeyFrame(Duration.millis(151), e -> {
+            gamePlayContainer.setCenter(null);
+        });
+
+        KeyFrame startFadeOut = new KeyFrame(Duration.millis(0), loadingOpacityStart);
+        KeyFrame finishFadeOut = new KeyFrame(Duration.millis(200), loadingOpacityEnd);
+        KeyFrame addingToCenter = new KeyFrame(Duration.millis(209), e -> {
+            gamePlayContainer.setCenter(sudokuCellsContainer);
+        });
+        KeyFrame addingToLeft = new KeyFrame(Duration.millis(209), e -> {
+            gamePlayContainer.setLeft(gameLeftPanelContainer);
+        });
+        KeyFrame startFadeIn = new KeyFrame(Duration.millis(210), panelOpacityStart);
+        KeyFrame finishFadeIn = new KeyFrame(Duration.millis(510), panelOpacityEnd);
+        KeyFrame startFadeIn2 = new KeyFrame(Duration.millis(210), sudokuOpacityStart);
+        KeyFrame finishFadeIn2 = new KeyFrame(Duration.millis(510), sudokuOpacityEnd);
+        KeyFrame startTimer = new KeyFrame(Duration.millis(1000), e -> gameTime.start());
+
+        showAndHideTimeline.getKeyFrames().addAll(startFadeOut, finishFadeOut, clear, addingToCenter, addingToLeft, startFadeIn, finishFadeIn, startFadeIn2, finishFadeIn2, startTimer);
+        showAndHideTimeline.play();
     }
 }

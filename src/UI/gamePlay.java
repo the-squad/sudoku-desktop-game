@@ -3,6 +3,7 @@ package UI;
 import static UI.global.*;
 import static UI.scoreBoard.*;
 import static UI.mainMenu.loadGameButton;
+import java.awt.Color;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -22,9 +23,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import javafx.animation.KeyValue;
-import javafx.animation.RotateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -84,7 +85,7 @@ public class gamePlay {
     private Timeline hidePopupTimeline;
     // </editor-fold>
 
-    static ImageView loadingIcon;
+    static ProgressIndicator loadingIndicator;
     Boolean listenToChange = false;
 
     /**
@@ -510,14 +511,12 @@ public class gamePlay {
         //</editor-fold>
 
         //Loading icon
-        loadingIcon = new ImageView();
-        Image ladingIconPNG = new Image(getClass().getResourceAsStream("/icons/loading-icon.png"));
-        loadingIcon.setImage(ladingIconPNG);
-        RotateTransition loading = new RotateTransition(Duration.millis(1000), loadingIcon);
-        loading.setByAngle(180);
-        loading.play();
+        loadingIndicator = new ProgressIndicator();
+        loadingIndicator.setStyle(" -fx-progress-color: rgb(65, 131, 215);");
+        loadingIndicator.setMaxHeight(75);
+        loadingIndicator.setMaxWidth(75);
+        loadingIndicator.setVisible(true);
 
-        
         final KeyCombination saveGameCombination = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
 
         gamePlayContainer.addEventHandler(KeyEvent.KEY_PRESSED, (Event event) -> {
@@ -526,6 +525,7 @@ public class gamePlay {
             }
         });
 
+        //<editor-fold defaultstate="collapsed" desc="Keyboard Shortcuts">
         gamePlayContainer.setOnKeyPressed((final KeyEvent keyEvent) -> {
             if (null != keyEvent.getCode()) {
                 switch (keyEvent.getCode()) {
@@ -564,6 +564,7 @@ public class gamePlay {
                 }
             }
         });
+        //</editor-fold>
 
         return gamePlayContainer;
     }
@@ -769,7 +770,7 @@ public class gamePlay {
         sudokuOperation(READ_SUDOKU);
         if (saveGameState) {
             try {
-                int sudokuIdOriginal = database.saveSudoku(sudokuGame, levelLabel.getText());
+                sudokuIdOriginal = Integer.toString(database.saveSudoku(sudokuGame, levelLabel.getText()));
                 saveGameState = false;
             } catch (SQLException ex) {
                 Logger.getLogger(gamePlay.class.getName()).log(Level.SEVERE, null, ex);
