@@ -13,6 +13,10 @@ import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -28,6 +32,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.util.Duration;
+import sudoku.SudokuGenerator;
 
 public class mainMenu {
 
@@ -64,6 +69,7 @@ public class mainMenu {
 
     /**
      * Initialize main menu elements
+     *
      * @author Muhammad Tarek
      * @return mainMenuScene
      */
@@ -147,6 +153,7 @@ public class mainMenu {
 
     /**
      * Initialize game controls buttons
+     *
      * @author Muhammad Tarek
      */
     private void initializeGameModes() {
@@ -252,6 +259,7 @@ public class mainMenu {
 
     /**
      * Initialize game levels buttons
+     *
      * @author Muhammad Tarek
      */
     private void initializeLevelsMenu() {
@@ -300,19 +308,15 @@ public class mainMenu {
         easyButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
 
-            ArrayList<String> sudokuGame = null;
-            try {
-                sudokuGame = database.Select("Easy", 0);
-                sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
+            String sudokuGame;
+            sudokuGame = generator.MakeSudoku(SudokuGenerator.EASY);
+            //sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
 
-                levelLabel.setText(easyButton.getText());
-                gameTime.setTimer(timerLabel, 0);
-                gameTime.start();
-            } catch (SQLException ex) {
-                Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            levelLabel.setText(easyButton.getText());
+            gameTime.setTimer(timerLabel, 0);
+            gameTime.start();
 
-            assignSudoku(sudokuGame.get(0), null);
+            assignSudoku(sudokuGame, null);
             sudokuOperation(PRINT_SUDOKU);
             switchPanes(rightPartContainer, levelsContainer, gameModesContainer);
         });
@@ -325,19 +329,15 @@ public class mainMenu {
         mediumButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
 
-            ArrayList<String> sudokuGame = null;
-            try {
-                sudokuGame = database.Select("Medium", 0);
-                sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
+            String sudokuGame;
+            sudokuGame = generator.MakeSudoku(SudokuGenerator.MEDIUM);
+            //sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
 
-                levelLabel.setText(mediumButton.getText());
-                gameTime.setTimer(timerLabel, 0);
-                gameTime.start();
-            } catch (SQLException ex) {
-                Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            levelLabel.setText(mediumButton.getText());
+            gameTime.setTimer(timerLabel, 0);
+            gameTime.start();
 
-            assignSudoku(sudokuGame.get(0), null);
+            assignSudoku(sudokuGame, null);
             sudokuOperation(PRINT_SUDOKU);
             switchPanes(rightPartContainer, levelsContainer, gameModesContainer);
         });
@@ -349,21 +349,32 @@ public class mainMenu {
 
         hardButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
+            gamePlayContainer.setCenter(null);
 
-            ArrayList<String> sudokuGame = null;
-            try {
-                sudokuGame = database.Select("Hard", 0);
-                sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
+            Task<String> task = new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    String sudokuGame;
+                    sudokuGame = generator.MakeSudoku(SudokuGenerator.HARD);
+                    assignSudoku(sudokuGame, null);
 
+                    System.out.println(sudokuGame);
+                    return null;
+                }
+            };
+
+            Thread generateSudokuThread = new Thread(task);
+            generateSudokuThread.setDaemon(true);
+            generateSudokuThread.start();
+
+            task.setOnSucceeded((WorkerStateEvent t) -> {
+                gamePlayContainer.setCenter(sudokuCellsContainer);
                 gameTime.setTimer(timerLabel, 0);
                 gameTime.start();
                 levelLabel.setText(hardButton.getText());
-            } catch (SQLException ex) {
-                Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                sudokuOperation(PRINT_SUDOKU);
+            });            
 
-            assignSudoku(sudokuGame.get(0), null);
-            sudokuOperation(PRINT_SUDOKU);
             switchPanes(rightPartContainer, levelsContainer, gameModesContainer);
         });
         //</editor-fold>
@@ -371,6 +382,7 @@ public class mainMenu {
 
     /**
      * Initialize and load saved games
+     *
      * @author Muhammad Tarek
      */
     public void initializeSavedGames() {
@@ -582,6 +594,7 @@ public class mainMenu {
 
     /**
      * Takes an array from Sudoku class copy it to another 2D array
+     *
      * @author Muhammad Tarek, Mustaga Magdy
      * @param Sudoku
      */

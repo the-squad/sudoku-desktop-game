@@ -1,6 +1,5 @@
 package sudoku;
 
-
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -32,10 +31,10 @@ public class SudokuGenerator {
      * Generate Sudoku with desired level.
      *
      * @param Level Selected level. SudokuGenerator.EASY SudokuGenerator.MEDIUM
- SudokuGenerator.HARD
+     * SudokuGenerator.HARD
      * @return Unsolved Sudoku with Unique Solution.
      */
-    public ArrayList<ArrayList<Integer>> MakeSudoku(int Level) {
+    public String MakeSudoku(int Level) {
         // Create Complete Sudoku :D
         generateCompleteSudoku();
         // Contain ordered numbers (0 to 80) if "HARD" is selected to remove most of the cells.
@@ -49,7 +48,14 @@ public class SudokuGenerator {
             AvailableIndexes = getRandomValues(0, 80);
         }
         // Return SudoKu with removed cells.
-        return removeCells(Level, AvailableIndexes);
+        ArrayList<ArrayList<Integer>> SudokuArray = removeCells(Level, AvailableIndexes);
+        String Sudoku = "";
+        for (ArrayList<Integer> row : SudokuArray) {
+            for (Integer cell : row) {
+                Sudoku += cell + "";
+            }
+        }
+        return Sudoku;
     }
 //</editor-fold>
 //<editor-fold defaultstate="collapsed" desc="Private methods">
@@ -58,7 +64,7 @@ public class SudokuGenerator {
      * Remove cells from generated Sudoku According to the Selected Level.
      *
      * @param Level Selected level. SudokuGenerator.EASY SudokuGenerator.MEDIUM
- SudokuGenerator.HARD
+     * SudokuGenerator.HARD
      * @param AvailableIndexes (Randomly/ordered) indexes.
      * @return Sudoku with removed cells.
      */
@@ -95,11 +101,12 @@ public class SudokuGenerator {
 
     /**
      * Generate Complete Sudoku without empty cells.
+     *
      * @return Sudoku.
      */
     private ArrayList<ArrayList<Integer>> generateCompleteSudoku() {
         // Empty Sudoku List and fill it with zeros :v
-        sudokuList.clear(); 
+        sudokuList.clear();
         for (int i = 0; i < 9; i++) {
             sudokuList.add(new ArrayList<>());
             for (int j = 0; j < 9; j++) {
@@ -113,7 +120,7 @@ public class SudokuGenerator {
     }
 
     /**
-     * 
+     *
      * @param Index Cell index
      * @return false to the previous cell if there is no valid number.
      * Otherwise, return true.
@@ -144,7 +151,7 @@ public class SudokuGenerator {
 
     /**
      * Check if Sudoku has unique Solution.
-     * 
+     *
      * @param SearchForword start from first or last cell.
      * @return true if it has one solution.
      */
@@ -162,7 +169,7 @@ public class SudokuGenerator {
 
     /**
      * Check if Sudoku has unique Solution.
-     * 
+     *
      * @param RowIndex cell position
      * @param ColumnIndex cell position
      * @param SearchForword start from first or last cell.
@@ -202,15 +209,13 @@ public class SudokuGenerator {
             // if no valid number, set cell to zero.
             sudokuList.get(RowIndex).set(ColumnIndex, 0);
             return false;// go to previous cell.
+        } else // if its not the last cell, go to next cell.
+        if (!(RowIndex == xLimit && ColumnIndex == yLimit)) {
+            return hasUniqueSolution(nextCellNum / 9, nextCellNum % 9, SearchForword);
         } else {
-            // if its not the last cell, go to next cell.
-            if (!(RowIndex == xLimit && ColumnIndex == yLimit)) {
-                return hasUniqueSolution(nextCellNum / 9, nextCellNum % 9, SearchForword);
-            } else {
-                //else incerease Solution conuter.
-                solutionCount++;
-                return false;
-            }
+            //else incerease Solution conuter.
+            solutionCount++;
+            return false;
         }
     }
 //</editor-fold>
@@ -218,6 +223,7 @@ public class SudokuGenerator {
 
     /**
      * Check if the given number is valid.
+     *
      * @param PossibleNumber Number to be checked.
      * @param RowIndex Cell Location.
      * @param ColumnIndex Cell Location.
@@ -246,9 +252,10 @@ public class SudokuGenerator {
 
     /**
      * Generate unordered numbers from minValue to maxValue included.
-     * 
+     *
      * @param minValue from number (minValue < maxValue).
-     * @param maxValue to number.
+     * @par
+     * am maxValue to number.
      * @return list of numbers.
      */
     private ArrayList<Integer> getRandomValues(int minValue, int maxValue) {

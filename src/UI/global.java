@@ -18,6 +18,7 @@ import javafx.util.Duration;
 import sudoku.Database;
 import sudoku.sudoku;
 import sudoku.timer;
+import sudoku.SudokuGenerator;
 
 /**
  * Class to initialize all global variables and methods
@@ -77,6 +78,7 @@ public class global {
     //Creating objects
     static Database database = new Database();
     static sudoku Sudoku = new sudoku();
+    static SudokuGenerator generator = new SudokuGenerator();
 
     /**
      * Switch between panes with slide animation

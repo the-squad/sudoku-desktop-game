@@ -38,7 +38,7 @@ public class gamePlay {
     private BorderPane headerContainer;
     static BorderPane headerCenterAreaContainer;
     static GridPane headerControlsContainer;
-    private BorderPane sudokuCellsContainer;
+    static BorderPane sudokuCellsContainer;
     static BorderPane gameLeftPanelContainer;
     private GridPane gameDetailsContainer;
     private GridPane gameControlsContainer;
@@ -498,6 +498,8 @@ public class gamePlay {
             pauseButton.setDisable(true);
             solveButton.setDisable(true);
             saveButton.setDisable(true);
+            redoButton.setDisable(true);
+            undoButton.setDisable(true);
             timerStoppedTimeline.play();
             gameTime.pause();
         });
