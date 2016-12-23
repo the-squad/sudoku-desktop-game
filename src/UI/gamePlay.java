@@ -9,6 +9,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
@@ -20,6 +22,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import javafx.animation.KeyValue;
+import javafx.animation.RotateTransition;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.scene.image.Image;
@@ -505,12 +508,16 @@ public class gamePlay {
             gameTime.pause();
         });
         //</editor-fold>
-        
+
         //Loading icon
-        loadingIcon = new ImageView();   
+        loadingIcon = new ImageView();
         Image ladingIconPNG = new Image(getClass().getResourceAsStream("/icons/loading-icon.png"));
         loadingIcon.setImage(ladingIconPNG);
+        RotateTransition loading = new RotateTransition(Duration.millis(1000), loadingIcon);
+        loading.setByAngle(180);
+        loading.play();
 
+        
         final KeyCombination saveGameCombination = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
 
         gamePlayContainer.addEventHandler(KeyEvent.KEY_PRESSED, (Event event) -> {
@@ -520,39 +527,41 @@ public class gamePlay {
         });
 
         gamePlayContainer.setOnKeyPressed((final KeyEvent keyEvent) -> {
-            if (null != keyEvent.getCode()) switch (keyEvent.getCode()) {
-                case ENTER:
-                    submitButton.fire();
-                    //Stop letting it do anything else
-                    keyEvent.consume();
-                    break;
-                case BACK_SPACE:
-                    backButton.fire();
-                    //Stop letting it do anything else
-                    keyEvent.consume();
-                    break;
-                case P:
-                    pauseButton.fire();
-                    //Stop letting it do anything else
-                    keyEvent.consume();
-                    break;
-                case R:
-                    resumeButton.fire();
-                    //Stop letting it do anything else
-                    keyEvent.consume();
-                    break;
-                case H:
-                    hintButton.fire();
-                    //Stop letting it do anything else
-                    keyEvent.consume();
-                    break;
-                case S:
-                    solveButton.fire();
-                    //Stop letting it do anything else
-                    keyEvent.consume();
-                    break;
-                default:
-                    break;
+            if (null != keyEvent.getCode()) {
+                switch (keyEvent.getCode()) {
+                    case ENTER:
+                        submitButton.fire();
+                        //Stop letting it do anything else
+                        keyEvent.consume();
+                        break;
+                    case BACK_SPACE:
+                        backButton.fire();
+                        //Stop letting it do anything else
+                        keyEvent.consume();
+                        break;
+                    case P:
+                        pauseButton.fire();
+                        //Stop letting it do anything else
+                        keyEvent.consume();
+                        break;
+                    case R:
+                        resumeButton.fire();
+                        //Stop letting it do anything else
+                        keyEvent.consume();
+                        break;
+                    case H:
+                        hintButton.fire();
+                        //Stop letting it do anything else
+                        keyEvent.consume();
+                        break;
+                    case S:
+                        solveButton.fire();
+                        //Stop letting it do anything else
+                        keyEvent.consume();
+                        break;
+                    default:
+                        break;
+                }
             }
         });
 
@@ -758,16 +767,25 @@ public class gamePlay {
      */
     private void saveCurrentGame() {
         sudokuOperation(READ_SUDOKU);
-        String sudokuGame = "";
+        if (saveGameState) {
+            try {
+                int sudokuIdOriginal = database.saveSudoku(sudokuGame, levelLabel.getText());
+                saveGameState = false;
+            } catch (SQLException ex) {
+                Logger.getLogger(gamePlay.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        String currentSudokuGame = "";
 
         for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
             for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
-                sudokuGame += userSudoku[rowCounter][columnCounter];
+                currentSudokuGame += userSudoku[rowCounter][columnCounter];
             }
         }
 
         try {
-            sudokuId = database.saveGame(sudokuGame, gameTime.getTime(), Integer.parseInt(sudokuIdOriginal), Integer.parseInt(sudokuId)) + "";
+            sudokuId = database.saveGame(currentSudokuGame, gameTime.getTime(), Integer.parseInt(sudokuIdOriginal), Integer.parseInt(sudokuId)) + "";
         } catch (SQLException ex) {
             showPopup("Game isn't saved", "Try Again!", MESSAGE_DANGER);
         }
