@@ -40,22 +40,9 @@ $RECYCLE.BIN/
 .VolumeIcon.icns
 
 # Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
-*.swp
-*.TXT
-*.xml
-*.properties
 nbproject/private/
 build/
 nbbuild/
 dist/
 nbdist/
 .nb-gradle/
-*.properties
-*.properties
-build/built-jar.properties
-*.properties
