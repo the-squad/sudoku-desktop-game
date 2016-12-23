@@ -128,6 +128,7 @@ public class gamePlay {
             switchPanes(screenContainer, gamePlayContainer, mainMenuContainer);
             if (playingMode == 1 || playingMode == 2) {
                 gameTime.pause();
+                gameTime.setTimer(timerLabel, 0);
                 timerLabel.setOpacity(1);
                 timerStoppedTimeline.stop();
             }
@@ -150,6 +151,8 @@ public class gamePlay {
             history.clear();
             undoHistoryMoveNumber = -1;
             redoHistoryMoveNumber = 0;
+            undoButton.setDisable(true);
+            redoButton.setDisable(true);
         });
         //</editor-fold>
 
@@ -235,6 +238,11 @@ public class gamePlay {
                             pauseButton.setDisable(true);
                             solveButton.setDisable(true);
                             saveButton.setDisable(true);
+                            history.clear();
+                            undoHistoryMoveNumber = -1;
+                            redoHistoryMoveNumber = 0;
+                            undoButton.setDisable(true);
+                            redoButton.setDisable(true);
                             timerStoppedTimeline.play();
 
                             Timeline gameSuccessTimeline = new Timeline();
@@ -470,8 +478,24 @@ public class gamePlay {
                 hintButton.setDisable(true);
             } else {
                 sudokuCells[hintDetails[0]][hintDetails[1]].setText(hintDetails[2] + "");
+                //Clearign any history moves if the user made a move and there are redo moves to make
+                if (redoHistoryMoveNumber != history.size()) {
+                    for (int counter = history.size() - 1; counter >= redoHistoryMoveNumber; counter--) {
+                        history.remove(counter);
+                        redoButton.setDisable(true);
+                    }
+                }
+
+                //Saving current move into an arraylist
+                history.add(new Integer[]{hintDetails[0], hintDetails[1], 0, hintDetails[2]});
+                undoHistoryMoveNumber++;
+                redoHistoryMoveNumber++;
+                undoButton.setDisable(false);
+
                 gameTime.addTenSeconds();
                 showAlertTimeline.play();
+                if (sudokuOperation(CHECK_SUDOKU))
+                    hintButton.setDisable(true);
             }
 
         });
@@ -505,6 +529,11 @@ public class gamePlay {
             saveButton.setDisable(true);
             redoButton.setDisable(true);
             undoButton.setDisable(true);
+            history.clear();
+            undoHistoryMoveNumber = -1;
+            redoHistoryMoveNumber = 0;
+            undoButton.setDisable(true);
+            redoButton.setDisable(true);
             timerStoppedTimeline.play();
             gameTime.pause();
         });
@@ -554,7 +583,7 @@ public class gamePlay {
                         //Stop letting it do anything else
                         keyEvent.consume();
                         break;
-                    case S:
+                    case F:
                         solveButton.fire();
                         //Stop letting it do anything else
                         keyEvent.consume();

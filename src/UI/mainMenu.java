@@ -207,9 +207,7 @@ public class mainMenu {
         });
 
         //Disable the button when there are no saved games
-        //savedGamesNumber = savedGames.size();
         if (savedGamesNumberGlobal == 0) {
-            System.out.println(savedGamesNumberGlobal);
             loadGameButton.setDisable(true);
         }
         //</editor-fold>
