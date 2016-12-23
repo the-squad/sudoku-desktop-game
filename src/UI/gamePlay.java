@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -22,9 +21,13 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import javafx.animation.KeyValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.ColumnConstraints;
 import sudoku.checker;
@@ -120,9 +123,6 @@ public class gamePlay {
         backButton.setOnAction(e -> {
             switchPanes(screenContainer, gamePlayContainer, mainMenuContainer);
             if (playingMode == 1 || playingMode == 2) {
-                if (!solveButton.isDisabled()) {
-                    saveCurrentGame();
-                }
                 gameTime.pause();
                 timerLabel.setOpacity(1);
                 timerStoppedTimeline.stop();
@@ -179,7 +179,6 @@ public class gamePlay {
             listenToChange = false;
 
             sudokuCells[history.get(undoHistoryMoveNumber)[0]][history.get(undoHistoryMoveNumber)[1]].setText(history.get(undoHistoryMoveNumber)[2] + "");
-            System.out.println(Arrays.toString(history.get(undoHistoryMoveNumber)) + undoHistoryMoveNumber);
 
             undoHistoryMoveNumber--;
             redoHistoryMoveNumber--;
@@ -202,7 +201,6 @@ public class gamePlay {
             listenToChange = false;
 
             sudokuCells[history.get(redoHistoryMoveNumber)[0]][history.get(redoHistoryMoveNumber)[1]].setText(history.get(redoHistoryMoveNumber)[3] + "");
-            System.out.println(Arrays.toString(history.get(redoHistoryMoveNumber)) + redoHistoryMoveNumber);
 
             undoHistoryMoveNumber++;
             redoHistoryMoveNumber++;
@@ -506,6 +504,36 @@ public class gamePlay {
         });
         //</editor-fold>
 
+        final KeyCombination saveGameCombination = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
+
+        gamePlayContainer.addEventHandler(KeyEvent.KEY_PRESSED, (Event event) -> {
+            if (saveGameCombination.match((KeyEvent) event)) {
+                saveButton.fire();
+            }
+        });
+
+        gamePlayContainer.setOnKeyPressed((final KeyEvent keyEvent) -> {
+            if (null != keyEvent.getCode()) switch (keyEvent.getCode()) {
+                case ESCAPE:
+                    closePopupButton.fire();
+                    //Stop letting it do anything else
+                    keyEvent.consume();
+                    break;
+                case ENTER:
+                    submitButton.fire();
+                    //Stop letting it do anything else
+                    keyEvent.consume();
+                    break;
+                case BACK_SPACE:
+                    backButton.fire();
+                    //Stop letting it do anything else
+                    keyEvent.consume();
+                    break;
+                default:
+                    break;
+            }
+        });
+
         return gamePlayContainer;
     }
 
@@ -589,7 +617,6 @@ public class gamePlay {
                             undoHistoryMoveNumber++;
                             redoHistoryMoveNumber++;
                             undoButton.setDisable(false);
-                            System.out.println(Arrays.toString(history.get(undoHistoryMoveNumber)) + undoHistoryMoveNumber);
                         }
                     }
                     currentField.getStyleClass().remove("cell-danger");
@@ -654,7 +681,7 @@ public class gamePlay {
         alertMessageContainer.setMargin(alertHelpMessageLabel, new Insets(10, 0, 0, 0));
         //</editor-fold>
 
-        //<editor-fold defaultstate="collapsed" desc="Save Button">
+        //<editor-fold defaultstate="collapsed" desc="Close Button">
         closePopupButton = new Button("");
         closePopupButton.getStyleClass().add("button-icon--white");
         closePopupButton.getStyleClass().addAll("close-icon");
