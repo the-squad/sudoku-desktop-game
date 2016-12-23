@@ -31,7 +31,8 @@ public class gamePlay {
     // <editor-fold defaultstate="collapsed" desc="Main Panes">
     private BorderPane gamePlayContainer;
     private BorderPane headerContainer;
-    private BorderPane headerCenterAreaContainer;
+    static BorderPane headerCenterAreaContainer;
+    static GridPane headerControlsContainer;
     private BorderPane sudokuCellsContainer;
     static BorderPane gameLeftPanelContainer;
     private GridPane gameDetailsContainer;
@@ -56,7 +57,9 @@ public class gamePlay {
 
     // <editor-fold defaultstate="collapsed" desc="Buttons">
     private Button backButton;
-    static Button saveButton;
+    private Button saveButton;
+    private Button undoButton;
+    private Button redoButton;
     static Button submitButton;
     private Button pauseButton;
     private Button resumeButton;
@@ -88,7 +91,7 @@ public class gamePlay {
         headerContainer.setPrefHeight(75);
         gamePlayContainer.setTop(headerContainer);
 
-        //Headline + saveButton button layout
+        //Headline + controls buttons layout
         headerCenterAreaContainer = new BorderPane();
 
         //<editor-fold defaultstate="collapsed" desc="headline">
@@ -136,12 +139,17 @@ public class gamePlay {
         });
         //</editor-fold>
 
+        //Redo, undo and save buttons
+        headerControlsContainer = new GridPane();
+        headerControlsContainer.setHgap(15);
+        headerCenterAreaContainer.setRight(headerControlsContainer);
+        headerCenterAreaContainer.setMargin(headerControlsContainer, new Insets(0, 15, 0, 0));
+        
         //<editor-fold defaultstate="collapsed" desc="Save Button">
         saveButton = new Button("");
         saveButton.getStyleClass().add("button-icon--white");
         saveButton.getStyleClass().addAll("save-icon");
-        headerCenterAreaContainer.setRight(saveButton);
-        headerCenterAreaContainer.setMargin(saveButton, new Insets(0, 15, 0, 0));
+        headerControlsContainer.setConstraints(saveButton, 2, 0);
 
         saveButton.setOnAction(e -> {
             saveCurrentGame();
@@ -149,6 +157,30 @@ public class gamePlay {
             showPopup("Game is saved successfuly", "You can always complete your game anytime you want", MESSAGE_SUCCESS);
         });
         //</editor-fold>
+        
+        //<editor-fold defaultstate="collapsed" desc="Undo Button">
+        undoButton = new Button("");
+        undoButton.getStyleClass().add("button-icon--white");
+        undoButton.getStyleClass().addAll("undo-icon");
+        headerControlsContainer.setConstraints(undoButton, 0, 0);
+
+        undoButton.setOnAction(e -> {
+            //TODO
+        });
+        //</editor-fold>
+        
+        //<editor-fold defaultstate="collapsed" desc="Redo Button">
+        redoButton = new Button("");
+        redoButton.getStyleClass().add("button-icon--white");
+        redoButton.getStyleClass().addAll("redo-icon");
+        headerControlsContainer.setConstraints(redoButton, 1, 0);
+
+        saveButton.setOnAction(e -> {
+          //TODO
+        });
+        //</editor-fold>
+        
+        headerControlsContainer.getChildren().addAll(undoButton, redoButton, saveButton);
 
         //<editor-fold defaultstate="collapsed" desc="Submit Button">
         submitButton = new Button("Submit");

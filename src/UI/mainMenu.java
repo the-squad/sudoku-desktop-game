@@ -108,7 +108,7 @@ public class mainMenu {
         //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Version Label">
-        version = new Label("Version 1.0");
+        version = new Label("Version 1.1");
         version.getStyleClass().add("version");
         leftPartContainer.setBottom(version);
         leftPartContainer.setAlignment(version, Pos.TOP_CENTER);
@@ -172,8 +172,7 @@ public class mainMenu {
             playingMode = 1;
             gamePlayContainer.setLeft(gameLeftPanelContainer);
 
-            saveButton.setVisible(true);
-            saveButton.setDisable(false);
+            headerCenterAreaContainer.setRight(headerControlsContainer);
 
             submitButton.setText("Submit");
             headlineLabel.setText("New Game");
@@ -192,8 +191,7 @@ public class mainMenu {
             playingMode = 2;
             gamePlayContainer.setLeft(gameLeftPanelContainer);
 
-            saveButton.setVisible(true);
-            saveButton.setDisable(false);
+            headerCenterAreaContainer.setRight(headerControlsContainer);
             submitButton.setText("Submit");
             headlineLabel.setText("Loaded Game");
         });
@@ -217,8 +215,7 @@ public class mainMenu {
             playingMode = 3;
             gamePlayContainer.setLeft(null);
 
-            saveButton.setVisible(false);
-            saveButton.setDisable(true);
+            headerCenterAreaContainer.setRight(null);
             submitButton.setText("Check");
             headlineLabel.setText("Check your Sudoku");
         });
@@ -235,8 +232,7 @@ public class mainMenu {
             playingMode = 4;
             gamePlayContainer.setLeft(null);
 
-            saveButton.setVisible(false);
-            saveButton.setDisable(true);
+            headerCenterAreaContainer.setRight(null);
             submitButton.setText("Challenge");
             headlineLabel.setText("Challenge Computer");
         });

@@ -27,7 +27,7 @@ public class main extends Application {
 
         mainMenuContainer = new mainMenu().initialize();
         screenContainer.setCenter(mainMenuContainer);
-        
+
         //Loading another containers after the main containter is loaded
         Timeline loadOtherContainers = new Timeline();
         KeyFrame loadGamePlay = new KeyFrame(Duration.millis(500), e -> gamePlayContainer = new gamePlay().initialize());

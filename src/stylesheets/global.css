@@ -137,6 +137,14 @@
     -fx-background-image: url("../icons/ic_arrow_back_white_48dp_1x.png");
 }
 
+.undo-icon {
+    -fx-background-image: url("../icons/ic_undo_white_48dp_1x.png");
+}
+
+.redo-icon {
+    -fx-background-image: url("../icons/ic_redo_white_48dp_1x.png");
+}
+
 .save-icon {
     -fx-background-image: url("../icons/ic_save_white_48dp_1x.png");
 }
