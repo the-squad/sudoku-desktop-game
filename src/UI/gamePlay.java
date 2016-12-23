@@ -3,12 +3,15 @@ package UI;
 import static UI.global.*;
 import static UI.scoreBoard.*;
 import static UI.mainMenu.loadGameButton;
+import java.awt.Color;
 
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
@@ -22,6 +25,7 @@ import javafx.util.Duration;
 import javafx.animation.KeyValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -38,7 +42,7 @@ public class gamePlay {
     private BorderPane headerContainer;
     static BorderPane headerCenterAreaContainer;
     static GridPane headerControlsContainer;
-    private BorderPane sudokuCellsContainer;
+    static BorderPane sudokuCellsContainer;
     static BorderPane gameLeftPanelContainer;
     private GridPane gameDetailsContainer;
     private GridPane gameControlsContainer;
@@ -81,6 +85,7 @@ public class gamePlay {
     private Timeline hidePopupTimeline;
     // </editor-fold>
 
+    static ProgressIndicator loadingIndicator;
     Boolean listenToChange = false;
 
     /**
@@ -123,6 +128,7 @@ public class gamePlay {
             switchPanes(screenContainer, gamePlayContainer, mainMenuContainer);
             if (playingMode == 1 || playingMode == 2) {
                 gameTime.pause();
+                gameTime.setTimer(timerLabel, 0);
                 timerLabel.setOpacity(1);
                 timerStoppedTimeline.stop();
             }
@@ -145,6 +151,8 @@ public class gamePlay {
             history.clear();
             undoHistoryMoveNumber = -1;
             redoHistoryMoveNumber = 0;
+            undoButton.setDisable(true);
+            redoButton.setDisable(true);
         });
         //</editor-fold>
 
@@ -230,6 +238,11 @@ public class gamePlay {
                             pauseButton.setDisable(true);
                             solveButton.setDisable(true);
                             saveButton.setDisable(true);
+                            history.clear();
+                            undoHistoryMoveNumber = -1;
+                            redoHistoryMoveNumber = 0;
+                            undoButton.setDisable(true);
+                            redoButton.setDisable(true);
                             timerStoppedTimeline.play();
 
                             Timeline gameSuccessTimeline = new Timeline();
@@ -465,8 +478,24 @@ public class gamePlay {
                 hintButton.setDisable(true);
             } else {
                 sudokuCells[hintDetails[0]][hintDetails[1]].setText(hintDetails[2] + "");
+                //Clearign any history moves if the user made a move and there are redo moves to make
+                if (redoHistoryMoveNumber != history.size()) {
+                    for (int counter = history.size() - 1; counter >= redoHistoryMoveNumber; counter--) {
+                        history.remove(counter);
+                        redoButton.setDisable(true);
+                    }
+                }
+
+                //Saving current move into an arraylist
+                history.add(new Integer[]{hintDetails[0], hintDetails[1], 0, hintDetails[2]});
+                undoHistoryMoveNumber++;
+                redoHistoryMoveNumber++;
+                undoButton.setDisable(false);
+
                 gameTime.addTenSeconds();
                 showAlertTimeline.play();
+                if (sudokuOperation(CHECK_SUDOKU))
+                    hintButton.setDisable(true);
             }
 
         });
@@ -498,10 +527,24 @@ public class gamePlay {
             pauseButton.setDisable(true);
             solveButton.setDisable(true);
             saveButton.setDisable(true);
+            redoButton.setDisable(true);
+            undoButton.setDisable(true);
+            history.clear();
+            undoHistoryMoveNumber = -1;
+            redoHistoryMoveNumber = 0;
+            undoButton.setDisable(true);
+            redoButton.setDisable(true);
             timerStoppedTimeline.play();
             gameTime.pause();
         });
         //</editor-fold>
+
+        //Loading icon
+        loadingIndicator = new ProgressIndicator();
+        loadingIndicator.setStyle(" -fx-progress-color: rgb(65, 131, 215);");
+        loadingIndicator.setMaxHeight(75);
+        loadingIndicator.setMaxWidth(75);
+        loadingIndicator.setVisible(true);
 
         final KeyCombination saveGameCombination = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
 
@@ -511,42 +554,46 @@ public class gamePlay {
             }
         });
 
+        //<editor-fold defaultstate="collapsed" desc="Keyboard Shortcuts">
         gamePlayContainer.setOnKeyPressed((final KeyEvent keyEvent) -> {
-            if (null != keyEvent.getCode()) switch (keyEvent.getCode()) {
-                case ENTER:
-                    submitButton.fire();
-                    //Stop letting it do anything else
-                    keyEvent.consume();
-                    break;
-                case BACK_SPACE:
-                    backButton.fire();
-                    //Stop letting it do anything else
-                    keyEvent.consume();
-                    break;
-                case P:
-                    pauseButton.fire();
-                    //Stop letting it do anything else
-                    keyEvent.consume();
-                    break;
-                case R:
-                    resumeButton.fire();
-                    //Stop letting it do anything else
-                    keyEvent.consume();
-                    break;
-                case H:
-                    hintButton.fire();
-                    //Stop letting it do anything else
-                    keyEvent.consume();
-                    break;
-                case S:
-                    solveButton.fire();
-                    //Stop letting it do anything else
-                    keyEvent.consume();
-                    break;
-                default:
-                    break;
+            if (null != keyEvent.getCode()) {
+                switch (keyEvent.getCode()) {
+                    case ENTER:
+                        submitButton.fire();
+                        //Stop letting it do anything else
+                        keyEvent.consume();
+                        break;
+                    case BACK_SPACE:
+                        backButton.fire();
+                        //Stop letting it do anything else
+                        keyEvent.consume();
+                        break;
+                    case P:
+                        pauseButton.fire();
+                        //Stop letting it do anything else
+                        keyEvent.consume();
+                        break;
+                    case R:
+                        resumeButton.fire();
+                        //Stop letting it do anything else
+                        keyEvent.consume();
+                        break;
+                    case H:
+                        hintButton.fire();
+                        //Stop letting it do anything else
+                        keyEvent.consume();
+                        break;
+                    case F:
+                        solveButton.fire();
+                        //Stop letting it do anything else
+                        keyEvent.consume();
+                        break;
+                    default:
+                        break;
+                }
             }
         });
+        //</editor-fold>
 
         return gamePlayContainer;
     }
@@ -750,16 +797,25 @@ public class gamePlay {
      */
     private void saveCurrentGame() {
         sudokuOperation(READ_SUDOKU);
-        String sudokuGame = "";
+        if (saveGameState) {
+            try {
+                sudokuIdOriginal = Integer.toString(database.saveSudoku(sudokuGame, levelLabel.getText()));
+                saveGameState = false;
+            } catch (SQLException ex) {
+                Logger.getLogger(gamePlay.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        String currentSudokuGame = "";
 
         for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
             for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
-                sudokuGame += userSudoku[rowCounter][columnCounter];
+                currentSudokuGame += userSudoku[rowCounter][columnCounter];
             }
         }
 
         try {
-            sudokuId = database.saveGame(sudokuGame, gameTime.getTime(), Integer.parseInt(sudokuIdOriginal), Integer.parseInt(sudokuId)) + "";
+            sudokuId = database.saveGame(currentSudokuGame, gameTime.getTime(), Integer.parseInt(sudokuIdOriginal), Integer.parseInt(sudokuId)) + "";
         } catch (SQLException ex) {
             showPopup("Game isn't saved", "Try Again!", MESSAGE_DANGER);
         }

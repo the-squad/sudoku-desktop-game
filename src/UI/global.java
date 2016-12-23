@@ -18,6 +18,7 @@ import javafx.util.Duration;
 import sudoku.Database;
 import sudoku.sudoku;
 import sudoku.timer;
+import sudoku.SudokuGenerator;
 
 /**
  * Class to initialize all global variables and methods
@@ -37,6 +38,7 @@ public class global {
     static Integer[][] userSudoku = new Integer[9][9]; //Reads the Sudoku from the user
     static Integer[][] computerSolution = new Integer[9][9]; //Where computer returns the wrong cells
     static Boolean[][] markSolution = new Boolean[9][9]; //Where computer returns the wrong cells
+    static String sudokuGame;
 //</editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Global Static Vairables">
@@ -73,10 +75,12 @@ public class global {
     static int redoHistoryMoveNumber = 0;
     
     static timer gameTime = new timer();
+    static Boolean saveGameState = true;
 
     //Creating objects
     static Database database = new Database();
     static sudoku Sudoku = new sudoku();
+    static SudokuGenerator generator = new SudokuGenerator();
 
     /**
      * Switch between panes with slide animation

@@ -13,6 +13,10 @@ import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -28,6 +32,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
 import javafx.util.Duration;
+import sudoku.SudokuGenerator;
 
 public class mainMenu {
 
@@ -64,6 +69,7 @@ public class mainMenu {
 
     /**
      * Initialize main menu elements
+     *
      * @author Muhammad Tarek
      * @return mainMenuScene
      */
@@ -108,7 +114,7 @@ public class mainMenu {
         //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Version Label">
-        version = new Label("Version 1.1");
+        version = new Label("Version 1.2");
         version.getStyleClass().add("version");
         leftPartContainer.setBottom(version);
         leftPartContainer.setAlignment(version, Pos.TOP_CENTER);
@@ -126,7 +132,7 @@ public class mainMenu {
         //Getting number of saved games before initializing buttons
         ArrayList<String> savedGamesTemp = null;
         try {
-            savedGamesTemp = database.Select(null, 1);
+            savedGamesTemp = database.Select();
         } catch (SQLException ex) {
             savedGamesNumberGlobal = 0;
         }
@@ -147,6 +153,7 @@ public class mainMenu {
 
     /**
      * Initialize game controls buttons
+     *
      * @author Muhammad Tarek
      */
     private void initializeGameModes() {
@@ -170,9 +177,11 @@ public class mainMenu {
         newGameButton.setOnAction(e -> {
             switchPanes(rightPartContainer, gameModesContainer, levelsContainer);
             playingMode = 1;
-            gamePlayContainer.setLeft(gameLeftPanelContainer);
+            gamePlayContainer.setCenter(loadingIndicator);
+            gamePlayContainer.setLeft(null);
 
             headerCenterAreaContainer.setRight(headerControlsContainer);
+            saveGameState = true;
 
             submitButton.setText("Submit");
             headlineLabel.setText("New Game");
@@ -190,6 +199,7 @@ public class mainMenu {
             switchPanes(rightPartContainer, gameModesContainer, savedGamesContainer);
             playingMode = 2;
             gamePlayContainer.setLeft(gameLeftPanelContainer);
+            saveGameState = false;
 
             headerCenterAreaContainer.setRight(headerControlsContainer);
             submitButton.setText("Submit");
@@ -197,9 +207,7 @@ public class mainMenu {
         });
 
         //Disable the button when there are no saved games
-        //savedGamesNumber = savedGames.size();
         if (savedGamesNumberGlobal == 0) {
-            System.out.println(savedGamesNumberGlobal);
             loadGameButton.setDisable(true);
         }
         //</editor-fold>
@@ -252,6 +260,7 @@ public class mainMenu {
 
     /**
      * Initialize game levels buttons
+     *
      * @author Muhammad Tarek
      */
     private void initializeLevelsMenu() {
@@ -300,20 +309,26 @@ public class mainMenu {
         easyButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
 
-            ArrayList<String> sudokuGame = null;
-            try {
-                sudokuGame = database.Select("Easy", 0);
-                sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
+            Task<String> task = new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    sudokuGame = generator.MakeSudoku(SudokuGenerator.EASY);
+                    assignSudoku(sudokuGame, null);
+                    return null;
+                }
+            };
 
-                levelLabel.setText(easyButton.getText());
+            Thread generateSudokuThread = new Thread(task);
+            generateSudokuThread.setDaemon(true);
+            generateSudokuThread.start();
+
+            task.setOnSucceeded((WorkerStateEvent t) -> {
+                finishLoading(2);
                 gameTime.setTimer(timerLabel, 0);
-                gameTime.start();
-            } catch (SQLException ex) {
-                Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                levelLabel.setText(easyButton.getText());
+                sudokuOperation(PRINT_SUDOKU);
+            });
 
-            assignSudoku(sudokuGame.get(0), null);
-            sudokuOperation(PRINT_SUDOKU);
             switchPanes(rightPartContainer, levelsContainer, gameModesContainer);
         });
         //</editor-fold>
@@ -325,20 +340,26 @@ public class mainMenu {
         mediumButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
 
-            ArrayList<String> sudokuGame = null;
-            try {
-                sudokuGame = database.Select("Medium", 0);
-                sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
+            Task<String> task = new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    sudokuGame = generator.MakeSudoku(SudokuGenerator.MEDIUM);
+                    assignSudoku(sudokuGame, null);
+                    return null;
+                }
+            };
 
-                levelLabel.setText(mediumButton.getText());
+            Thread generateSudokuThread = new Thread(task);
+            generateSudokuThread.setDaemon(true);
+            generateSudokuThread.start();
+
+            task.setOnSucceeded((WorkerStateEvent t) -> {
+                finishLoading(2);
                 gameTime.setTimer(timerLabel, 0);
-                gameTime.start();
-            } catch (SQLException ex) {
-                Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                levelLabel.setText(mediumButton.getText());
+                sudokuOperation(PRINT_SUDOKU);
+            });
 
-            assignSudoku(sudokuGame.get(0), null);
-            sudokuOperation(PRINT_SUDOKU);
             switchPanes(rightPartContainer, levelsContainer, gameModesContainer);
         });
         //</editor-fold>
@@ -350,20 +371,26 @@ public class mainMenu {
         hardButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
 
-            ArrayList<String> sudokuGame = null;
-            try {
-                sudokuGame = database.Select("Hard", 0);
-                sudokuIdOriginal = sudokuGame.get(0).split(",")[1];
+            Task<String> task = new Task<String>() {
+                @Override
+                protected String call() throws Exception {
+                    sudokuGame = generator.MakeSudoku(SudokuGenerator.HARD);
+                    assignSudoku(sudokuGame, null);
+                    return null;
+                }
+            };
 
+            Thread generateSudokuThread = new Thread(task);
+            generateSudokuThread.setDaemon(true);
+            generateSudokuThread.start();
+
+            task.setOnSucceeded((WorkerStateEvent t) -> {
+                finishLoading(2);
                 gameTime.setTimer(timerLabel, 0);
-                gameTime.start();
                 levelLabel.setText(hardButton.getText());
-            } catch (SQLException ex) {
-                Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                sudokuOperation(PRINT_SUDOKU);
+            });
 
-            assignSudoku(sudokuGame.get(0), null);
-            sudokuOperation(PRINT_SUDOKU);
             switchPanes(rightPartContainer, levelsContainer, gameModesContainer);
         });
         //</editor-fold>
@@ -371,13 +398,14 @@ public class mainMenu {
 
     /**
      * Initialize and load saved games
+     *
      * @author Muhammad Tarek
      */
     public void initializeSavedGames() {
         //ArrayList<String> savedGames = null;
         ArrayList<String> savedGames = null;
         try {
-            savedGames = database.Select(null, 1);
+            savedGames = database.Select();
         } catch (SQLException ex) {
             Logger.getLogger(mainMenu.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -582,6 +610,7 @@ public class mainMenu {
 
     /**
      * Takes an array from Sudoku class copy it to another 2D array
+     *
      * @author Muhammad Tarek, Mustaga Magdy
      * @param Sudoku
      */
@@ -599,5 +628,41 @@ public class mainMenu {
                 charptr++;
             }
         }
+    }
+
+    private void finishLoading(int gameType) {
+        Timeline showAndHideTimeline = new Timeline();
+
+        //Creating all key values for the animation
+        KeyValue loadingOpacityStart = new KeyValue(loadingIndicator.opacityProperty(), 1);
+        KeyValue loadingOpacityEnd = new KeyValue(loadingIndicator.opacityProperty(), 0);
+        
+        KeyValue panelOpacityStart = new KeyValue(loadingIndicator.opacityProperty(), 0);
+        KeyValue panelOpacityEnd = new KeyValue(loadingIndicator.opacityProperty(), 1);
+
+        KeyValue sudokuOpacityStart = new KeyValue(sudokuCellsContainer.opacityProperty(), 0);
+        KeyValue sudokuOpacityEnd = new KeyValue(sudokuCellsContainer.opacityProperty(), 1);
+
+        //Clearing the setCenter
+        KeyFrame clear = new KeyFrame(Duration.millis(151), e -> {
+            gamePlayContainer.setCenter(null);
+        });
+
+        KeyFrame startFadeOut = new KeyFrame(Duration.millis(0), loadingOpacityStart);
+        KeyFrame finishFadeOut = new KeyFrame(Duration.millis(200), loadingOpacityEnd);
+        KeyFrame addingToCenter = new KeyFrame(Duration.millis(209), e -> {
+            gamePlayContainer.setCenter(sudokuCellsContainer);
+        });
+        KeyFrame addingToLeft = new KeyFrame(Duration.millis(209), e -> {
+            gamePlayContainer.setLeft(gameLeftPanelContainer);
+        });
+        KeyFrame startFadeIn = new KeyFrame(Duration.millis(210), panelOpacityStart);
+        KeyFrame finishFadeIn = new KeyFrame(Duration.millis(510), panelOpacityEnd);
+        KeyFrame startFadeIn2 = new KeyFrame(Duration.millis(210), sudokuOpacityStart);
+        KeyFrame finishFadeIn2 = new KeyFrame(Duration.millis(510), sudokuOpacityEnd);
+        KeyFrame startTimer = new KeyFrame(Duration.millis(1000), e -> gameTime.start());
+
+        showAndHideTimeline.getKeyFrames().addAll(startFadeOut, finishFadeOut, clear, addingToCenter, addingToLeft, startFadeIn, finishFadeIn, startFadeIn2, finishFadeIn2, startTimer);
+        showAndHideTimeline.play();
     }
 }
