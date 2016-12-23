@@ -22,7 +22,6 @@ import javafx.util.Duration;
 import javafx.animation.KeyValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -514,11 +513,6 @@ public class gamePlay {
 
         gamePlayContainer.setOnKeyPressed((final KeyEvent keyEvent) -> {
             if (null != keyEvent.getCode()) switch (keyEvent.getCode()) {
-                case ESCAPE:
-                    closePopupButton.fire();
-                    //Stop letting it do anything else
-                    keyEvent.consume();
-                    break;
                 case ENTER:
                     submitButton.fire();
                     //Stop letting it do anything else
@@ -526,6 +520,26 @@ public class gamePlay {
                     break;
                 case BACK_SPACE:
                     backButton.fire();
+                    //Stop letting it do anything else
+                    keyEvent.consume();
+                    break;
+                case P:
+                    pauseButton.fire();
+                    //Stop letting it do anything else
+                    keyEvent.consume();
+                    break;
+                case R:
+                    resumeButton.fire();
+                    //Stop letting it do anything else
+                    keyEvent.consume();
+                    break;
+                case H:
+                    hintButton.fire();
+                    //Stop letting it do anything else
+                    keyEvent.consume();
+                    break;
+                case S:
+                    solveButton.fire();
                     //Stop letting it do anything else
                     keyEvent.consume();
                     break;
