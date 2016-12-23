@@ -1,5 +1,6 @@
 package UI;
 
+import java.util.ArrayList;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -67,6 +68,10 @@ public class global {
     static String sudokuLevel;
     // </editor-fold>
 
+    static ArrayList<Integer[]> history = new ArrayList<>();
+    static int undoHistoryMoveNumber = -1;
+    static int redoHistoryMoveNumber = 0;
+    
     static timer gameTime = new timer();
 
     //Creating objects
@@ -91,9 +96,9 @@ public class global {
         KeyValue toChildOpacityEnd = new KeyValue(fromChild.opacityProperty(), 1);
 
         KeyValue fromChildtranslateStart = new KeyValue(fromChild.translateYProperty(), 0);
-        KeyValue fromChildtranslateEnd = new KeyValue(fromChild.translateYProperty(), 20);
+        KeyValue fromChildtranslateEnd = new KeyValue(fromChild.translateYProperty(), 10);
 
-        KeyValue toChildtranslateStart = new KeyValue(toChild.translateYProperty(), 20);
+        KeyValue toChildtranslateStart = new KeyValue(toChild.translateYProperty(), 10);
         KeyValue toChildtranslateEnd = new KeyValue(toChild.translateYProperty(), 0);
 
         //Creating the timeline keyframes

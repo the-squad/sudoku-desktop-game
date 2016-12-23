@@ -56,3 +56,5 @@ dist/
 nbdist/
 .nb-gradle/
 *.properties
+*.properties
+build/built-jar.properties
