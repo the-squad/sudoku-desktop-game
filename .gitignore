@@ -58,3 +58,4 @@ nbdist/
 *.properties
 *.properties
 build/built-jar.properties
+*.properties
