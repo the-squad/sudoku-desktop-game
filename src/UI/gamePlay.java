@@ -255,7 +255,7 @@ public class gamePlay {
                                 for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
                                     if (!sudokuCells[rowCounter][columnCounter].isDisable()) {
                                         //Only mark user input in green
-                                        sudokuCells[rowCounter][columnCounter].setDisable(true);
+                                        sudokuCells[rowCounter][columnCounter].setEditable(false);
                                         sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-danger");
                                         sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
                                     }
@@ -324,7 +324,7 @@ public class gamePlay {
                             for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
                                 for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
                                     sudokuCells[rowCounter][columnCounter].setText(computerSolution[rowCounter][columnCounter] + "");
-                                    sudokuCells[rowCounter][columnCounter].setDisable(true);
+                                    sudokuCells[rowCounter][columnCounter].setEditable(false);
                                     sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
 
                                     submitButton.setDisable(true);
@@ -534,7 +534,7 @@ public class gamePlay {
             for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
                 for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
                     sudokuCells[rowCounter][columnCounter].setText(computerSolution[rowCounter][columnCounter] + "");
-                    sudokuCells[rowCounter][columnCounter].setDisable(true);
+                    sudokuCells[rowCounter][columnCounter].setEditable(false);
                     sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
                 }
             }
@@ -675,7 +675,7 @@ public class gamePlay {
                 MenuItem highlightItem = new MenuItem("Highlight similar");
 
                 highlightItem.setOnAction(e -> {
-                    highlightCell(sudokuCells[currentFieldRowNumber][currentFieldColumnNumber + 1].getText());
+                    highlightCell(sudokuCells[currentFieldRowNumber][currentFieldColumnNumber].getText());
                 });
                 contextMenu.getItems().addAll(hintItem, highlightItem);
 
@@ -914,11 +914,11 @@ public class gamePlay {
                     case 2:
                         if (computerSolution[rowCounter][columnCounter] != 0) {
                             if (playingMode == 1) {
-                                sudokuCells[rowCounter][columnCounter].setDisable(true);
+                                sudokuCells[rowCounter][columnCounter].setEditable(false);
                             }
                             if (playingMode == 2) {
                                 if (markSolution[rowCounter][columnCounter]) {
-                                    sudokuCells[rowCounter][columnCounter].setDisable(true);
+                                    sudokuCells[rowCounter][columnCounter].setEditable(false);
                                 }
                             }
                             sudokuCells[rowCounter][columnCounter].setText(computerSolution[rowCounter][columnCounter] + "");
@@ -927,7 +927,7 @@ public class gamePlay {
                     //Clear Sudoku fields and array
                     case 3:
                         sudokuCells[rowCounter][columnCounter].setText("");
-                        sudokuCells[rowCounter][columnCounter].setDisable(false);
+                        sudokuCells[rowCounter][columnCounter].setEditable(true);
                         sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-danger");
                         sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-success");
 
@@ -973,6 +973,7 @@ public class gamePlay {
     private void highlightCell(String numberMatch) {
         for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
             for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
+                sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-focus");
                 if (sudokuCells[rowCounter][columnCounter].getText().equals(numberMatch) && !"".equals(sudokuCells[rowCounter][columnCounter].getText())) {
                     TextField cell = sudokuCells[rowCounter][columnCounter];
                     Timeline hightlightTimeline = new Timeline();

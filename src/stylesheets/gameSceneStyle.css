@@ -55,12 +55,22 @@
     -fx-background-color: rgba(65, 131, 215, 0.7);
 }
 
-.cell:disabled {
+.cell:readonly  {
     -fx-text-fill: rgba(41,47,51, 0.6);
     -fx-opacity: 1.0;
 }
 
-.cell-success:disabled {
+.cell:readonly:hover  {
+    -fx-background-color: rgba(65, 131, 215, 0.0);
+    -fx-opacity: 1.0;
+}
+
+.cell:readonly:focused  {
+    -fx-background-color: rgba(65, 131, 215, 0.1);
+    -fx-opacity: 1.0;
+}
+
+.cell-success:readonly {
     -fx-text-fill: rgb(0, 200 , 83);
     -fx-background-color: rgba(0 , 200, 83, 0.075);
     -fx-cursor: default;
