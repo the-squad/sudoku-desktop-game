@@ -440,6 +440,10 @@ public class gamePlay {
             pauseButton.setDisable(true);
             hintButton.setDisable(true);
             solveButton.setDisable(true);
+            saveButton.setDisable(true);
+            undoButton.setDisable(true);
+            redoButton.setDisable(true);
+            submitButton.setDisable(true);
             timerStoppedTimeline.play();
         });
         //</editor-fold>
@@ -463,6 +467,14 @@ public class gamePlay {
                 hintButton.setDisable(false);
             }
             solveButton.setDisable(false);
+            saveButton.setDisable(false);
+            if (undoHistoryMoveNumber != -1) {
+                undoButton.setDisable(false);
+            }
+            if (redoHistoryMoveNumber != history.size()) {
+                redoButton.setDisable(false);
+            }
+            submitButton.setDisable(false);
 
             timerLabel.setOpacity(1);
             timerStoppedTimeline.stop();
@@ -555,11 +567,34 @@ public class gamePlay {
         loadingIndicator.setVisible(true);
 
         final KeyCombination saveGameCombination = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
+        final KeyCombination undoGameCombination = new KeyCodeCombination(KeyCode.U, KeyCombination.CONTROL_DOWN);
+        final KeyCombination redoGameCombination = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
+        final KeyCombination hintGameCombination = new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN);
+        final KeyCombination solveGameCombination = new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN);
+        final KeyCombination goBackCombination = new KeyCodeCombination(KeyCode.BACK_SPACE, KeyCombination.CONTROL_DOWN);
+        final KeyCombination resumeAndPauseCombination = new KeyCodeCombination(KeyCode.SPACE, KeyCombination.CONTROL_DOWN);
 
         gamePlayContainer.addEventHandler(KeyEvent.KEY_PRESSED, (Event event) -> {
             if (saveGameCombination.match((KeyEvent) event)) {
                 saveButton.fire();
+            } else if (undoGameCombination.match((KeyEvent) event)) {
+                undoButton.fire();
+            } else if (redoGameCombination.match((KeyEvent) event)) {
+                redoButton.fire();
+            } else if (hintGameCombination.match((KeyEvent) event)) {
+                hintButton.fire();
+            } else if (solveGameCombination.match((KeyEvent) event)) {
+                solveButton.fire();
+            } else if (goBackCombination.match((KeyEvent) event)) {
+                backButton.fire();
+            } else if (resumeAndPauseCombination.match((KeyEvent) event)) {
+                if (submitButton.isDisabled()) {
+                    resumeButton.fire();
+                } else {
+                    pauseButton.fire();
+                }
             }
+
         });
 
         //<editor-fold defaultstate="collapsed" desc="Keyboard Shortcuts">
@@ -568,31 +603,6 @@ public class gamePlay {
                 switch (keyEvent.getCode()) {
                     case ENTER:
                         submitButton.fire();
-                        //Stop letting it do anything else
-                        keyEvent.consume();
-                        break;
-                    case BACK_SPACE:
-                        backButton.fire();
-                        //Stop letting it do anything else
-                        keyEvent.consume();
-                        break;
-                    case P:
-                        pauseButton.fire();
-                        //Stop letting it do anything else
-                        keyEvent.consume();
-                        break;
-                    case R:
-                        resumeButton.fire();
-                        //Stop letting it do anything else
-                        keyEvent.consume();
-                        break;
-                    case H:
-                        hintButton.fire();
-                        //Stop letting it do anything else
-                        keyEvent.consume();
-                        break;
-                    case F:
-                        solveButton.fire();
                         //Stop letting it do anything else
                         keyEvent.consume();
                         break;
@@ -655,21 +665,23 @@ public class gamePlay {
                 int currentFieldRowNumber = rowCounter;
                 int currentFieldColumnNumber = columnCounter;
 
-                
                 contextMenu = new ContextMenu();
                 contextMenu.getStyleClass().add("context-menu-custom");
-                
+
                 MenuItem hintItem = new MenuItem("Hint");
                 hintItem.setOnAction(e -> System.out.println("UI.gamePlay.initSudokuBlock()"));
                 MenuItem highlightItem = new MenuItem("Highlight similar");
-                
-                highlightItem.setOnAction(e -> {highlightCell(currentField.getText()); System.out.println(currentField.getText());});
+
+                highlightItem.setOnAction(e -> {
+                    highlightCell(currentField.getText());
+                    System.out.println(currentField.getText());
+                });
                 contextMenu.getItems().addAll(hintItem, highlightItem);
 
                 sudokuCells[rowCounter][columnCounter].setOnMousePressed(e -> {
                     if (e.getButton() == MouseButton.SECONDARY) {
                         contextMenu.show(currentField, e.getScreenX(), e.getScreenY());
-                        currentField.requestFocus(); 
+                        currentField.requestFocus();
                     } else {
                         contextMenu.hide();
                     }
@@ -685,28 +697,26 @@ public class gamePlay {
                         currentField.setText(oldVal);
                     } else if (!isInputValid(currentField.getText())) {
                         currentField.setText("");
+                    } else //Only save in history if the listenToChange == true
+                    if (!currentField.isDisable() && listenToChange) {
+                        //Clearign any history moves if the user made a move and there are redo moves to make
+                        if (redoHistoryMoveNumber != history.size()) {
+                            for (int counter = history.size() - 1; counter >= redoHistoryMoveNumber; counter--) {
+                                history.remove(counter);
+                                redoButton.setDisable(true);
+                            }
+                        }
+
+                        //Saving current move into an arraylist
+                        history.add(new Integer[]{currentFieldRowNumber, currentFieldColumnNumber, Integer.parseInt("".equals(oldVal) ? "0" : oldVal), Integer.parseInt("".equals(newVal) ? "0" : newVal)});
+                        undoHistoryMoveNumber++;
+                        redoHistoryMoveNumber++;
+                        undoButton.setDisable(false);
                     }
 
                     if (currentField.getLength() == 1 || currentField.getLength() == 0 || "".equals(currentField.getText())) {
                         if (hintButton.isDisabled()) {
                             hintButton.setDisable(false);
-                        }
-
-                        //Only save in history if the listenToChange == true
-                        if (!currentField.isDisable() && listenToChange) {
-                            //Clearign any history moves if the user made a move and there are redo moves to make
-                            if (redoHistoryMoveNumber != history.size()) {
-                                for (int counter = history.size() - 1; counter >= redoHistoryMoveNumber; counter--) {
-                                    history.remove(counter);
-                                    redoButton.setDisable(true);
-                                }
-                            }
-
-                            //Saving current move into an arraylist
-                            history.add(new Integer[]{currentFieldRowNumber, currentFieldColumnNumber, Integer.parseInt("".equals(oldVal) ? "0" : oldVal), Integer.parseInt("".equals(newVal) ? "0" : newVal)});
-                            undoHistoryMoveNumber++;
-                            redoHistoryMoveNumber++;
-                            undoButton.setDisable(false);
                         }
                     }
                     currentField.getStyleClass().remove("cell-danger");
