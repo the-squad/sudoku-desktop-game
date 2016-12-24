@@ -24,6 +24,7 @@ import javafx.util.Duration;
 import javafx.animation.KeyValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
@@ -33,12 +34,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
 import sudoku.checker;
 
 public class gamePlay {
@@ -258,7 +255,7 @@ public class gamePlay {
                                 for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
                                     if (!sudokuCells[rowCounter][columnCounter].isDisable()) {
                                         //Only mark user input in green
-                                        sudokuCells[rowCounter][columnCounter].setDisable(true);
+                                        sudokuCells[rowCounter][columnCounter].setEditable(false);
                                         sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-danger");
                                         sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
                                     }
@@ -327,7 +324,7 @@ public class gamePlay {
                             for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
                                 for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
                                     sudokuCells[rowCounter][columnCounter].setText(computerSolution[rowCounter][columnCounter] + "");
-                                    sudokuCells[rowCounter][columnCounter].setDisable(true);
+                                    sudokuCells[rowCounter][columnCounter].setEditable(false);
                                     sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
 
                                     submitButton.setDisable(true);
@@ -440,6 +437,10 @@ public class gamePlay {
             pauseButton.setDisable(true);
             hintButton.setDisable(true);
             solveButton.setDisable(true);
+            saveButton.setDisable(true);
+            undoButton.setDisable(true);
+            redoButton.setDisable(true);
+            submitButton.setDisable(true);
             timerStoppedTimeline.play();
         });
         //</editor-fold>
@@ -463,6 +464,14 @@ public class gamePlay {
                 hintButton.setDisable(false);
             }
             solveButton.setDisable(false);
+            saveButton.setDisable(false);
+            if (undoHistoryMoveNumber != -1) {
+                undoButton.setDisable(false);
+            }
+            if (redoHistoryMoveNumber != history.size()) {
+                redoButton.setDisable(false);
+            }
+            submitButton.setDisable(false);
 
             timerLabel.setOpacity(1);
             timerStoppedTimeline.stop();
@@ -525,7 +534,7 @@ public class gamePlay {
             for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
                 for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
                     sudokuCells[rowCounter][columnCounter].setText(computerSolution[rowCounter][columnCounter] + "");
-                    sudokuCells[rowCounter][columnCounter].setDisable(true);
+                    sudokuCells[rowCounter][columnCounter].setEditable(false);
                     sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
                 }
             }
@@ -554,63 +563,73 @@ public class gamePlay {
         loadingIndicator.setMaxWidth(75);
         loadingIndicator.setVisible(true);
 
-        final KeyCombination saveGameCombination = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
-
-        gamePlayContainer.addEventHandler(KeyEvent.KEY_PRESSED, (Event event) -> {
-            if (saveGameCombination.match((KeyEvent) event)) {
-                saveButton.fire();
-            }
+        gamePlayContainer.setOnMousePressed((MouseEvent event) -> {
+            gameControlsContainer.requestFocus();
         });
 
-        //<editor-fold defaultstate="collapsed" desc="Keyboard Shortcuts">
-        gamePlayContainer.setOnKeyPressed((final KeyEvent keyEvent) -> {
-            if (null != keyEvent.getCode()) {
-                switch (keyEvent.getCode()) {
-                    case ENTER:
-                        submitButton.fire();
-                        //Stop letting it do anything else
-                        keyEvent.consume();
-                        break;
-                    case BACK_SPACE:
-                        backButton.fire();
-                        //Stop letting it do anything else
-                        keyEvent.consume();
-                        break;
-                    case P:
-                        pauseButton.fire();
-                        //Stop letting it do anything else
-                        keyEvent.consume();
-                        break;
-                    case R:
+            //<editor-fold defaultstate="collapsed" desc="Keyboard Shortcuts">
+            final KeyCombination saveGameCombination = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
+            final KeyCombination undoGameCombination = new KeyCodeCombination(KeyCode.U, KeyCombination.CONTROL_DOWN);
+            final KeyCombination redoGameCombination = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
+            final KeyCombination hintGameCombination = new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN);
+            final KeyCombination solveGameCombination = new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN);
+            final KeyCombination goBackCombination = new KeyCodeCombination(KeyCode.BACK_SPACE, KeyCombination.CONTROL_DOWN);
+            final KeyCombination resumeAndPauseCombination = new KeyCodeCombination(KeyCode.SPACE, KeyCombination.CONTROL_DOWN);
+
+            gamePlayContainer.addEventHandler (KeyEvent.KEY_PRESSED,  
+                (Event event) -> {
+            if (saveGameCombination.match((KeyEvent) event)) {
+                    saveButton.fire();
+                } else if (undoGameCombination.match((KeyEvent) event)) {
+                    undoButton.fire();
+                } else if (redoGameCombination.match((KeyEvent) event)) {
+                    redoButton.fire();
+                } else if (hintGameCombination.match((KeyEvent) event)) {
+                    hintButton.fire();
+                } else if (solveGameCombination.match((KeyEvent) event)) {
+                    solveButton.fire();
+                } else if (goBackCombination.match((KeyEvent) event)) {
+                    backButton.fire();
+                } else if (resumeAndPauseCombination.match((KeyEvent) event)) {
+                    if (submitButton.isDisabled()) {
                         resumeButton.fire();
-                        //Stop letting it do anything else
-                        keyEvent.consume();
-                        break;
-                    case H:
-                        hintButton.fire();
-                        //Stop letting it do anything else
-                        keyEvent.consume();
-                        break;
-                    case F:
-                        solveButton.fire();
-                        //Stop letting it do anything else
-                        keyEvent.consume();
-                        break;
-                    default:
-                        break;
+                    } else {
+                        pauseButton.fire();
+                    }
+                }
+
+            }
+
+            );
+
+            gamePlayContainer.setOnKeyPressed (
+            (final KeyEvent keyEvent
+
+            
+                ) -> {
+            if (null != keyEvent.getCode()) {
+                    switch (keyEvent.getCode()) {
+                        case ENTER:
+                            submitButton.fire();
+                            //Stop letting it do anything else
+                            keyEvent.consume();
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
-        });
+            );
         //</editor-fold>
 
-        return gamePlayContainer;
-    }
+            return gamePlayContainer ;
+        }
+        /**
+         * Create Sudoku cells, 9x9 textfields
+         *
+         * @author Muhammad Tarek
+         */
 
-    /**
-     * Create Sudoku cells, 9x9 textfields
-     *
-     * @author Muhammad Tarek
-     */
     private void initSudokuBlock() {
         //Sudoku card layout
         sudokuCellsContainer = new BorderPane();
@@ -655,28 +674,22 @@ public class gamePlay {
                 int currentFieldRowNumber = rowCounter;
                 int currentFieldColumnNumber = columnCounter;
 
-                
-                contextMenu = new ContextMenu();
-                contextMenu.getStyleClass().add("context-menu-custom");
-                
-                MenuItem hintItem = new MenuItem("Hint");
-                hintItem.setOnAction(e -> System.out.println("UI.gamePlay.initSudokuBlock()"));
-                MenuItem highlightItem = new MenuItem("Highlight similar");
-                
-                highlightItem.setOnAction(e -> {highlightCell(currentField.getText()); System.out.println(currentField.getText());});
-                contextMenu.getItems().addAll(hintItem, highlightItem);
-
-                sudokuCells[rowCounter][columnCounter].setOnMousePressed(e -> {
-                    if (e.getButton() == MouseButton.SECONDARY) {
-                        contextMenu.show(currentField, e.getScreenX(), e.getScreenY());
-                        currentField.requestFocus(); 
-                    } else {
-                        contextMenu.hide();
-                    }
-                });
-
                 sudokuCells[rowCounter][columnCounter].setOnKeyPressed((KeyEvent ke) -> {
                     listenToChange = true;
+                });
+
+                final KeyCombination hintCellCombination = new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN);
+                final KeyCombination highlightCellsCombination = new KeyCodeCombination(KeyCode.H, KeyCombination.ALT_DOWN);
+
+                sudokuCells[rowCounter][columnCounter].addEventHandler(KeyEvent.KEY_PRESSED, (Event event) -> {
+                    if (hintCellCombination.match((KeyEvent) event)) {
+                        sudokuOperation(READ_SUDOKU);
+                        Sudoku.setSudoku(computerSolution);
+                        Sudoku.setUserSudoku(userSudoku);
+                        currentField.setText(Sudoku.hint(currentFieldRowNumber, currentFieldColumnNumber) + "");
+                    } else if (highlightCellsCombination.match((KeyEvent) event)) {
+                        highlightCell(currentField.getText());
+                    }
                 });
 
                 //Adding listener to validate the Sudoku input
@@ -685,14 +698,8 @@ public class gamePlay {
                         currentField.setText(oldVal);
                     } else if (!isInputValid(currentField.getText())) {
                         currentField.setText("");
-                    }
-
-                    if (currentField.getLength() == 1 || currentField.getLength() == 0 || "".equals(currentField.getText())) {
-                        if (hintButton.isDisabled()) {
-                            hintButton.setDisable(false);
-                        }
-
-                        //Only save in history if the listenToChange == true
+                    } else //Only save in history if the listenToChange == true
+                    {
                         if (!currentField.isDisable() && listenToChange) {
                             //Clearign any history moves if the user made a move and there are redo moves to make
                             if (redoHistoryMoveNumber != history.size()) {
@@ -707,6 +714,12 @@ public class gamePlay {
                             undoHistoryMoveNumber++;
                             redoHistoryMoveNumber++;
                             undoButton.setDisable(false);
+                        }
+                    }
+
+                    if (currentField.getLength() == 1 || currentField.getLength() == 0 || "".equals(currentField.getText())) {
+                        if (hintButton.isDisabled()) {
+                            hintButton.setDisable(false);
                         }
                     }
                     currentField.getStyleClass().remove("cell-danger");
@@ -903,11 +916,11 @@ public class gamePlay {
                     case 2:
                         if (computerSolution[rowCounter][columnCounter] != 0) {
                             if (playingMode == 1) {
-                                sudokuCells[rowCounter][columnCounter].setDisable(true);
+                                sudokuCells[rowCounter][columnCounter].setEditable(false);
                             }
                             if (playingMode == 2) {
                                 if (markSolution[rowCounter][columnCounter]) {
-                                    sudokuCells[rowCounter][columnCounter].setDisable(true);
+                                    sudokuCells[rowCounter][columnCounter].setEditable(false);
                                 }
                             }
                             sudokuCells[rowCounter][columnCounter].setText(computerSolution[rowCounter][columnCounter] + "");
@@ -916,7 +929,7 @@ public class gamePlay {
                     //Clear Sudoku fields and array
                     case 3:
                         sudokuCells[rowCounter][columnCounter].setText("");
-                        sudokuCells[rowCounter][columnCounter].setDisable(false);
+                        sudokuCells[rowCounter][columnCounter].setEditable(true);
                         sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-danger");
                         sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-success");
 
@@ -962,12 +975,13 @@ public class gamePlay {
     private void highlightCell(String numberMatch) {
         for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
             for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
-                if (sudokuCells[rowCounter][columnCounter].getText() == numberMatch) {
+                sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-focus");
+                if (sudokuCells[rowCounter][columnCounter].getText().equals(numberMatch) && !"".equals(sudokuCells[rowCounter][columnCounter].getText())) {
                     TextField cell = sudokuCells[rowCounter][columnCounter];
                     Timeline hightlightTimeline = new Timeline();
 
-                    KeyFrame startHighlight = new KeyFrame(Duration.ZERO, e -> cell.setStyle("-fx-background-color: rgba(65, 131, 215, 0.15)"));
-                    KeyFrame finishHighlight = new KeyFrame(Duration.millis(1000), e -> cell.setStyle("-fx-background-color: transparent"));
+                    KeyFrame startHighlight = new KeyFrame(Duration.ZERO, e -> cell.getStyleClass().add("cell-focus"));
+                    KeyFrame finishHighlight = new KeyFrame(Duration.millis(4000), e -> cell.getStyleClass().remove("cell-focus"));
 
                     hightlightTimeline.getKeyFrames().addAll(startHighlight, finishHighlight);
                     hightlightTimeline.play();
