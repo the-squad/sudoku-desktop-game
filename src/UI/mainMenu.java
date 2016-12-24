@@ -13,10 +13,8 @@ import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -179,6 +177,7 @@ public class mainMenu {
             playingMode = 1;
             gamePlayContainer.setCenter(loadingIndicator);
             gamePlayContainer.setLeft(null);
+            gameTime.setTimer(timerLabel, 0);
 
             headerCenterAreaContainer.setRight(headerControlsContainer);
             saveGameState = true;
@@ -323,8 +322,7 @@ public class mainMenu {
             generateSudokuThread.start();
 
             task.setOnSucceeded((WorkerStateEvent t) -> {
-                finishLoading(2);
-                gameTime.setTimer(timerLabel, 0);
+                finishLoading();
                 levelLabel.setText(easyButton.getText());
                 sudokuOperation(PRINT_SUDOKU);
             });
@@ -354,8 +352,7 @@ public class mainMenu {
             generateSudokuThread.start();
 
             task.setOnSucceeded((WorkerStateEvent t) -> {
-                finishLoading(2);
-                gameTime.setTimer(timerLabel, 0);
+                finishLoading();
                 levelLabel.setText(mediumButton.getText());
                 sudokuOperation(PRINT_SUDOKU);
             });
@@ -385,8 +382,7 @@ public class mainMenu {
             generateSudokuThread.start();
 
             task.setOnSucceeded((WorkerStateEvent t) -> {
-                finishLoading(2);
-                gameTime.setTimer(timerLabel, 0);
+                finishLoading();
                 levelLabel.setText(hardButton.getText());
                 sudokuOperation(PRINT_SUDOKU);
             });
@@ -562,6 +558,8 @@ public class mainMenu {
 
                 //Clear container
                 savedGamesContainer.getChildren().clear();
+                if (sudokuOperation(CHECK_SUDOKU))
+                    hintButton.setDisable(true);
                 switchPanes(rightPartContainer, savedGamesContainer, gameModesContainer);
             });
 
@@ -630,7 +628,7 @@ public class mainMenu {
         }
     }
 
-    private void finishLoading(int gameType) {
+    private void finishLoading() {
         Timeline showAndHideTimeline = new Timeline();
 
         //Creating all key values for the animation

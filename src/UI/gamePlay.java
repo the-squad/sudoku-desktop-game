@@ -3,7 +3,6 @@ package UI;
 import static UI.global.*;
 import static UI.scoreBoard.*;
 import static UI.mainMenu.loadGameButton;
-import java.awt.Color;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -25,6 +24,8 @@ import javafx.util.Duration;
 import javafx.animation.KeyValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -32,7 +33,12 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
 import sudoku.checker;
 
 public class gamePlay {
@@ -86,6 +92,7 @@ public class gamePlay {
     // </editor-fold>
 
     static ProgressIndicator loadingIndicator;
+    private ContextMenu contextMenu;
     Boolean listenToChange = false;
 
     /**
@@ -494,8 +501,9 @@ public class gamePlay {
 
                 gameTime.addTenSeconds();
                 showAlertTimeline.play();
-                if (sudokuOperation(CHECK_SUDOKU))
+                if (sudokuOperation(CHECK_SUDOKU)) {
                     hintButton.setDisable(true);
+                }
             }
 
         });
@@ -627,6 +635,7 @@ public class gamePlay {
                 sudokuCellsTextfieldsContainer.getChildren().add(sudokuCells[rowCounter][columnCounter]);
 
                 sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell");
+                sudokuCells[rowCounter][columnCounter].setContextMenu(contextMenu);
 
                 //If the cell is No.2 or No.5 on any column it will have right border
                 if (columnCounter == 2 || columnCounter == 5) {
@@ -645,6 +654,26 @@ public class gamePlay {
                 TextField currentField = sudokuCells[rowCounter][columnCounter];
                 int currentFieldRowNumber = rowCounter;
                 int currentFieldColumnNumber = columnCounter;
+
+                
+                contextMenu = new ContextMenu();
+                contextMenu.getStyleClass().add("context-menu-custom");
+                
+                MenuItem hintItem = new MenuItem("Hint");
+                hintItem.setOnAction(e -> System.out.println("UI.gamePlay.initSudokuBlock()"));
+                MenuItem highlightItem = new MenuItem("Highlight similar");
+                
+                highlightItem.setOnAction(e -> {highlightCell(currentField.getText()); System.out.println(currentField.getText());});
+                contextMenu.getItems().addAll(hintItem, highlightItem);
+
+                sudokuCells[rowCounter][columnCounter].setOnMousePressed(e -> {
+                    if (e.getButton() == MouseButton.SECONDARY) {
+                        contextMenu.show(currentField, e.getScreenX(), e.getScreenY());
+                        currentField.requestFocus(); 
+                    } else {
+                        contextMenu.hide();
+                    }
+                });
 
                 sudokuCells[rowCounter][columnCounter].setOnKeyPressed((KeyEvent ke) -> {
                     listenToChange = true;
@@ -928,5 +957,23 @@ public class gamePlay {
         }
 
         return true;
+    }
+
+    private void highlightCell(String numberMatch) {
+        for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
+            for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
+                if (sudokuCells[rowCounter][columnCounter].getText() == numberMatch) {
+                    TextField cell = sudokuCells[rowCounter][columnCounter];
+                    Timeline hightlightTimeline = new Timeline();
+
+                    KeyFrame startHighlight = new KeyFrame(Duration.ZERO, e -> cell.setStyle("-fx-background-color: rgba(65, 131, 215, 0.15)"));
+                    KeyFrame finishHighlight = new KeyFrame(Duration.millis(1000), e -> cell.setStyle("-fx-background-color: transparent"));
+
+                    hightlightTimeline.getKeyFrames().addAll(startHighlight, finishHighlight);
+                    hightlightTimeline.play();
+                }
+            }
+        }
+
     }
 }
