@@ -24,6 +24,7 @@ import javafx.util.Duration;
 import javafx.animation.KeyValue;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ProgressIndicator;
@@ -33,10 +34,9 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import sudoku.checker;
-import sudoku.sudoku;
 
 public class gamePlay {
 
@@ -563,61 +563,73 @@ public class gamePlay {
         loadingIndicator.setMaxWidth(75);
         loadingIndicator.setVisible(true);
 
-        //<editor-fold defaultstate="collapsed" desc="Keyboard Shortcuts">
-        final KeyCombination saveGameCombination = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
-        final KeyCombination undoGameCombination = new KeyCodeCombination(KeyCode.U, KeyCombination.CONTROL_DOWN);
-        final KeyCombination redoGameCombination = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
-        final KeyCombination hintGameCombination = new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN);
-        final KeyCombination solveGameCombination = new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN);
-        final KeyCombination goBackCombination = new KeyCodeCombination(KeyCode.BACK_SPACE, KeyCombination.CONTROL_DOWN);
-        final KeyCombination resumeAndPauseCombination = new KeyCodeCombination(KeyCode.SPACE, KeyCombination.CONTROL_DOWN);
+        gamePlayContainer.setOnMousePressed((MouseEvent event) -> {
+            gameControlsContainer.requestFocus();
+        });
 
-        gamePlayContainer.addEventHandler(KeyEvent.KEY_PRESSED, (Event event) -> {
+            //<editor-fold defaultstate="collapsed" desc="Keyboard Shortcuts">
+            final KeyCombination saveGameCombination = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
+            final KeyCombination undoGameCombination = new KeyCodeCombination(KeyCode.U, KeyCombination.CONTROL_DOWN);
+            final KeyCombination redoGameCombination = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
+            final KeyCombination hintGameCombination = new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN);
+            final KeyCombination solveGameCombination = new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN);
+            final KeyCombination goBackCombination = new KeyCodeCombination(KeyCode.BACK_SPACE, KeyCombination.CONTROL_DOWN);
+            final KeyCombination resumeAndPauseCombination = new KeyCodeCombination(KeyCode.SPACE, KeyCombination.CONTROL_DOWN);
+
+            gamePlayContainer.addEventHandler (KeyEvent.KEY_PRESSED,  
+                (Event event) -> {
             if (saveGameCombination.match((KeyEvent) event)) {
-                saveButton.fire();
-            } else if (undoGameCombination.match((KeyEvent) event)) {
-                undoButton.fire();
-            } else if (redoGameCombination.match((KeyEvent) event)) {
-                redoButton.fire();
-            } else if (hintGameCombination.match((KeyEvent) event)) {
-                hintButton.fire();
-            } else if (solveGameCombination.match((KeyEvent) event)) {
-                solveButton.fire();
-            } else if (goBackCombination.match((KeyEvent) event)) {
-                backButton.fire();
-            } else if (resumeAndPauseCombination.match((KeyEvent) event)) {
-                if (submitButton.isDisabled()) {
-                    resumeButton.fire();
-                } else {
-                    pauseButton.fire();
+                    saveButton.fire();
+                } else if (undoGameCombination.match((KeyEvent) event)) {
+                    undoButton.fire();
+                } else if (redoGameCombination.match((KeyEvent) event)) {
+                    redoButton.fire();
+                } else if (hintGameCombination.match((KeyEvent) event)) {
+                    hintButton.fire();
+                } else if (solveGameCombination.match((KeyEvent) event)) {
+                    solveButton.fire();
+                } else if (goBackCombination.match((KeyEvent) event)) {
+                    backButton.fire();
+                } else if (resumeAndPauseCombination.match((KeyEvent) event)) {
+                    if (submitButton.isDisabled()) {
+                        resumeButton.fire();
+                    } else {
+                        pauseButton.fire();
+                    }
                 }
+
             }
 
-        });
+            );
 
-        gamePlayContainer.setOnKeyPressed((final KeyEvent keyEvent) -> {
+            gamePlayContainer.setOnKeyPressed (
+            (final KeyEvent keyEvent
+
+            
+                ) -> {
             if (null != keyEvent.getCode()) {
-                switch (keyEvent.getCode()) {
-                    case ENTER:
-                        submitButton.fire();
-                        //Stop letting it do anything else
-                        keyEvent.consume();
-                        break;
-                    default:
-                        break;
+                    switch (keyEvent.getCode()) {
+                        case ENTER:
+                            submitButton.fire();
+                            //Stop letting it do anything else
+                            keyEvent.consume();
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
-        });
+            );
         //</editor-fold>
 
-        return gamePlayContainer;
-    }
+            return gamePlayContainer ;
+        }
+        /**
+         * Create Sudoku cells, 9x9 textfields
+         *
+         * @author Muhammad Tarek
+         */
 
-    /**
-     * Create Sudoku cells, 9x9 textfields
-     *
-     * @author Muhammad Tarek
-     */
     private void initSudokuBlock() {
         //Sudoku card layout
         sudokuCellsContainer = new BorderPane();
@@ -687,7 +699,8 @@ public class gamePlay {
                     } else if (!isInputValid(currentField.getText())) {
                         currentField.setText("");
                     } else //Only save in history if the listenToChange == true
-                     if (!currentField.isDisable() && listenToChange) {
+                    {
+                        if (!currentField.isDisable() && listenToChange) {
                             //Clearign any history moves if the user made a move and there are redo moves to make
                             if (redoHistoryMoveNumber != history.size()) {
                                 for (int counter = history.size() - 1; counter >= redoHistoryMoveNumber; counter--) {
@@ -702,6 +715,7 @@ public class gamePlay {
                             redoHistoryMoveNumber++;
                             undoButton.setDisable(false);
                         }
+                    }
 
                     if (currentField.getLength() == 1 || currentField.getLength() == 0 || "".equals(currentField.getText())) {
                         if (hintButton.isDisabled()) {

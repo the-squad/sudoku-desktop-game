@@ -197,6 +197,7 @@ public class mainMenu {
             initializeSavedGames();
             switchPanes(rightPartContainer, gameModesContainer, savedGamesContainer);
             playingMode = 2;
+            gamePlayContainer.setCenter(sudokuCellsContainer);
             gamePlayContainer.setLeft(gameLeftPanelContainer);
             saveGameState = false;
 
