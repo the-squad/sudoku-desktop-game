@@ -15,6 +15,18 @@ import javafx.scene.image.Image;
 import static javafx.application.Application.launch;
 import static javafx.application.Application.launch;
 import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
+import static javafx.application.Application.launch;
 
 public class main extends Application {
     @Override

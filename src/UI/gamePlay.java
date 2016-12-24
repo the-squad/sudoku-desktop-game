@@ -146,17 +146,12 @@ public class gamePlay {
             resumeButton.setOpacity(0);
             pauseButton.setOpacity(1);
 
-            pauseButton.setDisable(false);
-            hintButton.setDisable(false);
-            solveButton.setDisable(false);
-            submitButton.setDisable(false);
-            loadGameButton.setDisable(false);
+            changeButtonState(ENABLE, pauseButton, hintButton, solveButton, submitButton, loadGameButton);
 
             history.clear();
             undoHistoryMoveNumber = -1;
             redoHistoryMoveNumber = 0;
-            undoButton.setDisable(true);
-            redoButton.setDisable(true);
+            changeButtonState(DISABLE, undoButton, redoButton);
         });
         //</editor-fold>
 
@@ -237,16 +232,10 @@ public class gamePlay {
                         sudokuOperation(READ_SUDOKU);
 
                         if (isSudokuValid(userSudoku)) {
-                            submitButton.setDisable(true);
-                            hintButton.setDisable(true);
-                            pauseButton.setDisable(true);
-                            solveButton.setDisable(true);
-                            saveButton.setDisable(true);
+                            changeButtonState(DISABLE, submitButton, hintButton, pauseButton, solveButton, saveButton, undoButton, redoButton);
                             history.clear();
                             undoHistoryMoveNumber = -1;
                             redoHistoryMoveNumber = 0;
-                            undoButton.setDisable(true);
-                            redoButton.setDisable(true);
                             timerStoppedTimeline.play();
 
                             Timeline gameSuccessTimeline = new Timeline();
@@ -268,11 +257,7 @@ public class gamePlay {
 
                                 KeyFrame goToScoreBoard = new KeyFrame(Duration.millis(2000), e -> {
                                     switchPanes(screenContainer, gamePlayContainer, scorePageContainer);
-                                    submitButton.setDisable(false);
-                                    hintButton.setDisable(false);
-                                    pauseButton.setDisable(false);
-                                    solveButton.setDisable(false);
-                                    saveButton.setDisable(false);
+                                    changeButtonState(ENABLE, submitButton, hintButton, pauseButton, solveButton, saveButton);
                                     history.clear();
                                     undoHistoryMoveNumber = -1;
                                     redoHistoryMoveNumber = 0;
@@ -434,13 +419,7 @@ public class gamePlay {
             fade(pauseButton, 250, 0, FADE_OUT);
 
             gameTime.pause();
-            pauseButton.setDisable(true);
-            hintButton.setDisable(true);
-            solveButton.setDisable(true);
-            saveButton.setDisable(true);
-            undoButton.setDisable(true);
-            redoButton.setDisable(true);
-            submitButton.setDisable(true);
+            changeButtonState(DISABLE, pauseButton, hintButton, solveButton, saveButton, undoButton, redoButton, submitButton);
             timerStoppedTimeline.play();
         });
         //</editor-fold>
@@ -459,19 +438,16 @@ public class gamePlay {
             fade(pauseButton, 250, 0, FADE_IN);
 
             gameTime.start();
-            pauseButton.setDisable(false);
+            changeButtonState(ENABLE, pauseButton, solveButton, saveButton, submitButton);
             if (!sudokuOperation(CHECK_SUDOKU)) {
                 hintButton.setDisable(false);
             }
-            solveButton.setDisable(false);
-            saveButton.setDisable(false);
             if (undoHistoryMoveNumber != -1) {
                 undoButton.setDisable(false);
             }
             if (redoHistoryMoveNumber != history.size()) {
                 redoButton.setDisable(false);
             }
-            submitButton.setDisable(false);
 
             timerLabel.setOpacity(1);
             timerStoppedTimeline.stop();
@@ -539,18 +515,10 @@ public class gamePlay {
                 }
             }
 
-            submitButton.setDisable(true);
-            hintButton.setDisable(true);
-            pauseButton.setDisable(true);
-            solveButton.setDisable(true);
-            saveButton.setDisable(true);
-            redoButton.setDisable(true);
-            undoButton.setDisable(true);
+            changeButtonState(DISABLE, submitButton, hintButton, pauseButton, solveButton, saveButton, redoButton, undoButton);
             history.clear();
             undoHistoryMoveNumber = -1;
             redoHistoryMoveNumber = 0;
-            undoButton.setDisable(true);
-            redoButton.setDisable(true);
             timerStoppedTimeline.play();
             gameTime.pause();
         });
@@ -643,6 +611,9 @@ public class gamePlay {
         sudokuCellsTextfieldsContainer.getStyleClass().add("cells-container");
         sudokuCellsContainer.setCenter(sudokuCellsTextfieldsContainer);
 
+        //Unreal menu to override default menu
+        ContextMenu hiddenMenu = new ContextMenu();
+        hiddenMenu.hide();
         int rowCounter, columnCounter;
 
         //<editor-fold defaultstate="collapsed" desc="Sudoku Cells">
@@ -669,6 +640,8 @@ public class gamePlay {
                         sudokuCells[rowCounter][columnCounter].getStyleClass().add("border-top-right");
                     }
                 }
+                
+                sudokuCells[rowCounter][columnCounter].setContextMenu(hiddenMenu);
 
                 TextField currentField = sudokuCells[rowCounter][columnCounter];
                 int currentFieldRowNumber = rowCounter;
@@ -703,9 +676,10 @@ public class gamePlay {
                         if (!currentField.isDisable() && listenToChange) {
                             //Clearign any history moves if the user made a move and there are redo moves to make
                             if (redoHistoryMoveNumber != history.size()) {
+                                redoButton.setDisable(true);
+                                
                                 for (int counter = history.size() - 1; counter >= redoHistoryMoveNumber; counter--) {
                                     history.remove(counter);
-                                    redoButton.setDisable(true);
                                 }
                             }
 
@@ -714,6 +688,14 @@ public class gamePlay {
                             undoHistoryMoveNumber++;
                             redoHistoryMoveNumber++;
                             undoButton.setDisable(false);
+                            
+                            if (!sudokuOperation(CHECK_SUDOKU)) {
+                                hintButton.setDisable(false);
+                                saveButton.setDisable(false);
+                            } else {
+                                hintButton.setDisable(true);
+                                saveButton.setDisable(true);
+                            }
                         }
                     }
 

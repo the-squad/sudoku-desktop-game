@@ -181,6 +181,7 @@
 */
 .text-field * .context-menu { 
     visibility: hidden;
+    -fx-opacity: 0;
 }
 
 .text-field * .context-menu > .scroll-arrow {

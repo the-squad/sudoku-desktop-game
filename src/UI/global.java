@@ -61,6 +61,9 @@ public class global {
     
     public static final int RIGHT_TO_LEFT = 2;
     public static final int LEFT_TO_RIGHT = 2;
+    
+    public static final int DISABLE = 1;
+    public static final int ENABLE = 2;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Sudoku Info">
@@ -183,5 +186,14 @@ public class global {
         layout.getChildren().add(button);
 
         fade(button, 300, 150 * (position + 1), FADE_IN);
+    }
+    
+    public static void changeButtonState(int type, Button... buttons) {
+        for (Button button : buttons) {
+            if (type == 1)
+                button.setDisable(true);
+            else
+                button.setDisable(false);
+        }
     }
 }
