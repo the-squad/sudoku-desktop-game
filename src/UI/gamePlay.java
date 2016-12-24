@@ -662,32 +662,35 @@ public class gamePlay {
                 int currentFieldRowNumber = rowCounter;
                 int currentFieldColumnNumber = columnCounter;
 
-                contextMenu = new ContextMenu();
-                contextMenu.getStyleClass().add("context-menu-custom");
-
-                MenuItem hintItem = new MenuItem("Hint");
-                hintItem.setOnAction(e -> {
-                    sudokuOperation(READ_SUDOKU);
-                    Sudoku.setSudoku(computerSolution);
-                    Sudoku.setUserSudoku(userSudoku);
-                    //sudokuCells[currentFieldRowNumber][currentFieldColumnNumber + 1].setText(Sudoku.hint(currentFieldRowNumber, currentFieldColumnNumber - 1) + "");
-                });
-                MenuItem highlightItem = new MenuItem("Highlight similar");
-
-                highlightItem.setOnAction(e -> {
-                    highlightCell(sudokuCells[currentFieldRowNumber][currentFieldColumnNumber].getText());
-                });
-                contextMenu.getItems().addAll(hintItem, highlightItem);
-
-                sudokuCells[rowCounter][columnCounter].setOnMousePressed(e -> {
-                    if (e.getButton() == MouseButton.SECONDARY) {
-                        contextMenu.show(currentField, e.getScreenX(), e.getScreenY());
-                        contextMenu.autoHideProperty();
-                    }
-                });
-
                 sudokuCells[rowCounter][columnCounter].setOnKeyPressed((KeyEvent ke) -> {
                     listenToChange = true;
+                });
+
+                final KeyCombination hintCellCombination = new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN);
+                final KeyCombination highlightCellsCombination = new KeyCodeCombination(KeyCode.H, KeyCombination.ALT_DOWN);
+
+                sudokuCells[rowCounter][columnCounter].addEventHandler(KeyEvent.KEY_PRESSED, (Event event) -> {
+                    if (hintCellCombination.match((KeyEvent) event)) {
+                        sudokuOperation(READ_SUDOKU);
+                        Sudoku.setSudoku(computerSolution);
+                        Sudoku.setUserSudoku(userSudoku);
+                        currentField.setText(Sudoku.hint(currentFieldRowNumber, currentFieldColumnNumber) + "");
+                        //Clearign any history moves if the user made a move and there are redo moves to make
+                        if (redoHistoryMoveNumber != history.size()) {
+                            for (int counter = history.size() - 1; counter >= redoHistoryMoveNumber; counter--) {
+                                history.remove(counter);
+                                redoButton.setDisable(true);
+                            }
+                        }
+
+                        //Saving current move into an arraylist
+                        history.add(new Integer[]{hintDetails[0], hintDetails[1], 0, hintDetails[2]});
+                        undoHistoryMoveNumber++;
+                        redoHistoryMoveNumber++;
+                        undoButton.setDisable(false);
+                    } else if (highlightCellsCombination.match((KeyEvent) event)) {
+                        highlightCell(currentField.getText());
+                    }
                 });
 
                 //Adding listener to validate the Sudoku input
@@ -697,8 +700,7 @@ public class gamePlay {
                     } else if (!isInputValid(currentField.getText())) {
                         currentField.setText("");
                     } else //Only save in history if the listenToChange == true
-                    {
-                        if (!currentField.isDisable() && listenToChange) {
+                     if (!currentField.isDisable() && listenToChange) {
                             //Clearign any history moves if the user made a move and there are redo moves to make
                             if (redoHistoryMoveNumber != history.size()) {
                                 for (int counter = history.size() - 1; counter >= redoHistoryMoveNumber; counter--) {
@@ -713,7 +715,6 @@ public class gamePlay {
                             redoHistoryMoveNumber++;
                             undoButton.setDisable(false);
                         }
-                    }
 
                     if (currentField.getLength() == 1 || currentField.getLength() == 0 || "".equals(currentField.getText())) {
                         if (hintButton.isDisabled()) {
