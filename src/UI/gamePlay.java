@@ -135,9 +135,9 @@ public class gamePlay {
             switchPanes(screenContainer, gamePlayContainer, mainMenuContainer);
             if (playingMode == 1 || playingMode == 2) {
                 gameTime.pause();
+                timerStoppedTimeline.stop();
                 gameTime.setTimer(timerLabel, 0);
                 timerLabel.setOpacity(1);
-                timerStoppedTimeline.stop();
             }
 
             sudokuOperation(CLEAR_SUDOKU);
