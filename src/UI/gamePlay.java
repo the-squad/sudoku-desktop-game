@@ -675,19 +675,6 @@ public class gamePlay {
                         Sudoku.setSudoku(computerSolution);
                         Sudoku.setUserSudoku(userSudoku);
                         currentField.setText(Sudoku.hint(currentFieldRowNumber, currentFieldColumnNumber) + "");
-                        //Clearign any history moves if the user made a move and there are redo moves to make
-                        if (redoHistoryMoveNumber != history.size()) {
-                            for (int counter = history.size() - 1; counter >= redoHistoryMoveNumber; counter--) {
-                                history.remove(counter);
-                                redoButton.setDisable(true);
-                            }
-                        }
-
-                        //Saving current move into an arraylist
-                        history.add(new Integer[]{hintDetails[0], hintDetails[1], 0, hintDetails[2]});
-                        undoHistoryMoveNumber++;
-                        redoHistoryMoveNumber++;
-                        undoButton.setDisable(false);
                     } else if (highlightCellsCombination.match((KeyEvent) event)) {
                         highlightCell(currentField.getText());
                     }

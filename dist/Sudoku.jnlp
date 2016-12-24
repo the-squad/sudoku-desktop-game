@@ -11,7 +11,7 @@
   </resources>
   <resources>
     <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se"/>
-    <jar href="Sudoku.jar" size="74969" download="eager" />
+    <jar href="Sudoku.jar" size="74990" download="eager" />
     <jar href="lib/sqlite-jdbc-3.14.2.1.jar" size="4322173" download="eager" />
   </resources>
   <applet-desc  width="800" height="600" main-class="com.javafx.main.NoJavaFXFallback"  name="Sudoku" >
