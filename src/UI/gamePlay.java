@@ -9,6 +9,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.geometry.Insets;
@@ -21,8 +23,18 @@ import javafx.scene.layout.GridPane;
 import javafx.util.Duration;
 import javafx.animation.KeyValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import sudoku.checker;
 
@@ -31,8 +43,9 @@ public class gamePlay {
     // <editor-fold defaultstate="collapsed" desc="Main Panes">
     private BorderPane gamePlayContainer;
     private BorderPane headerContainer;
-    private BorderPane headerCenterAreaContainer;
-    private BorderPane sudokuCellsContainer;
+    static BorderPane headerCenterAreaContainer;
+    static GridPane headerControlsContainer;
+    static BorderPane sudokuCellsContainer;
     static BorderPane gameLeftPanelContainer;
     private GridPane gameDetailsContainer;
     private GridPane gameControlsContainer;
@@ -56,7 +69,9 @@ public class gamePlay {
 
     // <editor-fold defaultstate="collapsed" desc="Buttons">
     private Button backButton;
-    static Button saveButton;
+    private Button saveButton;
+    private Button undoButton;
+    private Button redoButton;
     static Button submitButton;
     private Button pauseButton;
     private Button resumeButton;
@@ -73,8 +88,13 @@ public class gamePlay {
     private Timeline hidePopupTimeline;
     // </editor-fold>
 
+    static ProgressIndicator loadingIndicator;
+    private ContextMenu contextMenu;
+    Boolean listenToChange = false;
+
     /**
      * Initialize game play elements
+     *
      * @author Muhammad Tarek
      * @return gamePlayLayout
      */
@@ -88,7 +108,7 @@ public class gamePlay {
         headerContainer.setPrefHeight(75);
         gamePlayContainer.setTop(headerContainer);
 
-        //Headline + saveButton button layout
+        //Headline + controls buttons layout
         headerCenterAreaContainer = new BorderPane();
 
         //<editor-fold defaultstate="collapsed" desc="headline">
@@ -111,12 +131,10 @@ public class gamePlay {
         backButton.setOnAction(e -> {
             switchPanes(screenContainer, gamePlayContainer, mainMenuContainer);
             if (playingMode == 1 || playingMode == 2) {
-                if (!solveButton.isDisabled()) {
-                    saveCurrentGame();
-                }
                 gameTime.pause();
-                timerLabel.setOpacity(1);
                 timerStoppedTimeline.stop();
+                gameTime.setTimer(timerLabel, 0);
+                timerLabel.setOpacity(1);
             }
 
             sudokuOperation(CLEAR_SUDOKU);
@@ -133,15 +151,26 @@ public class gamePlay {
             solveButton.setDisable(false);
             submitButton.setDisable(false);
             loadGameButton.setDisable(false);
+
+            history.clear();
+            undoHistoryMoveNumber = -1;
+            redoHistoryMoveNumber = 0;
+            undoButton.setDisable(true);
+            redoButton.setDisable(true);
         });
         //</editor-fold>
+
+        //Redo, undo and save buttons layout
+        headerControlsContainer = new GridPane();
+        headerControlsContainer.setHgap(10);
+        headerCenterAreaContainer.setRight(headerControlsContainer);
+        headerCenterAreaContainer.setMargin(headerControlsContainer, new Insets(0, 15, 0, -125));
 
         //<editor-fold defaultstate="collapsed" desc="Save Button">
         saveButton = new Button("");
         saveButton.getStyleClass().add("button-icon--white");
         saveButton.getStyleClass().addAll("save-icon");
-        headerCenterAreaContainer.setRight(saveButton);
-        headerCenterAreaContainer.setMargin(saveButton, new Insets(0, 15, 0, 0));
+        headerControlsContainer.setConstraints(saveButton, 2, 0);
 
         saveButton.setOnAction(e -> {
             saveCurrentGame();
@@ -149,6 +178,52 @@ public class gamePlay {
             showPopup("Game is saved successfuly", "You can always complete your game anytime you want", MESSAGE_SUCCESS);
         });
         //</editor-fold>
+
+        //<editor-fold defaultstate="collapsed" desc="Undo Button">
+        undoButton = new Button("");
+        undoButton.getStyleClass().add("button-icon--white");
+        undoButton.getStyleClass().addAll("undo-icon");
+        undoButton.setDisable(true);
+        headerControlsContainer.setConstraints(undoButton, 0, 0);
+
+        undoButton.setOnAction(e -> {
+            listenToChange = false;
+
+            sudokuCells[history.get(undoHistoryMoveNumber)[0]][history.get(undoHistoryMoveNumber)[1]].setText(history.get(undoHistoryMoveNumber)[2] + "");
+
+            undoHistoryMoveNumber--;
+            redoHistoryMoveNumber--;
+
+            redoButton.setDisable(false);
+            if (undoHistoryMoveNumber == -1) {
+                undoButton.setDisable(true);
+            }
+        });
+        //</editor-fold>
+
+        //<editor-fold defaultstate="collapsed" desc="Redo Button">
+        redoButton = new Button("");
+        redoButton.getStyleClass().add("button-icon--white");
+        redoButton.getStyleClass().addAll("redo-icon");
+        redoButton.setDisable(true);
+        headerControlsContainer.setConstraints(redoButton, 1, 0);
+
+        redoButton.setOnAction(e -> {
+            listenToChange = false;
+
+            sudokuCells[history.get(redoHistoryMoveNumber)[0]][history.get(redoHistoryMoveNumber)[1]].setText(history.get(redoHistoryMoveNumber)[3] + "");
+
+            undoHistoryMoveNumber++;
+            redoHistoryMoveNumber++;
+
+            undoButton.setDisable(false);
+            if (redoHistoryMoveNumber == history.size()) {
+                redoButton.setDisable(true);
+            }
+        });
+        //</editor-fold>
+
+        headerControlsContainer.getChildren().addAll(undoButton, redoButton, saveButton);
 
         //<editor-fold defaultstate="collapsed" desc="Submit Button">
         submitButton = new Button("Submit");
@@ -167,6 +242,11 @@ public class gamePlay {
                             pauseButton.setDisable(true);
                             solveButton.setDisable(true);
                             saveButton.setDisable(true);
+                            history.clear();
+                            undoHistoryMoveNumber = -1;
+                            redoHistoryMoveNumber = 0;
+                            undoButton.setDisable(true);
+                            redoButton.setDisable(true);
                             timerStoppedTimeline.play();
 
                             Timeline gameSuccessTimeline = new Timeline();
@@ -175,7 +255,7 @@ public class gamePlay {
                                 for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
                                     if (!sudokuCells[rowCounter][columnCounter].isDisable()) {
                                         //Only mark user input in green
-                                        sudokuCells[rowCounter][columnCounter].setDisable(true);
+                                        sudokuCells[rowCounter][columnCounter].setEditable(false);
                                         sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-danger");
                                         sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
                                     }
@@ -193,6 +273,9 @@ public class gamePlay {
                                     pauseButton.setDisable(false);
                                     solveButton.setDisable(false);
                                     saveButton.setDisable(false);
+                                    history.clear();
+                                    undoHistoryMoveNumber = -1;
+                                    redoHistoryMoveNumber = 0;
                                 });
 
                                 gameSuccessTimeline.getKeyFrames().add(goToScoreBoard);
@@ -233,7 +316,7 @@ public class gamePlay {
                     sudokuOperation(READ_SUDOKU);
                     Sudoku.setSudoku(userSudoku);
                     Sudoku.setUserSudoku(userSudoku);
-                    
+
                     if (Sudoku.solveSudoku()) {
                         computerSolution = Sudoku.getSudokuSolution();
 
@@ -241,7 +324,7 @@ public class gamePlay {
                             for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
                                 for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
                                     sudokuCells[rowCounter][columnCounter].setText(computerSolution[rowCounter][columnCounter] + "");
-                                    sudokuCells[rowCounter][columnCounter].setDisable(true);
+                                    sudokuCells[rowCounter][columnCounter].setEditable(false);
                                     sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
 
                                     submitButton.setDisable(true);
@@ -354,6 +437,10 @@ public class gamePlay {
             pauseButton.setDisable(true);
             hintButton.setDisable(true);
             solveButton.setDisable(true);
+            saveButton.setDisable(true);
+            undoButton.setDisable(true);
+            redoButton.setDisable(true);
+            submitButton.setDisable(true);
             timerStoppedTimeline.play();
         });
         //</editor-fold>
@@ -377,6 +464,14 @@ public class gamePlay {
                 hintButton.setDisable(false);
             }
             solveButton.setDisable(false);
+            saveButton.setDisable(false);
+            if (undoHistoryMoveNumber != -1) {
+                undoButton.setDisable(false);
+            }
+            if (redoHistoryMoveNumber != history.size()) {
+                redoButton.setDisable(false);
+            }
+            submitButton.setDisable(false);
 
             timerLabel.setOpacity(1);
             timerStoppedTimeline.stop();
@@ -399,8 +494,25 @@ public class gamePlay {
                 hintButton.setDisable(true);
             } else {
                 sudokuCells[hintDetails[0]][hintDetails[1]].setText(hintDetails[2] + "");
+                //Clearign any history moves if the user made a move and there are redo moves to make
+                if (redoHistoryMoveNumber != history.size()) {
+                    for (int counter = history.size() - 1; counter >= redoHistoryMoveNumber; counter--) {
+                        history.remove(counter);
+                        redoButton.setDisable(true);
+                    }
+                }
+
+                //Saving current move into an arraylist
+                history.add(new Integer[]{hintDetails[0], hintDetails[1], 0, hintDetails[2]});
+                undoHistoryMoveNumber++;
+                redoHistoryMoveNumber++;
+                undoButton.setDisable(false);
+
                 gameTime.addTenSeconds();
                 showAlertTimeline.play();
+                if (sudokuOperation(CHECK_SUDOKU)) {
+                    hintButton.setDisable(true);
+                }
             }
 
         });
@@ -422,7 +534,7 @@ public class gamePlay {
             for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
                 for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
                     sudokuCells[rowCounter][columnCounter].setText(computerSolution[rowCounter][columnCounter] + "");
-                    sudokuCells[rowCounter][columnCounter].setDisable(true);
+                    sudokuCells[rowCounter][columnCounter].setEditable(false);
                     sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
                 }
             }
@@ -432,18 +544,92 @@ public class gamePlay {
             pauseButton.setDisable(true);
             solveButton.setDisable(true);
             saveButton.setDisable(true);
+            redoButton.setDisable(true);
+            undoButton.setDisable(true);
+            history.clear();
+            undoHistoryMoveNumber = -1;
+            redoHistoryMoveNumber = 0;
+            undoButton.setDisable(true);
+            redoButton.setDisable(true);
             timerStoppedTimeline.play();
             gameTime.pause();
         });
         //</editor-fold>
 
-        return gamePlayContainer;
-    }
+        //Loading icon
+        loadingIndicator = new ProgressIndicator();
+        loadingIndicator.setStyle(" -fx-progress-color: rgb(65, 131, 215);");
+        loadingIndicator.setMaxHeight(75);
+        loadingIndicator.setMaxWidth(75);
+        loadingIndicator.setVisible(true);
 
-    /**
-     * Create Sudoku cells, 9x9 textfields
-     * @author Muhammad Tarek
-     */
+        gamePlayContainer.setOnMousePressed((MouseEvent event) -> {
+            gameControlsContainer.requestFocus();
+        });
+
+            //<editor-fold defaultstate="collapsed" desc="Keyboard Shortcuts">
+            final KeyCombination saveGameCombination = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
+            final KeyCombination undoGameCombination = new KeyCodeCombination(KeyCode.U, KeyCombination.CONTROL_DOWN);
+            final KeyCombination redoGameCombination = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
+            final KeyCombination hintGameCombination = new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN);
+            final KeyCombination solveGameCombination = new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN);
+            final KeyCombination goBackCombination = new KeyCodeCombination(KeyCode.BACK_SPACE, KeyCombination.CONTROL_DOWN);
+            final KeyCombination resumeAndPauseCombination = new KeyCodeCombination(KeyCode.SPACE, KeyCombination.CONTROL_DOWN);
+
+            gamePlayContainer.addEventHandler (KeyEvent.KEY_PRESSED,  
+                (Event event) -> {
+            if (saveGameCombination.match((KeyEvent) event)) {
+                    saveButton.fire();
+                } else if (undoGameCombination.match((KeyEvent) event)) {
+                    undoButton.fire();
+                } else if (redoGameCombination.match((KeyEvent) event)) {
+                    redoButton.fire();
+                } else if (hintGameCombination.match((KeyEvent) event)) {
+                    hintButton.fire();
+                } else if (solveGameCombination.match((KeyEvent) event)) {
+                    solveButton.fire();
+                } else if (goBackCombination.match((KeyEvent) event)) {
+                    backButton.fire();
+                } else if (resumeAndPauseCombination.match((KeyEvent) event)) {
+                    if (submitButton.isDisabled()) {
+                        resumeButton.fire();
+                    } else {
+                        pauseButton.fire();
+                    }
+                }
+
+            }
+
+            );
+
+            gamePlayContainer.setOnKeyPressed (
+            (final KeyEvent keyEvent
+
+            
+                ) -> {
+            if (null != keyEvent.getCode()) {
+                    switch (keyEvent.getCode()) {
+                        case ENTER:
+                            submitButton.fire();
+                            //Stop letting it do anything else
+                            keyEvent.consume();
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            );
+        //</editor-fold>
+
+            return gamePlayContainer ;
+        }
+        /**
+         * Create Sudoku cells, 9x9 textfields
+         *
+         * @author Muhammad Tarek
+         */
+
     private void initSudokuBlock() {
         //Sudoku card layout
         sudokuCellsContainer = new BorderPane();
@@ -468,6 +654,7 @@ public class gamePlay {
                 sudokuCellsTextfieldsContainer.getChildren().add(sudokuCells[rowCounter][columnCounter]);
 
                 sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell");
+                sudokuCells[rowCounter][columnCounter].setContextMenu(contextMenu);
 
                 //If the cell is No.2 or No.5 on any column it will have right border
                 if (columnCounter == 2 || columnCounter == 5) {
@@ -484,6 +671,26 @@ public class gamePlay {
                 }
 
                 TextField currentField = sudokuCells[rowCounter][columnCounter];
+                int currentFieldRowNumber = rowCounter;
+                int currentFieldColumnNumber = columnCounter;
+
+                sudokuCells[rowCounter][columnCounter].setOnKeyPressed((KeyEvent ke) -> {
+                    listenToChange = true;
+                });
+
+                final KeyCombination hintCellCombination = new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN);
+                final KeyCombination highlightCellsCombination = new KeyCodeCombination(KeyCode.H, KeyCombination.ALT_DOWN);
+
+                sudokuCells[rowCounter][columnCounter].addEventHandler(KeyEvent.KEY_PRESSED, (Event event) -> {
+                    if (hintCellCombination.match((KeyEvent) event)) {
+                        sudokuOperation(READ_SUDOKU);
+                        Sudoku.setSudoku(computerSolution);
+                        Sudoku.setUserSudoku(userSudoku);
+                        currentField.setText(Sudoku.hint(currentFieldRowNumber, currentFieldColumnNumber) + "");
+                    } else if (highlightCellsCombination.match((KeyEvent) event)) {
+                        highlightCell(currentField.getText());
+                    }
+                });
 
                 //Adding listener to validate the Sudoku input
                 sudokuCells[rowCounter][columnCounter].textProperty().addListener((observable, oldVal, newVal) -> {
@@ -491,6 +698,23 @@ public class gamePlay {
                         currentField.setText(oldVal);
                     } else if (!isInputValid(currentField.getText())) {
                         currentField.setText("");
+                    } else //Only save in history if the listenToChange == true
+                    {
+                        if (!currentField.isDisable() && listenToChange) {
+                            //Clearign any history moves if the user made a move and there are redo moves to make
+                            if (redoHistoryMoveNumber != history.size()) {
+                                for (int counter = history.size() - 1; counter >= redoHistoryMoveNumber; counter--) {
+                                    history.remove(counter);
+                                    redoButton.setDisable(true);
+                                }
+                            }
+
+                            //Saving current move into an arraylist
+                            history.add(new Integer[]{currentFieldRowNumber, currentFieldColumnNumber, Integer.parseInt("".equals(oldVal) ? "0" : oldVal), Integer.parseInt("".equals(newVal) ? "0" : newVal)});
+                            undoHistoryMoveNumber++;
+                            redoHistoryMoveNumber++;
+                            undoButton.setDisable(false);
+                        }
                     }
 
                     if (currentField.getLength() == 1 || currentField.getLength() == 0 || "".equals(currentField.getText())) {
@@ -511,6 +735,7 @@ public class gamePlay {
 
     /**
      * Shows a popup message
+     *
      * @author Muhammad Tarek
      * @param message, what to show
      * @param helpText, help text to tell the user what to do
@@ -559,7 +784,7 @@ public class gamePlay {
         alertMessageContainer.setMargin(alertHelpMessageLabel, new Insets(10, 0, 0, 0));
         //</editor-fold>
 
-        //<editor-fold defaultstate="collapsed" desc="Save Button">
+        //<editor-fold defaultstate="collapsed" desc="Close Button">
         closePopupButton = new Button("");
         closePopupButton.getStyleClass().add("button-icon--white");
         closePopupButton.getStyleClass().addAll("close-icon");
@@ -609,20 +834,30 @@ public class gamePlay {
 
     /**
      * Save current game into database and shows alert when it fails
+     *
      * @author Muhammad Tarek
      */
     private void saveCurrentGame() {
         sudokuOperation(READ_SUDOKU);
-        String sudokuGame = "";
+        if (saveGameState) {
+            try {
+                sudokuIdOriginal = Integer.toString(database.saveSudoku(sudokuGame, levelLabel.getText()));
+                saveGameState = false;
+            } catch (SQLException ex) {
+                Logger.getLogger(gamePlay.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        String currentSudokuGame = "";
 
         for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
             for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
-                sudokuGame += userSudoku[rowCounter][columnCounter];
+                currentSudokuGame += userSudoku[rowCounter][columnCounter];
             }
         }
 
         try {
-            sudokuId = database.saveGame(sudokuGame, gameTime.getTime(), Integer.parseInt(sudokuIdOriginal), Integer.parseInt(sudokuId)) + "";
+            sudokuId = database.saveGame(currentSudokuGame, gameTime.getTime(), Integer.parseInt(sudokuIdOriginal), Integer.parseInt(sudokuId)) + "";
         } catch (SQLException ex) {
             showPopup("Game isn't saved", "Try Again!", MESSAGE_DANGER);
         }
@@ -630,6 +865,7 @@ public class gamePlay {
 
     /**
      * Checks if there any duplicate in the Sudoku
+     *
      * @author Mustafa Magdy, Muhammad Tarek
      * @throws InterruptedException
      * @param sudoku, 2D Sudoku array
@@ -661,11 +897,10 @@ public class gamePlay {
     }
 
     /**
-     * Make some operations on Sudoku cells
-     * 1. Read Sudoku cells
-     * 2. Print Sudoku cells
-     * 3. Clear all Sudoku cells and arrays
-     * 4. Check if their any Sudoku cell is empty
+     * Make some operations on Sudoku cells 1. Read Sudoku cells 2. Print Sudoku
+     * cells 3. Clear all Sudoku cells and arrays 4. Check if their any Sudoku
+     * cell is empty
+     *
      * @author Muhammad Tarek, Mustafa Magdy
      * @param opType
      */
@@ -680,21 +915,21 @@ public class gamePlay {
                     //Print Sudoku
                     case 2:
                         if (computerSolution[rowCounter][columnCounter] != 0) {
-                            sudokuCells[rowCounter][columnCounter].setText(computerSolution[rowCounter][columnCounter] + "");
                             if (playingMode == 1) {
-                                sudokuCells[rowCounter][columnCounter].setDisable(true);
+                                sudokuCells[rowCounter][columnCounter].setEditable(false);
                             }
                             if (playingMode == 2) {
                                 if (markSolution[rowCounter][columnCounter]) {
-                                    sudokuCells[rowCounter][columnCounter].setDisable(true);
+                                    sudokuCells[rowCounter][columnCounter].setEditable(false);
                                 }
                             }
+                            sudokuCells[rowCounter][columnCounter].setText(computerSolution[rowCounter][columnCounter] + "");
                         }
                         break;
                     //Clear Sudoku fields and array
                     case 3:
                         sudokuCells[rowCounter][columnCounter].setText("");
-                        sudokuCells[rowCounter][columnCounter].setDisable(false);
+                        sudokuCells[rowCounter][columnCounter].setEditable(true);
                         sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-danger");
                         sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-success");
 
@@ -717,9 +952,10 @@ public class gamePlay {
 
     /**
      * Check that the input is integer
+     *
      * @author Mustafa Magdy
      * @param input, Sudoku cells data
-     * @return true/false 
+     * @return true/false
      */
     private boolean isInputValid(String input) {
         int checkInput;
@@ -734,5 +970,24 @@ public class gamePlay {
         }
 
         return true;
+    }
+
+    private void highlightCell(String numberMatch) {
+        for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
+            for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
+                sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-focus");
+                if (sudokuCells[rowCounter][columnCounter].getText().equals(numberMatch) && !"".equals(sudokuCells[rowCounter][columnCounter].getText())) {
+                    TextField cell = sudokuCells[rowCounter][columnCounter];
+                    Timeline hightlightTimeline = new Timeline();
+
+                    KeyFrame startHighlight = new KeyFrame(Duration.ZERO, e -> cell.getStyleClass().add("cell-focus"));
+                    KeyFrame finishHighlight = new KeyFrame(Duration.millis(4000), e -> cell.getStyleClass().remove("cell-focus"));
+
+                    hightlightTimeline.getKeyFrames().addAll(startHighlight, finishHighlight);
+                    hightlightTimeline.play();
+                }
+            }
+        }
+
     }
 }

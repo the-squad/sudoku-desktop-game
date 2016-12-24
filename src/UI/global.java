@@ -1,5 +1,6 @@
 package UI;
 
+import java.util.ArrayList;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -17,6 +18,7 @@ import javafx.util.Duration;
 import sudoku.Database;
 import sudoku.sudoku;
 import sudoku.timer;
+import sudoku.SudokuGenerator;
 
 /**
  * Class to initialize all global variables and methods
@@ -36,6 +38,7 @@ public class global {
     static Integer[][] userSudoku = new Integer[9][9]; //Reads the Sudoku from the user
     static Integer[][] computerSolution = new Integer[9][9]; //Where computer returns the wrong cells
     static Boolean[][] markSolution = new Boolean[9][9]; //Where computer returns the wrong cells
+    static String sudokuGame;
 //</editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Global Static Vairables">
@@ -67,11 +70,17 @@ public class global {
     static String sudokuLevel;
     // </editor-fold>
 
+    static ArrayList<Integer[]> history = new ArrayList<>();
+    static int undoHistoryMoveNumber = -1;
+    static int redoHistoryMoveNumber = 0;
+    
     static timer gameTime = new timer();
+    static Boolean saveGameState = true;
 
     //Creating objects
     static Database database = new Database();
     static sudoku Sudoku = new sudoku();
+    static SudokuGenerator generator = new SudokuGenerator();
 
     /**
      * Switch between panes with slide animation
@@ -91,9 +100,9 @@ public class global {
         KeyValue toChildOpacityEnd = new KeyValue(fromChild.opacityProperty(), 1);
 
         KeyValue fromChildtranslateStart = new KeyValue(fromChild.translateYProperty(), 0);
-        KeyValue fromChildtranslateEnd = new KeyValue(fromChild.translateYProperty(), 20);
+        KeyValue fromChildtranslateEnd = new KeyValue(fromChild.translateYProperty(), 10);
 
-        KeyValue toChildtranslateStart = new KeyValue(toChild.translateYProperty(), 20);
+        KeyValue toChildtranslateStart = new KeyValue(toChild.translateYProperty(), 10);
         KeyValue toChildtranslateEnd = new KeyValue(toChild.translateYProperty(), 0);
 
         //Creating the timeline keyframes

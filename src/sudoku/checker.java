@@ -9,16 +9,23 @@ public class checker {
 
     /**
      * @author Muhammad Kamal, Mustafa Magdy
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public void check() throws InterruptedException {
-        this.row = new rowChecker();
-        this.column = new columnChecker();
-        Thread thread1 = new Thread(this.row);
-        Thread thread2 = new Thread(this.column);
+        Thread multiThreadrows[] = new Thread[9];
+        Thread multiThreadcolumns[] = new Thread[9];
 
-        thread1.start();
-        thread2.start();
+        for (int row = 0; row < 9; row++) {
+            this.row = new rowChecker(row);
+            multiThreadrows[row] = new Thread(this.row);
+            multiThreadrows[row].start();
+        }
+
+        for (int column = 0; column < 9; column++) {
+            this.column = new columnChecker(column);
+            multiThreadcolumns[column] = new Thread(this.column);
+            multiThreadcolumns[column].start();
+        }
 
         int threadId = 0;
 
@@ -32,11 +39,11 @@ public class checker {
             }
         }
 
-        thread1.join();
-        thread2.join();
 
         for (int i = 0; i < 9; i++) {
             multiThreads[i].join();
+            multiThreadrows[i].join();
+            multiThreadcolumns[i].join();
         }
 
     }
