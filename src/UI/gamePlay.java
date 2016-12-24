@@ -673,7 +673,7 @@ public class gamePlay {
                         currentField.setText("");
                     } else //Only save in history if the listenToChange == true
                     {
-                        if (!currentField.isDisable() && listenToChange) {
+                        if (currentField.isEditable() && listenToChange) {
                             //Clearign any history moves if the user made a move and there are redo moves to make
                             if (redoHistoryMoveNumber != history.size()) {
                                 redoButton.setDisable(true);
