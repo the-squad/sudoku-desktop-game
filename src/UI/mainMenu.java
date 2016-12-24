@@ -220,6 +220,7 @@ public class mainMenu {
         checkSudokuButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
             playingMode = 3;
+            gamePlayContainer.setCenter(sudokuCellsContainer);
             gamePlayContainer.setLeft(null);
 
             headerCenterAreaContainer.setRight(null);
@@ -237,6 +238,7 @@ public class mainMenu {
         challangeComputerButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
             playingMode = 4;
+            gamePlayContainer.setCenter(sudokuCellsContainer);
             gamePlayContainer.setLeft(null);
 
             headerCenterAreaContainer.setRight(null);

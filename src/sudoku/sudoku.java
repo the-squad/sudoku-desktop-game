@@ -153,4 +153,18 @@ public class sudoku {
         }
         return null;
     }
+    
+    /**
+     * Fill empty cell with it's correct number.
+     *
+     * @author Muhammad Al.Rifai
+     * @param RowIndex Cell Location
+     * @param ColumnIndex Cell Location
+     * @return Cell's new Value
+     */
+    public int hint(int RowIndex, int ColumnIndex) {
+        solveSudoku();
+        sudoku[RowIndex][ColumnIndex] = solvedSudoku[RowIndex][ColumnIndex];
+        return solvedSudoku[RowIndex][ColumnIndex];
+    }
 }

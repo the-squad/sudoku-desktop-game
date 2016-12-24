@@ -34,12 +34,9 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
 import sudoku.checker;
+import sudoku.sudoku;
 
 public class gamePlay {
 
@@ -566,6 +563,7 @@ public class gamePlay {
         loadingIndicator.setMaxWidth(75);
         loadingIndicator.setVisible(true);
 
+        //<editor-fold defaultstate="collapsed" desc="Keyboard Shortcuts">
         final KeyCombination saveGameCombination = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
         final KeyCombination undoGameCombination = new KeyCodeCombination(KeyCode.U, KeyCombination.CONTROL_DOWN);
         final KeyCombination redoGameCombination = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
@@ -597,7 +595,6 @@ public class gamePlay {
 
         });
 
-        //<editor-fold defaultstate="collapsed" desc="Keyboard Shortcuts">
         gamePlayContainer.setOnKeyPressed((final KeyEvent keyEvent) -> {
             if (null != keyEvent.getCode()) {
                 switch (keyEvent.getCode()) {
@@ -669,21 +666,23 @@ public class gamePlay {
                 contextMenu.getStyleClass().add("context-menu-custom");
 
                 MenuItem hintItem = new MenuItem("Hint");
-                hintItem.setOnAction(e -> System.out.println("UI.gamePlay.initSudokuBlock()"));
+                hintItem.setOnAction(e -> {
+                    sudokuOperation(READ_SUDOKU);
+                    Sudoku.setSudoku(computerSolution);
+                    Sudoku.setUserSudoku(userSudoku);
+                    //sudokuCells[currentFieldRowNumber][currentFieldColumnNumber + 1].setText(Sudoku.hint(currentFieldRowNumber, currentFieldColumnNumber - 1) + "");
+                });
                 MenuItem highlightItem = new MenuItem("Highlight similar");
 
                 highlightItem.setOnAction(e -> {
-                    highlightCell(currentField.getText());
-                    System.out.println(currentField.getText());
+                    highlightCell(sudokuCells[currentFieldRowNumber][currentFieldColumnNumber + 1].getText());
                 });
                 contextMenu.getItems().addAll(hintItem, highlightItem);
 
                 sudokuCells[rowCounter][columnCounter].setOnMousePressed(e -> {
                     if (e.getButton() == MouseButton.SECONDARY) {
                         contextMenu.show(currentField, e.getScreenX(), e.getScreenY());
-                        currentField.requestFocus();
-                    } else {
-                        contextMenu.hide();
+                        contextMenu.autoHideProperty();
                     }
                 });
 
@@ -698,20 +697,22 @@ public class gamePlay {
                     } else if (!isInputValid(currentField.getText())) {
                         currentField.setText("");
                     } else //Only save in history if the listenToChange == true
-                    if (!currentField.isDisable() && listenToChange) {
-                        //Clearign any history moves if the user made a move and there are redo moves to make
-                        if (redoHistoryMoveNumber != history.size()) {
-                            for (int counter = history.size() - 1; counter >= redoHistoryMoveNumber; counter--) {
-                                history.remove(counter);
-                                redoButton.setDisable(true);
+                    {
+                        if (!currentField.isDisable() && listenToChange) {
+                            //Clearign any history moves if the user made a move and there are redo moves to make
+                            if (redoHistoryMoveNumber != history.size()) {
+                                for (int counter = history.size() - 1; counter >= redoHistoryMoveNumber; counter--) {
+                                    history.remove(counter);
+                                    redoButton.setDisable(true);
+                                }
                             }
-                        }
 
-                        //Saving current move into an arraylist
-                        history.add(new Integer[]{currentFieldRowNumber, currentFieldColumnNumber, Integer.parseInt("".equals(oldVal) ? "0" : oldVal), Integer.parseInt("".equals(newVal) ? "0" : newVal)});
-                        undoHistoryMoveNumber++;
-                        redoHistoryMoveNumber++;
-                        undoButton.setDisable(false);
+                            //Saving current move into an arraylist
+                            history.add(new Integer[]{currentFieldRowNumber, currentFieldColumnNumber, Integer.parseInt("".equals(oldVal) ? "0" : oldVal), Integer.parseInt("".equals(newVal) ? "0" : newVal)});
+                            undoHistoryMoveNumber++;
+                            redoHistoryMoveNumber++;
+                            undoButton.setDisable(false);
+                        }
                     }
 
                     if (currentField.getLength() == 1 || currentField.getLength() == 0 || "".equals(currentField.getText())) {
@@ -972,12 +973,12 @@ public class gamePlay {
     private void highlightCell(String numberMatch) {
         for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
             for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
-                if (sudokuCells[rowCounter][columnCounter].getText() == numberMatch) {
+                if (sudokuCells[rowCounter][columnCounter].getText().equals(numberMatch) && !"".equals(sudokuCells[rowCounter][columnCounter].getText())) {
                     TextField cell = sudokuCells[rowCounter][columnCounter];
                     Timeline hightlightTimeline = new Timeline();
 
-                    KeyFrame startHighlight = new KeyFrame(Duration.ZERO, e -> cell.setStyle("-fx-background-color: rgba(65, 131, 215, 0.15)"));
-                    KeyFrame finishHighlight = new KeyFrame(Duration.millis(1000), e -> cell.setStyle("-fx-background-color: transparent"));
+                    KeyFrame startHighlight = new KeyFrame(Duration.ZERO, e -> cell.getStyleClass().add("cell-focus"));
+                    KeyFrame finishHighlight = new KeyFrame(Duration.millis(4000), e -> cell.getStyleClass().remove("cell-focus"));
 
                     hightlightTimeline.getKeyFrames().addAll(startHighlight, finishHighlight);
                     hightlightTimeline.play();

@@ -18,10 +18,8 @@ public class Database {
             // next 2 lines are used to connect the DB if connected return the connection else return NULL
             Class.forName("org.sqlite.JDBC");
             conn = DriverManager.getConnection("jdbc:sqlite:SudokuDB.sqlite");
-            // System.out.println("Connected");
             return conn;
         } catch (ClassNotFoundException | SQLException e) {
-            //  System.out.printf("Error");
             return null;
         }
     }
@@ -55,7 +53,6 @@ public class Database {
     
     public int saveSudoku(String sudoku, String level) throws SQLException{
         String query = "INSERT INTO allSudoku (Sudoku , Diff) Values (" + "\"" + sudoku + "\"" + "," + "\"" + level + "\"" +")";
-        System.out.println(query);
         PreparedStatement statement = conn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
         statement.executeUpdate();
         ResultSet generatedKeys = statement.getGeneratedKeys();
