@@ -8,7 +8,6 @@ public class checker {
     columnChecker column;
 
     /**
-     * @author Muhammad Kamal, Mustafa Magdy
      * @throws InterruptedException
      */
     public void check() throws InterruptedException {

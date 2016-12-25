@@ -10,7 +10,7 @@ public class Database {
 
     /**
      * Connects to the database
-     * @author Muhammad Khairala
+     * 
      * @return connection/null
      */
     public Connection DBconnect() {
@@ -28,7 +28,7 @@ public class Database {
      * Select Function will be used to select from 2 tables (1) allSudoku (2) Load  
      * it will return a random soduko from the mode the user Specified and it will return null
      * if there wasn't and saved sudoku in Load table
-     * @author Muhammad Khairala
+     * 
      * @return array of games
      * @throws SQLException 
      */
@@ -61,7 +61,6 @@ public class Database {
     }
 
     /**
-     * @author Muhammad Khairala, Muhamamd Kamal
      * @param SU
      * @param Timer
      * @param originalId
@@ -84,7 +83,6 @@ public class Database {
     }
 
     /**
-     * @author Muhammad Khairala, Muhammad Kamal
      * @param id
      * @throws SQLException 
      */
@@ -95,7 +93,6 @@ public class Database {
     }
 
     /**
-     * @author Muhammad Khairala, Muhammad Kamal
      * @param name
      * @param time
      * @param Diff
@@ -108,7 +105,6 @@ public class Database {
     }
 
     /**
-     * @author Muhammad Khairala, Muhammad Kamal
      * @param Diff
      * @return
      * @throws SQLException 

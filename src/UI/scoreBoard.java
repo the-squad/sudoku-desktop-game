@@ -21,9 +21,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 
-/**
- * @author Muhammad
- */
 public class scoreBoard {
 
     GridPane scorePageContainer;
