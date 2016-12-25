@@ -549,9 +549,6 @@ public class mainMenu {
                 sudokuId = data[0];
                 sudokuIdOriginal = data[6];
                 assignSudoku(data[1], null);
-                System.out.println(data[1]);
-                System.out.println("Data[6]");
-                System.out.println(data[5]);
                 
                 for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
                     for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
@@ -583,7 +580,6 @@ public class mainMenu {
                 Object gameBlockObject = savedGameDeleteButton.getParent().getParent();
                 int gameBlockNumber = savedGamesLayout.getRowIndex((Node) gameBlockObject);
                 fade(gameBlockObject, 200, 0, FADE_OUT);
-                System.out.println(gameID);
                 savedGamesNumberGlobal--;
 
                 for (int blockCounter = gameBlockNumber; blockCounter < savedGamesNumber - 1; blockCounter++) {

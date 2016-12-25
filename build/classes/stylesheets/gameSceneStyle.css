@@ -70,7 +70,9 @@
     -fx-opacity: 1.0;
 }
 
-.cell-success:readonly {
+.cell-success:readonly,
+.cell-success:readonly:hover, 
+.cell-success:readonly:focused {
     -fx-text-fill: rgb(0, 200 , 83);
     -fx-background-color: rgba(0 , 200, 83, 0.075);
     -fx-cursor: default;
