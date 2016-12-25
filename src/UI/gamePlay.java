@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -90,6 +89,7 @@ public class gamePlay {
     static ProgressIndicator loadingIndicator;
     private ContextMenu contextMenu;
     Boolean listenToChange = false;
+    Boolean popupState = false;
 
     /**
      * Initialize game play elements
@@ -147,6 +147,9 @@ public class gamePlay {
             sudokuId = "0";
 
             changeButtonState(ENABLE, pauseButton, hintButton, solveButton, submitButton, loadGameButton);
+            if (popupState == true) {
+                hidePopupTimeline.play();
+            }
 
             history.clear();
             undoHistoryMoveNumber = -1;
@@ -271,6 +274,10 @@ public class gamePlay {
                                     sudokuId = "0";
                                 });
 
+                                if (popupState == true) {
+                                    hidePopupTimeline.play();
+                                }
+
                                 gameSuccessTimeline.getKeyFrames().add(goToScoreBoard);
 
                                 ArrayList<String> bestScores = null;
@@ -300,6 +307,7 @@ public class gamePlay {
 
                                 timerStoppedTimeline.stop();
                                 gameTime.pause();
+                                gamePlayContainer.requestFocus();
                             }
                         }
                     } else {
@@ -323,6 +331,7 @@ public class gamePlay {
                                     submitButton.setDisable(true);
                                 }
                             }
+                            gamePlayContainer.requestFocus();
                         } else {
                             showPopup("Sudoku isn't valid", "Please, Enter a valid Sudoku", MESSAGE_DANGER);
                         }
@@ -573,26 +582,28 @@ public class gamePlay {
 
         gamePlayContainer.addEventHandler(KeyEvent.KEY_PRESSED,
                 (Event event) -> {
-                    if (saveGameCombination.match((KeyEvent) event)) {
-                        saveButton.fire();
-                    } else if (undoGameCombination.match((KeyEvent) event)) {
-                        undoButton.fire();
-                    } else if (redoGameCombination.match((KeyEvent) event)) {
-                        redoButton.fire();
-                    } else if (hintGameCombination.match((KeyEvent) event)) {
-                        hintButton.fire();
-                    } else if (solveGameCombination.match((KeyEvent) event)) {
-                        solveButton.fire();
-                    } else if (goBackCombination.match((KeyEvent) event)) {
-                        backButton.fire();
-                    } else if (resumeAndPauseCombination.match((KeyEvent) event)) {
-                        if (submitButton.isDisabled()) {
-                            resumeButton.fire();
-                        } else {
-                            pauseButton.fire();
+                    if (playingMode == 1 || playingMode == 2) {
+                        if (saveGameCombination.match((KeyEvent) event)) {
+                            saveButton.fire();
+                        } else if (undoGameCombination.match((KeyEvent) event)) {
+                            undoButton.fire();
+                        } else if (redoGameCombination.match((KeyEvent) event)) {
+                            redoButton.fire();
+                        } else if (hintGameCombination.match((KeyEvent) event)) {
+                            hintButton.fire();
+                        } else if (solveGameCombination.match((KeyEvent) event)) {
+                            solveButton.fire();
+                        } else if (goBackCombination.match((KeyEvent) event)) {
+                            backButton.fire();
+                        } else if (resumeAndPauseCombination.match((KeyEvent) event)) {
+                            if (submitButton.isDisabled()) {
+                                resumeButton.fire();
+                            } else {
+                                pauseButton.fire();
+                            }
                         }
-                    }
 
+                    }
                 }
         );
 
@@ -816,6 +827,7 @@ public class gamePlay {
         KeyFrame finishMove = new KeyFrame(Duration.millis(200), toPosition);
 
         showPopupTimeline.getKeyFrames().addAll(startMove, finishMove);
+        popupState = true;
         showPopupTimeline.play();
 
         hidePopupTimeline = new Timeline();
@@ -834,6 +846,7 @@ public class gamePlay {
                 Duration.millis(5000),
                 ae -> {
                     hidePopupTimeline.play();
+                    popupState = false;
                 }
         ));
         hideAlertTimeline.play();
