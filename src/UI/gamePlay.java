@@ -551,6 +551,7 @@ public class gamePlay {
                     redoHistoryMoveNumber = 0;
                     timerStoppedTimeline.play();
                     gameTime.pause();
+                    gamePlayContainer.requestFocus();
                 } else {
                     showPopup("The solution we made was wrong!", "Try again!", MESSAGE_DANGER);
                 }
