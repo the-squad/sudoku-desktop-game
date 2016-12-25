@@ -1,0 +1,32 @@
+.shortcuts-overlay {
+    -fx-background-color: rgb(255, 255, 255);
+}
+
+.shortcuts-headline {
+    -fx-font-family: "Lato";
+    -fx-font-size: 20;
+    -fx-alignment: center;
+    -fx-text-fill: rgba(41,47,51, 0.9);
+    -fx-font-wieght: 500;
+}
+
+.keyboard-key {
+    -fx-font-size: 15;
+    -fx-alignment: center;
+    -fx-text-fill: white;
+    -fx-font-wieght: 600;
+    -fx-background-color: #212121;
+    -fx-padding: 0px 15px;
+    -fx-min-height: 40px;
+    -fx-min-width: 40px;
+    -fx-max-height: 40px;
+    -fx-border-radius: 100;
+}
+
+.help-text {
+    -fx-font-family: "Lato";
+    -fx-font-size: 17;
+    -fx-text-fill: rgba(41,47,51, 0.8);
+    -fx-font-wieght: 500;
+    -fx-width: 100%;
+}

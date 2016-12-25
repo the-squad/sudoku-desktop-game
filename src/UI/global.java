@@ -30,6 +30,7 @@ public class global {
     static BorderPane gamePlayContainer;
     static GridPane mainMenuContainer;
     static GridPane scorePageContainer;
+    static GridPane shortcutHelpContainer;
     // </editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Sudoku Arrays">

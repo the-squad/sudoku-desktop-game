@@ -616,6 +616,10 @@ public class gamePlay {
                                 //Stop letting it do anything else
                                 keyEvent.consume();
                                 break;
+                            case F1:
+                                switchPanes(screenContainer, gamePlayContainer, shortcutHelpContainer);
+                                keyEvent.consume();
+                                break;
                             default:
                                 break;
                         }
@@ -690,6 +694,7 @@ public class gamePlay {
                     if (playingMode == 1 || playingMode == 2) {
                         if (hintCellCombination.match((KeyEvent) event)) {
                             sudokuOperation(READ_SUDOKU);
+                            System.out.println("Shit");
                             if (playingMode == 1) {
                                 Sudoku.setSudoku(computerSolution);
                             } else {
@@ -710,7 +715,7 @@ public class gamePlay {
                     } else if (!isInputValid(currentField.getText())) {
                         currentField.setText("");
                     } else //Only save in history if the listenToChange == true
-                     if (listenToChange) {
+                     if (listenToChange && playingMode == 1 || playingMode == 2) {
                             //Clearign any history moves if the user made a move and there are redo moves to make
                             if (redoHistoryMoveNumber != history.size()) {
                                 redoButton.setDisable(true);
