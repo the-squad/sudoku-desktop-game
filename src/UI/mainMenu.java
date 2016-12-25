@@ -549,6 +549,15 @@ public class mainMenu {
                 sudokuId = data[0];
                 sudokuIdOriginal = data[6];
                 assignSudoku(data[1], null);
+                System.out.println(data[1]);
+                System.out.println("Data[6]");
+                System.out.println(data[5]);
+                
+                for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
+                    for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
+                        loadedGameSudoku[rowCounter][columnCounter] = Integer.valueOf(data[5].charAt(rowCounter * 9 + columnCounter) + "");
+                    }
+                }
                 assignSudoku(data[5], markSolution);
                 sudokuOperation(PRINT_SUDOKU);
 

@@ -29,8 +29,6 @@ public class Database {
      * it will return a random soduko from the mode the user Specified and it will return null
      * if there wasn't and saved sudoku in Load table
      * @author Muhammad Khairala
-     * @param Difficulty
-     * @param choice
      * @return array of games
      * @throws SQLException 
      */

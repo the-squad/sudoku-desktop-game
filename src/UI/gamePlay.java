@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -322,6 +323,8 @@ public class gamePlay {
                                     submitButton.setDisable(true);
                                 }
                             }
+                        } else {
+                            showPopup("Sudoku isn't valid", "Please, Enter a valid Sudoku", MESSAGE_DANGER);
                         }
                     } else {
                         showPopup("Sudoku can't be solved", "Please, Enter a valid Sudoku", MESSAGE_DANGER);
@@ -469,7 +472,12 @@ public class gamePlay {
 
         hintButton.setOnAction(e -> {
             sudokuOperation(READ_SUDOKU);
-            Sudoku.setSudoku(computerSolution);
+            if (playingMode == 1) {
+                Sudoku.setSudoku(computerSolution);
+            } else {
+                Sudoku.setSudoku(loadedGameSudoku);
+            }
+
             Sudoku.setUserSudoku(userSudoku);
 
             int[] hintDetails = Sudoku.hint();
@@ -509,25 +517,37 @@ public class gamePlay {
 
         solveButton.setOnAction(e -> {
             sudokuOperation(READ_SUDOKU);
-            Sudoku.setSudoku(computerSolution);
+            if (playingMode == 1) {
+                Sudoku.setSudoku(computerSolution);
+            } else {
+                Sudoku.setSudoku(loadedGameSudoku);
+            }
             Sudoku.setUserSudoku(userSudoku);
             Sudoku.solveSudoku();
             computerSolution = Sudoku.getSudokuSolution();
 
-            for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
-                for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
-                    sudokuCells[rowCounter][columnCounter].setText(computerSolution[rowCounter][columnCounter] + "");
-                    sudokuCells[rowCounter][columnCounter].setEditable(false);
-                    sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
-                }
-            }
+            try {
+                if (isSudokuValid(computerSolution)) {
+                    for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
+                        for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
+                            sudokuCells[rowCounter][columnCounter].setText(computerSolution[rowCounter][columnCounter] + "");
+                            sudokuCells[rowCounter][columnCounter].setEditable(false);
+                            sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
+                        }
+                    }
 
-            changeButtonState(DISABLE, submitButton, hintButton, pauseButton, solveButton, saveButton, redoButton, undoButton);
-            history.clear();
-            undoHistoryMoveNumber = -1;
-            redoHistoryMoveNumber = 0;
-            timerStoppedTimeline.play();
-            gameTime.pause();
+                    changeButtonState(DISABLE, submitButton, hintButton, pauseButton, solveButton, saveButton, redoButton, undoButton);
+                    history.clear();
+                    undoHistoryMoveNumber = -1;
+                    redoHistoryMoveNumber = 0;
+                    timerStoppedTimeline.play();
+                    gameTime.pause();
+                } else {
+                    showPopup("The solution we made was wrong!", "Try again!", MESSAGE_DANGER);
+                }
+            } catch (InterruptedException ex) {
+                showPopup("Error occured!", "Try again!", MESSAGE_DANGER);
+            }
         });
         //</editor-fold>
 
@@ -601,7 +621,6 @@ public class gamePlay {
      *
      * @author Muhammad Tarek
      */
-
     private void initSudokuBlock() {
         //Sudoku card layout
         sudokuCellsContainer = new BorderPane();
@@ -661,7 +680,11 @@ public class gamePlay {
                 sudokuCells[rowCounter][columnCounter].addEventHandler(KeyEvent.KEY_PRESSED, (Event event) -> {
                     if (hintCellCombination.match((KeyEvent) event)) {
                         sudokuOperation(READ_SUDOKU);
-                        Sudoku.setSudoku(computerSolution);
+                        if (playingMode == 1) {
+                            Sudoku.setSudoku(computerSolution);
+                        } else {
+                            Sudoku.setSudoku(loadedGameSudoku);
+                        }
                         Sudoku.setUserSudoku(userSudoku);
                         currentField.setText(Sudoku.hint(currentFieldRowNumber, currentFieldColumnNumber) + "");
                     } else if (highlightCellsCombination.match((KeyEvent) event)) {
@@ -676,7 +699,8 @@ public class gamePlay {
                     } else if (!isInputValid(currentField.getText())) {
                         currentField.setText("");
                     } else //Only save in history if the listenToChange == true
-                     if (listenToChange) {
+                    {
+                        if (listenToChange) {
                             //Clearign any history moves if the user made a move and there are redo moves to make
                             if (redoHistoryMoveNumber != history.size()) {
                                 redoButton.setDisable(true);
@@ -698,6 +722,7 @@ public class gamePlay {
                                 hintButton.setDisable(true);
                             }
                         }
+                    }
 
                     if (currentField.getLength() == 1 || currentField.getLength() == 0 || "".equals(currentField.getText())) {
                         if (hintButton.isDisabled()) {

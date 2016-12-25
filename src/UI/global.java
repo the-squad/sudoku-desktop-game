@@ -38,6 +38,7 @@ public class global {
     static Integer[][] userSudoku = new Integer[9][9]; //Reads the Sudoku from the user
     static Integer[][] computerSolution = new Integer[9][9]; //Where computer returns the wrong cells
     static Boolean[][] markSolution = new Boolean[9][9]; //Where computer returns the wrong cells
+    static Integer[][] loadedGameSudoku = new Integer[9][9];
     static String sudokuGame;
 //</editor-fold>
 
