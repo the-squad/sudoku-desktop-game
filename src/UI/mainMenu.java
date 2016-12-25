@@ -201,6 +201,7 @@ public class mainMenu {
             gamePlayContainer.setCenter(sudokuCellsContainer);
             gamePlayContainer.setLeft(gameLeftPanelContainer);
             saveGameState = false;
+            saveButton.setDisable(false);
 
             headerCenterAreaContainer.setRight(headerControlsContainer);
             submitButton.setText("Submit");
