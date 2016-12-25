@@ -684,7 +684,7 @@ public class gamePlay {
                 });
 
                 final KeyCombination hintCellCombination = new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN);
-                final KeyCombination highlightCellsCombination = new KeyCodeCombination(KeyCode.H, KeyCombination.ALT_DOWN);
+                final KeyCombination highlightCellsCombination = new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN);
 
                 sudokuCells[rowCounter][columnCounter].addEventHandler(KeyEvent.KEY_PRESSED, (Event event) -> {
                     if (playingMode == 1 || playingMode == 2) {
