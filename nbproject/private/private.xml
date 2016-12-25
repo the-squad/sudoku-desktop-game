@@ -5,7 +5,9 @@
         <group>
             <file>file:/F:/Code/Java/Sudoku/src/UI/gamePlay.java</file>
             <file>file:/F:/Code/Java/Sudoku/src/UI/global.java</file>
+            <file>file:/F:/Code/Java/Sudoku/src/stylesheets/global.css</file>
             <file>file:/F:/Code/Java/Sudoku/src/UI/mainMenu.java</file>
+            <file>file:/F:/Code/Java/Sudoku/src/UI/main.java</file>
             <file>file:/F:/Code/Java/Sudoku/src/sudoku/Database.java</file>
             <file>file:/F:/Code/Java/Sudoku/src/sudoku/sudoku.java</file>
         </group>

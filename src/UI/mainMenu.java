@@ -112,7 +112,7 @@ public class mainMenu {
         //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Version Label">
-        version = new Label("Version 1.2");
+        version = new Label("Version 1.2.1");
         version.getStyleClass().add("version");
         leftPartContainer.setBottom(version);
         leftPartContainer.setAlignment(version, Pos.TOP_CENTER);
@@ -184,6 +184,7 @@ public class mainMenu {
 
             submitButton.setText("Submit");
             headlineLabel.setText("New Game");
+            changeButtonState(DISABLE, saveButton, submitButton);
         });
         //</editor-fold>
 
@@ -548,6 +549,12 @@ public class mainMenu {
                 sudokuId = data[0];
                 sudokuIdOriginal = data[6];
                 assignSudoku(data[1], null);
+                
+                for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
+                    for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
+                        loadedGameSudoku[rowCounter][columnCounter] = Integer.valueOf(data[5].charAt(rowCounter * 9 + columnCounter) + "");
+                    }
+                }
                 assignSudoku(data[5], markSolution);
                 sudokuOperation(PRINT_SUDOKU);
 
@@ -561,8 +568,9 @@ public class mainMenu {
 
                 //Clear container
                 savedGamesContainer.getChildren().clear();
-                if (sudokuOperation(CHECK_SUDOKU))
+                if (sudokuOperation(CHECK_SUDOKU)) {
                     hintButton.setDisable(true);
+                }
                 switchPanes(rightPartContainer, savedGamesContainer, gameModesContainer);
             });
 
@@ -593,12 +601,12 @@ public class mainMenu {
 
                     updateGameTimeline.getKeyFrames().addAll(startMove, finishMove);
                     updateGameTimeline.play();
+                }
 
-                    try {
-                        database.deleteGame(Integer.parseInt(gameID.replace("#", "")));
-                    } catch (SQLException ex) {
+                try {
+                    database.deleteGame(Integer.parseInt(gameID.replace("#", "")));
+                } catch (SQLException ex) {
 
-                    }
                 }
                 if (savedGamesNumberGlobal == 0) {
                     switchPanes(rightPartContainer, savedGamesContainer, gameModesContainer);
@@ -637,7 +645,7 @@ public class mainMenu {
         //Creating all key values for the animation
         KeyValue loadingOpacityStart = new KeyValue(loadingIndicator.opacityProperty(), 1);
         KeyValue loadingOpacityEnd = new KeyValue(loadingIndicator.opacityProperty(), 0);
-        
+
         KeyValue panelOpacityStart = new KeyValue(loadingIndicator.opacityProperty(), 0);
         KeyValue panelOpacityEnd = new KeyValue(loadingIndicator.opacityProperty(), 1);
 
@@ -657,13 +665,14 @@ public class mainMenu {
         KeyFrame addingToLeft = new KeyFrame(Duration.millis(209), e -> {
             gamePlayContainer.setLeft(gameLeftPanelContainer);
         });
+        KeyFrame enablingButtons = new KeyFrame(Duration.millis(211), e -> changeButtonState(ENABLE, saveButton, submitButton));
         KeyFrame startFadeIn = new KeyFrame(Duration.millis(210), panelOpacityStart);
         KeyFrame finishFadeIn = new KeyFrame(Duration.millis(510), panelOpacityEnd);
         KeyFrame startFadeIn2 = new KeyFrame(Duration.millis(210), sudokuOpacityStart);
         KeyFrame finishFadeIn2 = new KeyFrame(Duration.millis(510), sudokuOpacityEnd);
         KeyFrame startTimer = new KeyFrame(Duration.millis(1000), e -> gameTime.start());
 
-        showAndHideTimeline.getKeyFrames().addAll(startFadeOut, finishFadeOut, clear, addingToCenter, addingToLeft, startFadeIn, finishFadeIn, startFadeIn2, finishFadeIn2, startTimer);
+        showAndHideTimeline.getKeyFrames().addAll(startFadeOut, finishFadeOut, clear, addingToCenter, addingToLeft, enablingButtons, startFadeIn, finishFadeIn, startFadeIn2, finishFadeIn2, startTimer);
         showAndHideTimeline.play();
     }
 }

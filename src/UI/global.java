@@ -38,6 +38,7 @@ public class global {
     static Integer[][] userSudoku = new Integer[9][9]; //Reads the Sudoku from the user
     static Integer[][] computerSolution = new Integer[9][9]; //Where computer returns the wrong cells
     static Boolean[][] markSolution = new Boolean[9][9]; //Where computer returns the wrong cells
+    static Integer[][] loadedGameSudoku = new Integer[9][9];
     static String sudokuGame;
 //</editor-fold>
 
@@ -61,6 +62,9 @@ public class global {
     
     public static final int RIGHT_TO_LEFT = 2;
     public static final int LEFT_TO_RIGHT = 2;
+    
+    public static final int DISABLE = 1;
+    public static final int ENABLE = 2;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Sudoku Info">
@@ -183,5 +187,14 @@ public class global {
         layout.getChildren().add(button);
 
         fade(button, 300, 150 * (position + 1), FADE_IN);
+    }
+    
+    public static void changeButtonState(int type, Button... buttons) {
+        for (Button button : buttons) {
+            if (type == 1)
+                button.setDisable(true);
+            else
+                button.setDisable(false);
+        }
     }
 }

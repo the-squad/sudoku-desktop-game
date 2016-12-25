@@ -29,8 +29,6 @@ public class Database {
      * it will return a random soduko from the mode the user Specified and it will return null
      * if there wasn't and saved sudoku in Load table
      * @author Muhammad Khairala
-     * @param Difficulty
-     * @param choice
      * @return array of games
      * @throws SQLException 
      */
@@ -51,7 +49,7 @@ public class Database {
         }
     }
     
-    public int saveSudoku(String sudoku, String level) throws SQLException{
+    public int saveOriginalSudoku(String sudoku, String level) throws SQLException{
         String query = "INSERT INTO allSudoku (Sudoku , Diff) Values (" + "\"" + sudoku + "\"" + "," + "\"" + level + "\"" +")";
         PreparedStatement statement = conn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
         statement.executeUpdate();

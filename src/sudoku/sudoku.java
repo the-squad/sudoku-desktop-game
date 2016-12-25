@@ -5,18 +5,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class sudoku {
+
     protected static Integer[][] sudoku;
     protected static Integer[][] solvedSudoku;
     protected static Boolean[][] sudokuWrongCells;
     private long startTime;
-    
+
     /**
      * @author Mustafa Magdy
      */
     public void initSudokuWrongCells() {
         sudokuWrongCells = new Boolean[9][9];
-        
-        for(Boolean row[] : sudokuWrongCells) {
+
+        for (Boolean row[] : sudokuWrongCells) {
             Arrays.fill(row, Boolean.FALSE);
         }
     }
@@ -24,17 +25,18 @@ public class sudoku {
     public Boolean[][] getsudokuWrongCells() {
         return sudokuWrongCells;
     }
-    
+
     public Integer[][] getSudoku() {
         return sudoku;
     }
-    
+
     public void setUserSudoku(Integer[][] sudoku) {
         this.sudoku = sudoku;
     }
-    
+
     /**
      * Get Sudoku solved by solveSudoku()
+     *
      * @author Muhammad Al.Rifai
      * @return Sudoku solution.
      */
@@ -44,7 +46,7 @@ public class sudoku {
 
     /**
      * @author Muhammad Al.Rifai
-     * @param sudoku 
+     * @param sudoku
      */
     public void setSudoku(Integer[][] sudoku) {
         solvedSudoku = new Integer[9][9];
@@ -54,34 +56,61 @@ public class sudoku {
             }
         }
     }
-    
+
     /**
-     * This method will solve the Sudoku user have entered.
-     * To retreve solution, call getSudokuSolution()
+     * This method will solve the Sudoku user have entered. To retreve solution,
+     * call getSudokuSolution()
+     *
      * @author Muhammad Al.Rifai
      * @return ture if solution exist, otherwise false.
      */
     public boolean solveSudoku() {
         startTime = System.currentTimeMillis();
         List<List<Integer>> sudokuList = Arrays.stream(solvedSudoku).map(Arrays::asList).collect(Collectors.toList());
-        return solveSudoku(0, 0, sudokuList);
+        boolean search = false;
+        int upperPart = 0, lowerPart = 0, start;
+        for (int row = 0; row < 9; row++) {
+            for (int column = 0; column < 9; column++) {
+                if (sudokuList.get(row).get(column) == 0) {
+                    if (row * 9 + column > 41) {
+                        lowerPart++;
+                    } else {
+                        upperPart++;
+                    }
+                }
+            }
+        }
+        
+        search = upperPart < lowerPart;
+        start = search ? 0 : 8;
+        return solveSudoku(start, start, sudokuList, search);
     }
 
     /**
      * auxiliary function for solveSudoku()
+     *
      * @author Muhammad Al.Rifai
      * @param x row index
      * @param y column index
      * @param sudokuList Sudoku
      * @return ture if solution exist, otherwise false.
      */
-    private boolean solveSudoku(int x, int y, List<List<Integer>> sudokuList) {
+    private boolean solveSudoku(int x, int y, List<List<Integer>> sudokuList, boolean searchForward) {
         // Check if the function exceeded one second.
-        if(System.currentTimeMillis() - startTime > 1000) {
+        if (System.currentTimeMillis() - startTime > 1000) {
             return false;
         }
         // Next cell number
-        int nextCellNum = x*9 + y + 1;
+        int nextCellNum, XLimit, YLimit;
+        if (searchForward) {
+            XLimit = 8;
+            YLimit = 8;
+            nextCellNum = x * 9 + y + 1;
+        } else {
+            XLimit = 0;
+            YLimit = 0;
+            nextCellNum = x * 9 + y - 1;
+        }
         // If cell is empty.
         if (solvedSudoku[x][y] == 0) {
             // Try numbers from 1 to 9.
@@ -90,7 +119,7 @@ public class sudoku {
                     // If the number is unique.
                     solvedSudoku[x][y] = PossibleNumber;
                     sudokuList.get(x).set(y, PossibleNumber);
-                    if ((x == 8 && y == 8) || solveSudoku(nextCellNum/9, nextCellNum % 9, sudokuList)) {
+                    if ((x == XLimit && y == YLimit) || solveSudoku(nextCellNum / 9, nextCellNum % 9, sudokuList, searchForward)) {
                         // If this is the last cell or the next cell returned true.
                         return true;
                     }
@@ -102,12 +131,13 @@ public class sudoku {
             return false;
         } else {
             // cell not empty.
-            return (x == 8 && y == 8) || solveSudoku(nextCellNum/9, nextCellNum % 9, sudokuList);
+            return (x == XLimit && y == YLimit) || solveSudoku(nextCellNum / 9, nextCellNum % 9, sudokuList, searchForward);
         }
     }
 
     /**
      * Check if the number is unique in row, column and block.
+     *
      * @author Muhammad Al.Rifai
      * @param PossibleNumber The number to check if its exist or not.
      * @param sudokuList Sudoku.
@@ -135,17 +165,18 @@ public class sudoku {
         }
         return true;
     }
-    
+
     /**
      * Fill empty cell with it's correct number.
+     *
      * @author Muhammad Al.Rifai
      * @return Integer array with the following format {x, y, value}
      */
-    public int [] hint(){
+    public int[] hint() {
         solveSudoku();
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                if(sudoku[i][j] == 0){
+                if (sudoku[i][j] == 0) {
                     sudoku[i][j] = solvedSudoku[i][j];
                     return new int[]{i, j, solvedSudoku[i][j]};
                 }
@@ -153,7 +184,7 @@ public class sudoku {
         }
         return null;
     }
-    
+
     /**
      * Fill empty cell with it's correct number.
      *
