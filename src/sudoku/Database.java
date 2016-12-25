@@ -51,7 +51,7 @@ public class Database {
         }
     }
     
-    public int saveSudoku(String sudoku, String level) throws SQLException{
+    public int saveOriginalSudoku(String sudoku, String level) throws SQLException{
         String query = "INSERT INTO allSudoku (Sudoku , Diff) Values (" + "\"" + sudoku + "\"" + "," + "\"" + level + "\"" +")";
         PreparedStatement statement = conn.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
         statement.executeUpdate();
