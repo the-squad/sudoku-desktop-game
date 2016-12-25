@@ -73,6 +73,7 @@ public class SudokuGenerator {
         int OriginalValue; // Store Cell's Value
         // Count of remaining cells that should be removed.
         int RemovedCells = 81 - Level - random.nextInt(10);
+        int Upper = 0, Lower = 0;
         // get cell index from -random/ordered- numbers from 0 to 80
         for (Integer Index : AvailableIndexes) {
             // calculate Cell Location.
@@ -84,12 +85,22 @@ public class SudokuGenerator {
             sudokuList.get(RowIndex).set(ColumnIndex, 0);
             // decrease number of remaining cells.
             RemovedCells--;
+            if (Index > 45) {
+                Lower++;
+            } else {
+                Upper++;
+            }
             // Check if Sudoku still have a unique Solution.
-            if (!hasUniqueSolution(false) || !hasUniqueSolution(true)) {
+            if (!hasUniqueSolution(Lower > Upper)) {
                 // if not, reset the cell to it's original value.
                 sudokuList.get(RowIndex).set(ColumnIndex, OriginalValue);
                 // and increase number of remaining cell.
                 RemovedCells++;
+                if (Index > 45) {
+                    Lower--;
+                } else {
+                    Upper--;
+                }
             }
             // return if the selected number of cells is removed.
             if (RemovedCells == 0) {
@@ -253,8 +264,7 @@ public class SudokuGenerator {
     /**
      * Generate unordered numbers from minValue to maxValue included.
      *
-     * @param minValue from number (minValue < maxValue).
-     * @par
+     * @param minValue from number (minValue < maxValue). @par
      * am maxValue to number.
      * @return list of numbers.
      */
