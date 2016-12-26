@@ -600,7 +600,7 @@ public class mainMenu {
                 }
 
                 try {
-                    database.deleteGame(Integer.parseInt(gameID.replace("#", "")));
+                    database.deleteGame(Integer.parseInt(gameID.replace("#", "")),false);
                 } catch (SQLException ex) {
 
                 }
