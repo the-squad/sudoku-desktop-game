@@ -161,6 +161,10 @@
     -fx-background-image: url("../icons/play.png");
 }
 
+.close-icon-dark {
+    -fx-background-image: url("../icons/ic_close_black_48dp_1x.png");
+}
+
 .close-icon {
     -fx-background-image: url("../icons/close.png");
     -fx-background-size: 15px;

@@ -12,7 +12,6 @@ import javafx.animation.KeyFrame;
 import javafx.util.Duration;
 import javafx.scene.image.Image;
 import static javafx.application.Application.launch;
-import static javafx.application.Application.launch;
 
 public class main extends Application {
     @Override
@@ -29,8 +28,9 @@ public class main extends Application {
         //Loading another containers after the main containter is loaded
         Timeline loadOtherContainers = new Timeline();
         KeyFrame loadGamePlay = new KeyFrame(Duration.millis(500), e -> gamePlayContainer = new gamePlay().initialize());
+        KeyFrame loadHelpScreen = new KeyFrame(Duration.millis(1000), e -> shortcutHelpContainer = new shortcutsHelp().initialize());
         KeyFrame loadScoreBoard = new KeyFrame(Duration.millis(6000), e -> scorePageContainer = new scoreBoard().initialize());
-        loadOtherContainers.getKeyFrames().addAll(loadGamePlay, loadScoreBoard);
+        loadOtherContainers.getKeyFrames().addAll(loadGamePlay, loadScoreBoard, loadHelpScreen);
         loadOtherContainers.play();
 
         //Main stage property
@@ -45,6 +45,7 @@ public class main extends Application {
         windowScene.getStylesheets().add("/stylesheets/mainMenuSceneStyle.css");
         windowScene.getStylesheets().add("/stylesheets/gameSceneStyle.css");
         windowScene.getStylesheets().add("/stylesheets/scoreSceneStyle.css");
+        windowScene.getStylesheets().add("/stylesheets/shortcutsSceneStyle.css");
         primaryStage.setScene(windowScene);
         primaryStage.show();
     }

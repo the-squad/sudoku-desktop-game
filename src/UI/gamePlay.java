@@ -94,7 +94,6 @@ public class gamePlay {
     /**
      * Initialize game play elements
      *
-     * @author Muhammad Tarek
      * @return gamePlayLayout
      */
     public BorderPane initialize() {
@@ -617,6 +616,10 @@ public class gamePlay {
                                 //Stop letting it do anything else
                                 keyEvent.consume();
                                 break;
+                            case F1:
+                                switchPanes(screenContainer, gamePlayContainer, shortcutHelpContainer);
+                                keyEvent.consume();
+                                break;
                             default:
                                 break;
                         }
@@ -630,8 +633,6 @@ public class gamePlay {
 
     /**
      * Create Sudoku cells, 9x9 textfields
-     *
-     * @author Muhammad Tarek
      */
     private void initSudokuBlock() {
         //Sudoku card layout
@@ -687,20 +688,23 @@ public class gamePlay {
                 });
 
                 final KeyCombination hintCellCombination = new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN);
-                final KeyCombination highlightCellsCombination = new KeyCodeCombination(KeyCode.H, KeyCombination.ALT_DOWN);
+                final KeyCombination highlightCellsCombination = new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN);
 
                 sudokuCells[rowCounter][columnCounter].addEventHandler(KeyEvent.KEY_PRESSED, (Event event) -> {
-                    if (hintCellCombination.match((KeyEvent) event)) {
-                        sudokuOperation(READ_SUDOKU);
-                        if (playingMode == 1) {
-                            Sudoku.setSudoku(computerSolution);
-                        } else {
-                            Sudoku.setSudoku(loadedGameSudoku);
+                    if (playingMode == 1 || playingMode == 2) {
+                        if (hintCellCombination.match((KeyEvent) event)) {
+                            sudokuOperation(READ_SUDOKU);
+                            System.out.println("Shit");
+                            if (playingMode == 1) {
+                                Sudoku.setSudoku(computerSolution);
+                            } else {
+                                Sudoku.setSudoku(loadedGameSudoku);
+                            }
+                            Sudoku.setUserSudoku(userSudoku);
+                            currentField.setText(Sudoku.hint(currentFieldRowNumber, currentFieldColumnNumber) + "");
+                        } else if (highlightCellsCombination.match((KeyEvent) event)) {
+                            highlightCell(currentField.getText());
                         }
-                        Sudoku.setUserSudoku(userSudoku);
-                        currentField.setText(Sudoku.hint(currentFieldRowNumber, currentFieldColumnNumber) + "");
-                    } else if (highlightCellsCombination.match((KeyEvent) event)) {
-                        highlightCell(currentField.getText());
                     }
                 });
 
@@ -711,8 +715,7 @@ public class gamePlay {
                     } else if (!isInputValid(currentField.getText())) {
                         currentField.setText("");
                     } else //Only save in history if the listenToChange == true
-                    {
-                        if (listenToChange) {
+                     if (listenToChange && playingMode == 1 || playingMode == 2) {
                             //Clearign any history moves if the user made a move and there are redo moves to make
                             if (redoHistoryMoveNumber != history.size()) {
                                 redoButton.setDisable(true);
@@ -734,7 +737,6 @@ public class gamePlay {
                                 hintButton.setDisable(true);
                             }
                         }
-                    }
 
                     if (currentField.getLength() == 1 || currentField.getLength() == 0 || "".equals(currentField.getText())) {
                         if (hintButton.isDisabled()) {
@@ -755,7 +757,6 @@ public class gamePlay {
     /**
      * Shows a popup message
      *
-     * @author Muhammad Tarek
      * @param message, what to show
      * @param helpText, help text to tell the user what to do
      * @param alertType, success or danger
@@ -855,8 +856,6 @@ public class gamePlay {
 
     /**
      * Save current game into database and shows alert when it fails
-     *
-     * @author Muhammad Tarek
      */
     private void saveCurrentGame() {
         sudokuOperation(READ_SUDOKU);
@@ -887,7 +886,6 @@ public class gamePlay {
     /**
      * Checks if there any duplicate in the Sudoku
      *
-     * @author Mustafa Magdy, Muhammad Tarek
      * @throws InterruptedException
      * @param sudoku, 2D Sudoku array
      */
@@ -922,7 +920,6 @@ public class gamePlay {
      * cells 3. Clear all Sudoku cells and arrays 4. Check if their any Sudoku
      * cell is empty
      *
-     * @author Muhammad Tarek, Mustafa Magdy
      * @param opType
      */
     static Boolean sudokuOperation(int opType) {
@@ -974,7 +971,6 @@ public class gamePlay {
     /**
      * Check that the input is integer
      *
-     * @author Mustafa Magdy
      * @param input, Sudoku cells data
      * @return true/false
      */

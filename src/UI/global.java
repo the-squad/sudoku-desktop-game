@@ -22,8 +22,6 @@ import sudoku.SudokuGenerator;
 
 /**
  * Class to initialize all global variables and methods
- *
- * @author Muhammad
  */
 public class global {
 
@@ -32,6 +30,7 @@ public class global {
     static BorderPane gamePlayContainer;
     static GridPane mainMenuContainer;
     static GridPane scorePageContainer;
+    static GridPane shortcutHelpContainer;
     // </editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Sudoku Arrays">
@@ -88,7 +87,6 @@ public class global {
 
     /**
      * Switch between panes with slide animation
-     * @author Muhammad Tarek
      * @param parent, parent pane
      * @param fromChild
      * @param toChild
@@ -136,7 +134,7 @@ public class global {
 
     /**
      * Fading animation
-     * @author Muhammad Tarek
+     * 
      * @param node, object that will be animated
      * @param duration
      * @param delay
@@ -157,7 +155,7 @@ public class global {
 
     /**
      * Initialize button styles, icons sizes Muhammad Tarek
-     * @author Muhammad Tarek
+     * 
      * @param button
      * @param layout
      * @param position

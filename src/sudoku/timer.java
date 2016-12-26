@@ -15,7 +15,7 @@ public class timer {
 
     /**
      * Sets timer start point
-     * @author Muhammad Al.Rifai
+     * 
      * @param timerLabel
      * @param seconds 
      */
@@ -27,7 +27,6 @@ public class timer {
 
     /**
      * Starts the timer
-     * @author Muhammad Al.Rifai
      */
     public void start() {
         TimerTask t = new TimerTask() {
@@ -46,7 +45,6 @@ public class timer {
 
     /**
      * Pauses the timer
-     * @author Muhammad Al.Rifai
      */
     public void pause() {
         timer.cancel();
@@ -54,7 +52,6 @@ public class timer {
     
     /**
      * Adds 10 seconds to the timer
-     * @author Muhammad Tarek
      */
     public void addTenSeconds() {
         time += 10;

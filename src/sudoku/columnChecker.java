@@ -20,9 +20,6 @@ public class columnChecker extends sudoku implements Runnable {
         this.column = column;
     }
 
-    /**
-     * @author Mustafa Magdy
-     */
     private void checkColumn() {
         Set<Integer> myset = new HashSet<>();
         Set<Integer> errorSet = new HashSet<>();
@@ -39,7 +36,6 @@ public class columnChecker extends sudoku implements Runnable {
     }
 
     /**
-     * @author Mustafa Magdy
      * @param x
      * @param i
      * @return

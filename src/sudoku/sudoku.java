@@ -11,9 +11,6 @@ public class sudoku {
     protected static Boolean[][] sudokuWrongCells;
     private long startTime;
 
-    /**
-     * @author Mustafa Magdy
-     */
     public void initSudokuWrongCells() {
         sudokuWrongCells = new Boolean[9][9];
 
@@ -35,8 +32,6 @@ public class sudoku {
     }
 
     /**
-     * Get Sudoku solved by solveSudoku()
-     *
      * @author Muhammad Al.Rifai
      * @return Sudoku solution.
      */
@@ -45,7 +40,6 @@ public class sudoku {
     }
 
     /**
-     * @author Muhammad Al.Rifai
      * @param sudoku
      */
     public void setSudoku(Integer[][] sudoku) {
@@ -60,8 +54,7 @@ public class sudoku {
     /**
      * This method will solve the Sudoku user have entered. To retreve solution,
      * call getSudokuSolution()
-     *
-     * @author Muhammad Al.Rifai
+     * 
      * @return ture if solution exist, otherwise false.
      */
     public boolean solveSudoku() {
@@ -89,7 +82,6 @@ public class sudoku {
     /**
      * auxiliary function for solveSudoku()
      *
-     * @author Muhammad Al.Rifai
      * @param x row index
      * @param y column index
      * @param sudokuList Sudoku
@@ -138,7 +130,6 @@ public class sudoku {
     /**
      * Check if the number is unique in row, column and block.
      *
-     * @author Muhammad Al.Rifai
      * @param PossibleNumber The number to check if its exist or not.
      * @param sudokuList Sudoku.
      * @param x Row index.
@@ -169,7 +160,6 @@ public class sudoku {
     /**
      * Fill empty cell with it's correct number.
      *
-     * @author Muhammad Al.Rifai
      * @return Integer array with the following format {x, y, value}
      */
     public int[] hint() {
@@ -188,7 +178,6 @@ public class sudoku {
     /**
      * Fill empty cell with it's correct number.
      *
-     * @author Muhammad Al.Rifai
      * @param RowIndex Cell Location
      * @param ColumnIndex Cell Location
      * @return Cell's new Value
