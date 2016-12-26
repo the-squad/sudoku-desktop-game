@@ -74,7 +74,7 @@ public class Database {
         PreparedStatement statement = conn.prepareStatement(query,
                 Statement.RETURN_GENERATED_KEYS);
         statement.executeUpdate();
-        this.deleteGame(oldId);
+        this.deleteGame(oldId,true);
         ResultSet generatedKeys = statement.getGeneratedKeys();
         if (generatedKeys.next()) {
             return generatedKeys.getLong(1);
@@ -86,9 +86,26 @@ public class Database {
      * @param id
      * @throws SQLException 
      */
-    public void deleteGame(int id) throws SQLException {
+    public void deleteGame(int id , boolean flag) throws SQLException {
         Statement stmt = conn.createStatement(); // variable from statement class used to write query in to be excuted
-        String query = "DELETE FROM LOAD WHERE ID = " + id;
+        String query;
+        if (!flag)
+        {
+            query = "Select allSudoku.id as id from Load JOIN allSudoku ON load.originalID = allSudoku.ID where load.ID  = " + id;
+            ResultSet originalid = stmt.executeQuery(query);
+            if (originalid.next()){
+                this.deleteSudoku(originalid.getInt("ID"));
+            }
+        }
+        query = "DELETE FROM LOAD WHERE ID = " + id;
+        stmt.executeUpdate(query);
+    }
+    
+    
+    public void deleteSudoku(int id) throws SQLException
+    {
+        Statement stmt = conn.createStatement(); // variable from statement class used to write query in to be excuted
+        String query = "DELETE FROM allSudoku WHERE ID = " + id;
         stmt.executeUpdate(query);
     }
 
