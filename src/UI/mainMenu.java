@@ -176,6 +176,7 @@ public class mainMenu {
             gamePlayContainer.setCenter(loadingIndicator);
             gamePlayContainer.setLeft(null);
             gameTime.setTimer(timerLabel, 0);
+            gameTime.pause();
 
             headerCenterAreaContainer.setRight(headerControlsContainer);
             saveGameState = true;

@@ -145,7 +145,7 @@ public class gamePlay {
             pauseButton.setOpacity(1);
             sudokuId = "0";
 
-            changeButtonState(ENABLE, pauseButton, hintButton, solveButton, submitButton, loadGameButton);
+            changeButtonState(ENABLE, pauseButton, hintButton, solveButton, submitButton);
             if (popupState == true) {
                 hidePopupTimeline.play();
             }
@@ -251,7 +251,7 @@ public class gamePlay {
 
                             for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
                                 for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
-                                    if (!sudokuCells[rowCounter][columnCounter].isDisable()) {
+                                    if (sudokuCells[rowCounter][columnCounter].isEditable()) {
                                         //Only mark user input in green
                                         sudokuCells[rowCounter][columnCounter].setEditable(false);
                                         sudokuCells[rowCounter][columnCounter].getStyleClass().remove("cell-danger");
@@ -536,6 +536,12 @@ public class gamePlay {
 
             try {
                 if (isSudokuValid(computerSolution)) {
+                    changeButtonState(DISABLE, submitButton, hintButton, pauseButton, solveButton, saveButton, redoButton, undoButton);
+                    history.clear();
+                    undoHistoryMoveNumber = -1;
+                    redoHistoryMoveNumber = 0;
+                    gameTime.pause();
+                    timerStoppedTimeline.play();
                     for (int rowCounter = 0; rowCounter < 9; rowCounter++) {
                         for (int columnCounter = 0; columnCounter < 9; columnCounter++) {
                             sudokuCells[rowCounter][columnCounter].setText(computerSolution[rowCounter][columnCounter] + "");
@@ -543,13 +549,6 @@ public class gamePlay {
                             sudokuCells[rowCounter][columnCounter].getStyleClass().add("cell-success");
                         }
                     }
-
-                    changeButtonState(DISABLE, submitButton, hintButton, pauseButton, solveButton, saveButton, redoButton, undoButton);
-                    history.clear();
-                    undoHistoryMoveNumber = -1;
-                    redoHistoryMoveNumber = 0;
-                    timerStoppedTimeline.play();
-                    gameTime.pause();
                     gamePlayContainer.requestFocus();
                 } else {
                     showPopup("The solution we made was wrong!", "Try again!", MESSAGE_DANGER);
@@ -694,7 +693,6 @@ public class gamePlay {
                     if (playingMode == 1 || playingMode == 2) {
                         if (hintCellCombination.match((KeyEvent) event)) {
                             sudokuOperation(READ_SUDOKU);
-                            System.out.println("Shit");
                             if (playingMode == 1) {
                                 Sudoku.setSudoku(computerSolution);
                             } else {
@@ -715,7 +713,8 @@ public class gamePlay {
                     } else if (!isInputValid(currentField.getText())) {
                         currentField.setText("");
                     } else //Only save in history if the listenToChange == true
-                     if (listenToChange && playingMode == 1 || playingMode == 2) {
+                    {
+                        if (listenToChange && playingMode == 1 || playingMode == 2) {
                             //Clearign any history moves if the user made a move and there are redo moves to make
                             if (redoHistoryMoveNumber != history.size()) {
                                 redoButton.setDisable(true);
@@ -737,6 +736,7 @@ public class gamePlay {
                                 hintButton.setDisable(true);
                             }
                         }
+                    }
 
                     if (currentField.getLength() == 1 || currentField.getLength() == 0 || "".equals(currentField.getText())) {
                         if (hintButton.isDisabled()) {
@@ -878,6 +878,7 @@ public class gamePlay {
 
         try {
             sudokuId = database.saveGame(currentSudokuGame, gameTime.getTime(), Integer.parseInt(sudokuIdOriginal), Integer.parseInt(sudokuId)) + "";
+            loadGameButton.setDisable(false);
         } catch (SQLException ex) {
             showPopup("Game isn't saved", "Try Again!", MESSAGE_DANGER);
         }
