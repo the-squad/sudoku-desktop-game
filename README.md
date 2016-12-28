@@ -1,7 +1,8 @@
 # Sudoku
-> A sudoku game build by JavaFX
+> A sudoku generating and solving algorithm build with ❤ and JavaFX
 
-This is a project build by students as a practical learning for Operating Systems-2 (Threads), however we extened everything beyond that. From the UI to the shortcuts.
+This is a project build by students as a practical learning for Operating Systems-2. However, to have fun and learn
+new stuff we added some features and build UI to make stuff more fun and user friendly.
 
 🔧 IDE: NetBeans <br />
 🎨 Design Language: Material Design <br />
@@ -32,7 +33,7 @@ All you need is to have JRE 1.8 installed and you are good to go
   * Enter -> Submit
 * Leaderboard that shows you the best 5 scores (least time)
 
-## Contributors
+## Collaborators
 
 * [Muhammad Kamal] (https://github.com/mohamedkamal274)
 * [Mohamed Al-Rifay] (https://github.com/MohamedAl-Rifay)
