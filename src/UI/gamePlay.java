@@ -685,7 +685,7 @@ public class gamePlay {
                     } else if (!isInputValid(currentField.getText())) {
                         currentField.setText("");
                     } else //Only save in history if the listenToChange == true
-                     if (listenToChange && playingMode == NEW_GAME_MODE || playingMode == LOAD_GAME_MODE) {
+                     if (listenToChange && playingMode == NEW_GAME_MODE || listenToChange && playingMode == LOAD_GAME_MODE) {
                             //Clearign any history moves if the user made a move and there are redo moves to make
                             if (redoHistoryMoveNumber != history.size()) {
                                 redoButton.setDisable(true);
