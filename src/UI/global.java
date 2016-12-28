@@ -64,6 +64,11 @@ public class global {
     
     public static final int DISABLE = 1;
     public static final int ENABLE = 2;
+    
+    public static final int NEW_GAME_MODE = 1;
+    public static final int LOAD_GAME_MODE = 2;
+    public static final int CHECKING_MODE = 3;   
+    public static final int CHALLENGE_MODE = 4;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Sudoku Info">
@@ -162,7 +167,6 @@ public class global {
      * @param icon
      */
     static void initButtonStyle(Button button, GridPane layout, int position, ImageView icon, int bgColor) {
-        button.setOpacity(0);
         button.getStyleClass().add("icon-text-button");
 
         if (icon != null) {
@@ -183,8 +187,6 @@ public class global {
         layout.setHalignment(button, HPos.CENTER);
         layout.setValignment(button, VPos.CENTER);
         layout.getChildren().add(button);
-
-        fade(button, 300, 150 * (position + 1), FADE_IN);
     }
     
     public static void changeButtonState(int type, Button... buttons) {
@@ -194,5 +196,9 @@ public class global {
             else
                 button.setDisable(false);
         }
+    }
+    
+    public static void changePlayingMode(int mode) {
+        playingMode = mode;
     }
 }

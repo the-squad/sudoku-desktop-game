@@ -44,7 +44,7 @@
 .scroll-pane,
 .scroll-pane:focused,
 .scroll-pane > .viewport {
-    -fx-background-color: #eee;
+    -fx-background-color: transparent;
 }
 
 .scroll-pane .corner {
@@ -117,3 +117,10 @@
     -fx-underline: true;
 }
 
+.empty-state-message {
+    -fx-font-family: "Lato";
+    -fx-font-size: 22;
+    -fx-alignment: center;
+    -fx-text-fill: rgba(41,47,51, 0.9);
+    -fx-font-wieght: 700;
+}

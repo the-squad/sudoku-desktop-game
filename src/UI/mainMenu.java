@@ -29,6 +29,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import javafx.scene.text.TextAlignment;
 import javafx.util.Duration;
 import sudoku.SudokuGenerator;
 
@@ -40,8 +41,8 @@ public class mainMenu {
     private BorderPane leftPartContainer;
     private GridPane gameModesContainer;
     private GridPane levelsContainer;
-    private GridPane savedGamesContainer;
-    private BorderPane pageHeaderContainer;
+    static GridPane savedGamesContainer;
+    static BorderPane pageHeaderContainer;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Labels">
@@ -49,6 +50,7 @@ public class mainMenu {
     private Label logoText;
     private Label version;
     private Label headlineText;
+    static Label emptyStateLabel;
     // </editor-fold>
 
     // <editor-fold defaultstate="collapsed" desc="Buttons">
@@ -63,7 +65,8 @@ public class mainMenu {
     private Button hardButton;
     // </editor-fold>
 
-    private int savedGamesNumberGlobal;
+    static ImageView emptyIconView;
+    static int savedGamesNumberGlobal;
 
     /**
      * Initialize main menu elements
@@ -111,7 +114,7 @@ public class mainMenu {
         //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Version Label">
-        version = new Label("Version 1.3");
+        version = new Label("Version 1.4");
         version.getStyleClass().add("version");
         leftPartContainer.setBottom(version);
         leftPartContainer.setAlignment(version, Pos.TOP_CENTER);
@@ -172,18 +175,18 @@ public class mainMenu {
 
         newGameButton.setOnAction(e -> {
             switchPanes(rightPartContainer, gameModesContainer, levelsContainer);
-            playingMode = 1;
+            changePlayingMode(NEW_GAME_MODE);
+            
             gamePlayContainer.setCenter(loadingIndicator);
             gamePlayContainer.setLeft(null);
-            gameTime.setTimer(timerLabel, 0);
-            gameTime.pause();
-
             headerCenterAreaContainer.setRight(headerControlsContainer);
-            saveGameState = true;
+            changeButtonState(DISABLE, pauseButton, resumeButton, saveButton, submitButton);
 
             submitButton.setText("Submit");
             headlineLabel.setText("New Game");
-            changeButtonState(DISABLE, saveButton, submitButton);
+            saveGameState = true;
+
+            gameTime.setTimer(timerLabel, 0);
         });
         //</editor-fold>
 
@@ -195,23 +198,20 @@ public class mainMenu {
 
         loadGameButton.setOnAction(e -> {
             initializeSavedGames();
+            
             switchPanes(rightPartContainer, gameModesContainer, savedGamesContainer);
-            playingMode = 2;
+            changePlayingMode(LOAD_GAME_MODE);
+             
             gamePlayContainer.setCenter(sudokuCellsContainer);
             gamePlayContainer.setLeft(gameLeftPanelContainer);
-            saveGameState = false;
+            headerCenterAreaContainer.setRight(headerControlsContainer);
             if (saveButton.isDisabled())
                 saveButton.setDisable(false);
-
-            headerCenterAreaContainer.setRight(headerControlsContainer);
             submitButton.setText("Submit");
             headlineLabel.setText("Loaded Game");
+            changeButtonState(ENABLE, pauseButton, resumeButton);
+            saveGameState = false;
         });
-
-        //Disable the button when there are no saved games
-        if (savedGamesNumberGlobal == 0) {
-            loadGameButton.setDisable(true);
-        }
         //</editor-fold>
 
         //<editor-fold defaultstate="collapsed" desc="Check Sudoku Button">
@@ -222,10 +222,10 @@ public class mainMenu {
 
         checkSudokuButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
-            playingMode = 3;
+            changePlayingMode(CHECKING_MODE);
+            
             gamePlayContainer.setCenter(sudokuCellsContainer);
             gamePlayContainer.setLeft(null);
-
             headerCenterAreaContainer.setRight(null);
             submitButton.setText("Check");
             headlineLabel.setText("Check your Sudoku");
@@ -240,10 +240,10 @@ public class mainMenu {
 
         challangeComputerButton.setOnAction(e -> {
             switchPanes(screenContainer, mainMenuContainer, gamePlayContainer);
-            playingMode = 4;
+            changePlayingMode(CHALLENGE_MODE);
+            
             gamePlayContainer.setCenter(sudokuCellsContainer);
             gamePlayContainer.setLeft(null);
-
             headerCenterAreaContainer.setRight(null);
             submitButton.setText("Challenge");
             headlineLabel.setText("Challenge Computer");
@@ -454,12 +454,36 @@ public class mainMenu {
         //Container
         GridPane savedGamesLayout = new GridPane();
         savedGamesLayout.setVgap(20);
+        
+        //Empty state
+        Image emptyImage = new Image(getClass().getResourceAsStream("/icons/empty-box.png"));
+        emptyIconView = new ImageView(emptyImage);
+        emptyIconView.setFitHeight(64);
+        emptyIconView.setFitWidth(64);
+        emptyIconView.setTranslateY(-75);
+        emptyIconView.toFront();
+        savedGamesContainer.setHalignment(emptyIconView, HPos.CENTER);
+        savedGamesContainer.setConstraints(emptyIconView, 0, 1);
+        
+        emptyStateLabel = new Label("Seems you don't\nhave any saved games!");
+        emptyStateLabel.getStyleClass().add("empty-state-message");
+        emptyStateLabel.setTranslateY(-225);
+        emptyStateLabel.setTextAlignment(TextAlignment.CENTER);
+        savedGamesContainer.setHalignment(emptyStateLabel, HPos.CENTER);
+        savedGamesContainer.setConstraints(emptyStateLabel, 0, 2);
+        
+        if (savedGamesNumberGlobal == 0) {
+            savedGamesContainer.getChildren().add(emptyIconView);
+            savedGamesContainer.getChildren().add(emptyStateLabel);
+            pageHeaderContainer.setTranslateY(28);
+        }
 
         //Scrollbar
         ScrollPane scrollPane = new ScrollPane(savedGamesLayout);
         scrollPane.getStyleClass().add("scroll-panel");
         scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.setMinWidth(360);
+        scrollPane.toBack();
         savedGamesContainer.setMargin(scrollPane, new Insets(0, 0, 0, 60));
 
         savedGamesContainer.setConstraints(scrollPane, 0, 1);
@@ -606,9 +630,9 @@ public class mainMenu {
 
                 }
                 if (savedGamesNumberGlobal == 0) {
-                    switchPanes(rightPartContainer, savedGamesContainer, gameModesContainer);
-                    savedGamesContainer.getChildren().clear();
-                    loadGameButton.setDisable(true);
+                    savedGamesContainer.getChildren().add(emptyIconView);
+                    savedGamesContainer.getChildren().add(emptyStateLabel);
+                    pageHeaderContainer.setTranslateY(28);
                 }
             });
         }
@@ -666,7 +690,7 @@ public class mainMenu {
         KeyFrame finishFadeIn = new KeyFrame(Duration.millis(510), panelOpacityEnd);
         KeyFrame startFadeIn2 = new KeyFrame(Duration.millis(210), sudokuOpacityStart);
         KeyFrame finishFadeIn2 = new KeyFrame(Duration.millis(510), sudokuOpacityEnd);
-        KeyFrame startTimer = new KeyFrame(Duration.millis(1000), e -> gameTime.start());
+        KeyFrame startTimer = new KeyFrame(Duration.millis(1000), e -> {gameTime.start(); changeButtonState(ENABLE, pauseButton, resumeButton);});
 
         showAndHideTimeline.getKeyFrames().addAll(startFadeOut, finishFadeOut, clear, addingToCenter, addingToLeft, enablingButtons, startFadeIn, finishFadeIn, startFadeIn2, finishFadeIn2, startTimer);
         showAndHideTimeline.play();

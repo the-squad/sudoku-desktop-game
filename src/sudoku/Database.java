@@ -1,5 +1,6 @@
 package sudoku;
 
+import java.io.File;
 import java.sql.*;
 import java.util.*;
 
@@ -8,16 +9,38 @@ public class Database {
     // variable from connection class
     private Connection conn = null;
 
+     void createDatabase() {
+        Statement stmt;
+        String[] Tables = new String[]{
+            "CREATE TABLE `allSudoku` (`ID` INTEGER PRIMARY KEY  AUTOINCREMENT  NOT NULL , `Sudoku` VARCHAR, `Diff` VARCHAR)",
+            "CREATE TABLE `Load` (`ID` INTEGER NOT NULL, `Sudoku` VARCHAR, `Timer` INTEGER NOT NULL DEFAULT (0), `savingTime` DATETIME DEFAULT (CURRENT_TIMESTAMP), `originalID` INTEGER NOT NULL, PRIMARY KEY(`ID`))",
+            "CREATE TABLE `Dashboard` (`Name` TEXT NOT NULL, `Diff` TEXT NOT NULL, `Time` INTEGER NOT NULL)"
+        };
+        try {
+            for (String Table : Tables) {
+                stmt = conn.createStatement();
+                stmt.executeUpdate(Table);
+                stmt.close();
+            }
+        } catch (SQLException ex) {
+        }
+    }
+
     /**
      * Connects to the database
-     * 
+     *
+     * @author Muhammad Khairala
      * @return connection/null
      */
     public Connection DBconnect() {
         try {
             // next 2 lines are used to connect the DB if connected return the connection else return NULL
             Class.forName("org.sqlite.JDBC");
+            boolean createSchema = !new File("SudokuDB.sqlite").exists();
             conn = DriverManager.getConnection("jdbc:sqlite:SudokuDB.sqlite");
+            if (createSchema) {
+                createDatabase();
+            }
             return conn;
         } catch (ClassNotFoundException | SQLException e) {
             return null;

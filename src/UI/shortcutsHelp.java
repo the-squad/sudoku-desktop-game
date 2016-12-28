@@ -1,6 +1,7 @@
 package UI;
 
 import static UI.global.gamePlayContainer;
+import static UI.global.gameTime;
 import static UI.global.screenContainer;
 import static UI.global.switchPanes;
 import javafx.geometry.Insets;
@@ -35,7 +36,7 @@ public class shortcutsHelp {
         closeButton.getStyleClass().add("close-icon-dark");
         closeButton.getStyleClass().add("button-icon--dark");
         closeButton.setTranslateX(100);
-        closeButton.setOnAction(e -> switchPanes(screenContainer, shortcutHelpContainer, gamePlayContainer));
+        closeButton.setOnAction(e -> { switchPanes(screenContainer, shortcutHelpContainer, gamePlayContainer); gameTime.start();});
         shortcutHelpContainer.setConstraints(closeButton, 1, 0);
 
         Label shortcutsHeadline = new Label("Keyboard Shortcuts");
@@ -49,7 +50,7 @@ public class shortcutsHelp {
 
         for (int counter = 0; counter < 9; counter++) {
             ColumnConstraints firstKeyColumn = new ColumnConstraints();
-            firstKeyColumn.setPercentWidth(18);
+            firstKeyColumn.setPercentWidth(12);
             
             ColumnConstraints plusColumn = new ColumnConstraints();
             plusColumn.setPercentWidth(5);
@@ -83,7 +84,7 @@ public class shortcutsHelp {
         Label plusLabel = new Label("+");
         plusLabel.getStyleClass().add("help-text");
         line.setConstraints(plusLabel, 1, 0);
-        line.setMargin(plusLabel, new Insets(0, 5, 0, 5));
+        //line.setMargin(plusLabel, new Insets(0, -100, 0, -120));
         line.setHalignment(plusLabel, HPos.CENTER);
 
         Label secondKeyLabel = new Label(secondKey);
@@ -96,7 +97,7 @@ public class shortcutsHelp {
         line.setConstraints(helpLineLabel, 3, 0);
         helpLineLabel.setMinWidth(400);
         helpLineLabel.setTextAlignment(TextAlignment.LEFT);
-        line.setMargin(helpLineLabel, new Insets(0, 0, 0, -25));
+        line.setMargin(helpLineLabel, new Insets(0, 0, 0, -15));
         line.setHalignment(helpLineLabel, HPos.LEFT);
         
         if (secondKey == null) {

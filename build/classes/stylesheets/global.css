@@ -35,10 +35,7 @@
     -fx-opacity: 1;
 }
 
-.button-icon_text--white:disabled {
-    -fx-opacity: 0.5;
-}
-
+.button-icon_text--white:disabled,
 .button-icon_text--transparent:disabled {
     -fx-opacity: 0.5;
 }
