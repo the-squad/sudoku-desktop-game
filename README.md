@@ -1,8 +1,8 @@
 # Sudoku
-> A sudoku generating and solving algorithm build with ❤ and JavaFX
+> A sudoku generating and solving algorithm built with ❤ and JavaFX
 
 This is a project build by students as a practical learning for Operating Systems-2. However, to have fun and learn
-new stuff we added some features and build UI to make stuff more fun and user friendly.
+new stuff we added some features and build UI to make stuff more fun and user-friendly.
 
 🔧 IDE: NetBeans <br />
 🎨 Design Language: Material Design <br />
@@ -15,11 +15,11 @@ All you need is to have JRE 1.8 installed and you are good to go
 
 ## Features
 
-* Generating sudokus depending on user's level (Hard level is still needs some improvments)
-* Validating sudoku and search for duplicates in rows, columns and 3x3 blocks
+* Generating sudokus depending on user's level (Hard level stills need some improvements)
+* Validating sudoku and search for duplicates in rows, columns, and 3x3 blocks
 * Saving the current and game and continue it anytime later
 * Solving any sudoku from the user
-* Hints, hints works cell by cell in order form the top to the bottom
+* Hints, hints works cell by cell in order from the top to the bottom
 * Shortcuts
   * F1 -> Show shortcuts (only on playing mode)
   * Ctr + S -> Save current game
