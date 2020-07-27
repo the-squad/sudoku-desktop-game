@@ -36,7 +36,7 @@ All you need is to have JRE 1.8 installed and you are good to go
 ## Collaborators
 
 * [Muhammad Kamal](https://github.com/mohamedkamal274)
-* [Mohamed Al-Rifay](https://github.com/MohamedAl-Rifay)
+* [Mohamed Al-Rifay](https://github.com/alrifay)
 * [Mostafa Magdy](https://github.com/Megz20140415)
 * [Muhammad Khairala](https://github.com/Khairala)
 
