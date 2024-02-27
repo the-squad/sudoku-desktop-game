@@ -1,7 +1,7 @@
 # Sudoku
 > A sudoku generating and solving algorithm built with ❤ and JavaFX
 
-This is a project build by students as a practical learning for Operating Systems-2. However, to have fun and learn
+This is a practical learning for Operating Systems-2. However, to have fun and learn
 new stuff we added some features and build UI to make stuff more fun and user-friendly.
 
 🔧 IDE: NetBeans <br />
@@ -33,13 +33,3 @@ All you need is to have JRE 1.8 installed and you are good to go
   * Enter -> Submit
 * Leaderboard that shows you the best 5 scores (least time)
 
-## Collaborators
-
-* [Muhammad Kamal](https://github.com/mohamedkamal274)
-* [Mohamed Al-Rifay](https://github.com/alrifay)
-* [Mostafa Magdy](https://github.com/Megz20140415)
-* [Muhammad Khairala](https://github.com/Khairala)
-
-## Licensing
-
-Anybody is free to use our code, but you have to give the credits to the authors
